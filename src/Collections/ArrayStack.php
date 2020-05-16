@@ -126,11 +126,7 @@ class ArrayStack implements Stack
 
     public function getIterator()
     {
-        $items = $this->toArray();
-        $index = 0;
-        while ($index < $this->size()) {
-            yield $items[$index++];
-        }
+        yield from $this->toArray();
     }
 
     public function size() {
