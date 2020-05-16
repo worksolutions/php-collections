@@ -7,55 +7,70 @@ namespace WS\Utils\Collections;
 
 abstract class AbstractList implements Collection
 {
+    protected array $elements = [];
 
     public static function of(...$elements): self
     {
-
+        $list = new static();
+        foreach ($elements as $element) {
+            $list->add($element);
+        }
+        return $list;
     }
 
     public function add($element): bool
     {
-        // TODO: Implement add() method.
+        return (bool)array_push($this->elements, $element);
     }
 
     public function merge(Collection $collection): bool
     {
-        // TODO: Implement merge() method.
+        $this->elements = array_merge($this->toArray(), $collection->toArray());
+        return true;
     }
 
     public function clear(): void
     {
-        // TODO: Implement clear() method.
+        $this->elements = [];
     }
 
     public function remove($element): bool
     {
-        // TODO: Implement remove() method.
+        $key = array_search($element, $this->elements);
+        if (false === $key) {
+            return false;
+        }
+        unset($this->elements[$key]);
+        return true;
     }
 
     public function contains($element): bool
     {
-        // TODO: Implement contains() method.
+        return in_array($element, $this->elements);
     }
 
     public function equals(Collection $collection): bool
     {
-        // TODO: Implement equals() method.
+        return $this->toArray() === $collection->toArray();
+    }
+
+    public function size(): int {
+        return count($this->elements);
     }
 
     public function isEmpty(): bool
     {
-        // TODO: Implement isEmpty() method.
+        return !$this->size();
     }
 
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
+        return $this->elements;
     }
 
     public function getIterator()
     {
-        // TODO: Implement getIterator() method.
+        return yield $this->toArray();
     }
 
     abstract public function stream(): Stream;
