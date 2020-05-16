@@ -83,7 +83,20 @@ class ArrayStack implements Stack
 
     public function remove($element): bool
     {
+        if ($this->isEmpty()) {
+            return false;
+        }
+        $index = $this->size() - 1;
+        while ($index >= 0) {
+            if ($this->items[$index] === $element) {
+                unset($this->items[$index]);
+                $this->items = array_values($this->items);
+                return true;
+            }
+            $index--;
+        }
 
+        return false;
     }
 
     public function contains($element): bool
