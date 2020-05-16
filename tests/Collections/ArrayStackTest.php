@@ -11,11 +11,8 @@ use WS\Utils\Collections\ArrayStack;
 
 class ArrayStackTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function sizeTest(): void
+    
+    public function testSize(): void
     {
         $stackData = [
             [1, 2, 3],
@@ -27,11 +24,8 @@ class ArrayStackTest extends TestCase
             $this->assertEquals(count($data), $stack->size());
         }
     }
-
-    /**
-     * @test
-     */
-    public function emptinessTest(): void
+    
+    public function testEmptiness(): void
     {
         $stack = new ArrayStack([0]);
         $this->assertFalse($stack->isEmpty());
@@ -44,31 +38,22 @@ class ArrayStackTest extends TestCase
         $stack->push('a');
         $this->assertFalse($stack->isEmpty());
     }
-
-    /**
-     * @test
-     */
-    public function peekTest(): void
+    
+    public function testPeek(): void
     {
         $stack = new ArrayStack([1, 2, 3]);
         $this->assertEquals(3, $stack->peek());
     }
-
-    /**
-     * @test
-     */
-    public function emptyTest(): void
+    
+    public function testPeekEmpty(): void
     {
         $this->expectException(\RuntimeException::class);
 
         $stack = new ArrayStack([]);
         $stack->peek();
     }
-
-    /**
-     * @test
-     */
-    public function pushTest(): void
+    
+    public function testPush(): void
     {
         $stack = new ArrayStack([100, 0, 50]);
 
@@ -79,11 +64,8 @@ class ArrayStackTest extends TestCase
         $this->assertEquals(15, $stack->peek());
         $this->assertEquals(6, $stack->size());
     }
-
-    /**
-     * @test
-     */
-    public function addTest(): void
+    
+    public function testAdd(): void
     {
         $stack = new ArrayStack(['a', 'b', 'c']);
 
@@ -94,11 +76,8 @@ class ArrayStackTest extends TestCase
         $this->assertEquals('abc', $stack->peek());
         $this->assertEquals(6, $stack->size());
     }
-
-    /**
-     * @test
-     */
-    public function popTest(): void
+    
+    public function testPop(): void
     {
         $stack = new ArrayStack([100, 0, '50', 'asd', 20]);
 
@@ -109,10 +88,7 @@ class ArrayStackTest extends TestCase
         $this->assertEquals(100, $stack->pop());
     }
 
-    /**
-     * @test
-     */
-    public function popEmptyTest(): void
+    public function testPopEmpty(): void
     {
         $this->expectException(\RuntimeException::class);
 
@@ -120,10 +96,7 @@ class ArrayStackTest extends TestCase
         $stack->pop();
     }
 
-    /**
-     * @test
-     */
-    public function toArrayTest(): void
+    public function testToArray(): void
     {
         $stack = new ArrayStack([1, 2, 3]);
         $this->assertEquals([3, 2, 1], $stack->toArray());
@@ -133,20 +106,14 @@ class ArrayStackTest extends TestCase
         $this->assertEquals([1, 2, 1], $stack->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function clearTest(): void
+    public function testClear(): void
     {
         $stack = new ArrayStack([1, 2, 3]);
         $stack->clear();
         $this->assertEmpty($stack->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function getIteratorTest(): void
+    public function testGetIterator(): void
     {
         $stack = new ArrayStack([9, 8, 'a', 'n']);
 
@@ -163,10 +130,7 @@ class ArrayStackTest extends TestCase
         $this->assertEquals(['n', 'a', 8, 9], $elements);
     }
 
-    /**
-     * @test
-     */
-    public function mergeTest(): void
+    public function testMerge(): void
     {
         $stack1 = new ArrayStack([1, 7]);
         $stack2 = new ArrayStack(['c', 'a']);
@@ -178,10 +142,7 @@ class ArrayStackTest extends TestCase
         $this->assertEquals(['c', 'a', 'a', 'c'], $stack2->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function containsTest(): void
+    public function testContains(): void
     {
         $elements = [1000, 7, 'abc', 'd'];
         $stack = new ArrayStack($elements);
@@ -196,10 +157,7 @@ class ArrayStackTest extends TestCase
         $this->assertTrue($stack->contains(999));
     }
 
-    /**
-     * @test
-     */
-    public function removeTest(): void
+    public function testRemove(): void
     {
         $stack = new ArrayStack([1, 'a', 7, 'a', 9]);
 
@@ -212,10 +170,7 @@ class ArrayStackTest extends TestCase
         $this->assertEquals([7, 1], $stack->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function equalsTest(): void
+    public function testEquals(): void
     {
         $stack1 = new ArrayStack([1, 7]);
         $stack2 = new ArrayStack([1, 7]);
@@ -224,17 +179,16 @@ class ArrayStackTest extends TestCase
         $this->assertTrue($stack2->equals($stack1));
     }
 
-    /**
-     * @test
-     */
-    public function notEqualsTest(): void
+    public function testNotEquals(): void
     {
         $stack1 = new ArrayStack([1, 7]);
         $stack2 = new ArrayStack([7, 1]);
         $stack3 = new ArrayStack([1, 7, 7]);
+        $stack4 = new ArrayStack(['1', '7']);
 
         $this->assertFalse($stack1->equals($stack2));
         $this->assertFalse($stack1->equals($stack3));
+        $this->assertFalse($stack1->equals($stack4));
         $this->assertFalse($stack2->equals($stack3));
     }
 
