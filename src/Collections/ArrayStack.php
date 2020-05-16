@@ -106,7 +106,7 @@ class ArrayStack implements Stack
 
     public function equals(Collection $collection): bool
     {
-
+        return $this->toArray() === $collection->toArray();
     }
 
     public function isEmpty(): bool
