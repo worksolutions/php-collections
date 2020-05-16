@@ -10,9 +10,9 @@ interface Queue extends Collection
     /**
      * Inserts the specified element into this queue if it is possible
      * @param $element
-     * @return mixed
+     * @return bool
      */
-    public function offer($element);
+    public function offer($element): bool;
 
     /**
      * Retrieves and removes the head of this queue, or returns null if this queue is empty
