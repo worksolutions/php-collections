@@ -50,6 +50,12 @@ interface Collection extends IteratorAggregate
     public function equals(Collection $collection): bool;
 
     /**
+     * Returns size of collection elements
+     * @return int
+     */
+    public function size(): int;
+
+    /**
      * Returns true if this collection contains no elements
      */
     public function isEmpty(): bool;
