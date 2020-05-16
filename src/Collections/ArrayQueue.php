@@ -10,9 +10,9 @@ namespace WS\Utils\Collections;
 class ArrayQueue extends AbstractList implements Queue
 {
 
-    public function offer($element)
+    public function offer($element): bool
     {
-        $this->add($element);
+        return $this->add($element);
     }
 
     public function poll()
