@@ -36,7 +36,7 @@ abstract class AbstractList implements Collection
 
     public function remove($element): bool
     {
-        $key = array_search($element, $this->elements);
+        $key = array_search($element, $this->elements, true);
         if (false === $key) {
             return false;
         }
@@ -46,7 +46,7 @@ abstract class AbstractList implements Collection
 
     public function contains($element): bool
     {
-        return in_array($element, $this->elements);
+        return in_array($element, $this->elements, true);
     }
 
     public function equals(Collection $collection): bool
@@ -54,7 +54,8 @@ abstract class AbstractList implements Collection
         return $this->toArray() === $collection->toArray();
     }
 
-    public function size(): int {
+    public function size(): int
+    {
         return count($this->elements);
     }
 
