@@ -8,8 +8,7 @@ namespace WS\Utils\Collections;
 
 class ArrayMap implements Map
 {
-    private Collection $values;
-    private Set $keySet;
+    private array $entrySet;
 
     public function put($key, $value): bool
     {
@@ -23,11 +22,11 @@ class ArrayMap implements Map
 
     public function values(): Collection
     {
-        return $this->values;
+        return ArrayList::of($this->entrySet);
     }
 
     public function keySet(): Set
     {
-        return $this->keySet;
+        // TODO: Implement keySet() method.
     }
 }
