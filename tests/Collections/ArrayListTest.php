@@ -17,11 +17,11 @@ class ArrayListTest extends TestCase
         $list = ArrayList::of(1, 2);
         $this->assertEquals(2, $list->size());
 
-        $list->add(-76);
+        $this->assertTrue($list->add(-76));
         $this->assertEquals(3, $list->size());
 
         $anotherList = new ArrayList();
-        $anotherList->add('string');
+        $this->assertTrue($anotherList->add('string'));
         $anotherList->merge($list);
         $this->assertEquals(4, $anotherList->size());
     }
