@@ -9,18 +9,8 @@ namespace WS\Utils\Collections;
 
 use RuntimeException;
 
-class ArrayStack implements Stack
+class ArrayStack extends AbstractList implements Stack
 {
-
-    /**
-     * @var array
-     */
-    private $items;
-
-    public function __construct(array $items)
-    {
-        $this->items = array_values($items);
-    }
 
     /**
      * Adds element to the top of stack
@@ -45,7 +35,7 @@ class ArrayStack implements Stack
             throw new RuntimeException('Stack is empty');
         }
 
-        return array_pop($this->items);
+        return array_pop($this->elements);
     }
 
     /**
@@ -59,26 +49,14 @@ class ArrayStack implements Stack
             throw new RuntimeException('Stack is empty');
         }
 
-        return $this->items[count($this->items) - 1];
-    }
-
-    public function add($element): bool
-    {
-        $this->items[] = $element;
-
-        return true;
+        return $this->elements[count($this->elements) - 1];
     }
 
     public function merge(Collection $collection): bool
     {
-        $this->items = array_merge($this->items, array_values($collection->toArray()));
+        $this->elements = array_merge($this->elements, array_values($collection->toArray()));
 
         return true;
-    }
-
-    public function clear(): void
-    {
-        $this->items = [];
     }
 
     public function remove($element): bool
@@ -88,30 +66,15 @@ class ArrayStack implements Stack
         }
         $index = $this->size() - 1;
         while ($index >= 0) {
-            if ($this->items[$index] === $element) {
-                unset($this->items[$index]);
-                $this->items = array_values($this->items);
+            if ($this->elements[$index] === $element) {
+                unset($this->elements[$index]);
+                $this->elements = array_values($this->elements);
                 return true;
             }
             $index--;
         }
 
         return false;
-    }
-
-    public function contains($element): bool
-    {
-        return in_array($element, $this->items, true);
-    }
-
-    public function equals(Collection $collection): bool
-    {
-        return $this->toArray() === $collection->toArray();
-    }
-
-    public function isEmpty(): bool
-    {
-        return $this->size() === 0;
     }
 
     public function stream(): Stream
@@ -121,15 +84,7 @@ class ArrayStack implements Stack
 
     public function toArray(): array
     {
-        return array_reverse($this->items);
+        return array_reverse($this->elements);
     }
 
-    public function getIterator()
-    {
-        yield from $this->toArray();
-    }
-
-    public function size() {
-        return count($this->items);
-    }
 }
