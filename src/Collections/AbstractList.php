@@ -70,7 +70,7 @@ abstract class AbstractList implements Collection
 
     public function getIterator()
     {
-        return yield $this->toArray();
+        yield from $this->toArray();
     }
 
     abstract public function stream(): Stream;
