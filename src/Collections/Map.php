@@ -9,5 +9,9 @@ use IteratorAggregate;
 
 interface Map extends IteratorAggregate
 {
-    public function add($key, $value): bool;
+    public function put($key, $value): bool;
+
+    public function keySet(): Set;
+
+    public function values(): Collection;
 }
