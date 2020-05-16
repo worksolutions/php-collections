@@ -18,7 +18,7 @@ class ArrayQueue extends AbstractList implements Queue
     public function poll()
     {
         if ($this->isEmpty()) {
-            return null;
+            throw new \RuntimeException('Queue is empty');
         }
 
         return array_shift($this->elements);
@@ -27,7 +27,7 @@ class ArrayQueue extends AbstractList implements Queue
     public function peek()
     {
         if ($this->isEmpty()) {
-            return null;
+            throw new \RuntimeException('Queue is empty');
         }
 
         return $this->elements[0];
