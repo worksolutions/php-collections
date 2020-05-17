@@ -15,6 +15,11 @@ class ArrayListTest extends TestCase
     /**
      * @test
      */
+    public function hello(): void
+    {
+        $this->assertTrue(true);
+    }
+
     public function addingElement(): void
     {
         $list = ArrayList::of(1);
