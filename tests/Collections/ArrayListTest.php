@@ -12,6 +12,14 @@ use WS\Utils\Collections\Functions\Aggregators;
 class ArrayListTest extends TestCase
 {
 
+    /**
+     * @test
+     */
+    public function hello(): void
+    {
+        $this->assertTrue(true);
+    }
+
     public function testAdd(): void
     {
         $list = ArrayList::of(1, 2);
