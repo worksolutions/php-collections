@@ -1,4 +1,4 @@
-name: Check library
+name: Tests
 
 on:
   push:
