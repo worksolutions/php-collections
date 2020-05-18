@@ -3,10 +3,9 @@
  * @author Maxim Sokolovsky
  */
 
-namespace Collections;
+namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\ArrayList;
 use WS\Utils\Collections\Functions\Aggregators;
 
 class ArrayListTest extends TestCase

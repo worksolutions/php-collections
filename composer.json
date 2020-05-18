@@ -13,10 +13,10 @@
     "phpunit/phpunit": "^8.5"
   },
   "autoload": {
-    "psr-4": {"WS\\Utils\\Collections\\": "src/Collections"}
+    "psr-4": {"WS\\Utils\\Collections\\": "src/WS/Utils/Collections"}
   },
   "autoload-dev": {
-    "psr-4": {"WS\\Utils\\Collections\\": "tests/Collections"}
+    "psr-4": {"WS\\Utils\\Collections\\": "tests/WS/Utils/Collections"}
   },
   "scripts": {
     "test": [

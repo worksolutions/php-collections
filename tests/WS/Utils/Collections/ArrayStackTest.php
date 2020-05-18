@@ -4,10 +4,9 @@
  * @license MIT
  */
 
-namespace Collections;
+namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\ArrayStack;
 
 class ArrayStackTest extends TestCase
 {

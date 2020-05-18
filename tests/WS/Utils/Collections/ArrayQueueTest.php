@@ -4,10 +4,9 @@
  * @license MIT
  */
 
-namespace Collections;
+namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\ArrayQueue;
 
 class ArrayQueueTest extends TestCase
 {
