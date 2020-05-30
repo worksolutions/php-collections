@@ -33,7 +33,6 @@ class ArrayQueue extends AbstractList implements Queue
         return $this->elements[0];
     }
 
-
     public function stream(): Stream
     {
         // TODO: Implement stream() method.

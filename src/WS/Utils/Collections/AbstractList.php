@@ -7,15 +7,21 @@ namespace WS\Utils\Collections;
 
 abstract class AbstractList implements Collection
 {
-    protected array $elements = [];
+    protected $elements = [];
+
+    public function __construct(?array $elements)
+    {
+        if ($elements === null) {
+            return;
+        }
+        foreach ($elements as $element) {
+            $this->add($element);
+        }
+    }
 
     public static function of(...$elements): self
     {
-        $list = new static();
-        foreach ($elements as $element) {
-            $list->add($element);
-        }
-        return $list;
+        return new static($elements ?: null);
     }
 
     public function add($element): bool
@@ -72,6 +78,11 @@ abstract class AbstractList implements Collection
     public function getIterator()
     {
         yield from $this->toArray();
+    }
+
+    public function copy(): Collection
+    {
+        return clone $this;
     }
 
     abstract public function stream(): Stream;

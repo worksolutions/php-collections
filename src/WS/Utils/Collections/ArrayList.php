@@ -10,6 +10,6 @@ class ArrayList extends AbstractList
 
     public function stream(): Stream
     {
-        // TODO: Implement stream() method.
+        return new SerialStream($this);
     }
 }

@@ -13,10 +13,13 @@
       "email": "a.lytkin@worksolutions.ru"
     },
     {
-      "name": "Игорь Помилуйко",
+      "name": "Igor Pomiluyko",
       "email": "pomiluyko@worksolutions.ru"
     }
   ],
+  "require": {
+    "php": ">=7.3"
+  },
   "require-dev": {
     "phpunit/phpunit": "^8.5"
   },

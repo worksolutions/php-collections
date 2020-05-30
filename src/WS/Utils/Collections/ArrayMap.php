@@ -8,7 +8,7 @@ namespace WS\Utils\Collections;
 
 class ArrayMap implements Map
 {
-    private array $entrySet;
+    private $entrySet;
 
     public function put($key, $value): bool
     {

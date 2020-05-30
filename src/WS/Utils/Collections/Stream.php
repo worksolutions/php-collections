@@ -9,10 +9,10 @@ interface Stream
 {
     /**
      * Call function for each element in collection
-     * @param callable $f
+     * @param callable $consumer
      * @return Stream
      */
-    public function each(callable $f): Stream;
+    public function each(callable $consumer): Stream;
 
     /**
      * Filter elements with predicate function
@@ -89,9 +89,15 @@ interface Stream
     public function parallel(): Stream;
 
     /**
+     * Returns collection
+     * @return Collection
+     */
+    public function getCollection(): Collection;
+
+    /**
      * Initialize collection with params
      * @param mixed|Collection ...$elements
      * @return mixed
      */
-    public static function of(...$elements): Collection;
+    public static function of(...$elements): Stream;
 }
