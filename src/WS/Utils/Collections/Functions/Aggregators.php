@@ -11,7 +11,7 @@ class Aggregators
 {
     public static function strImplode(string $delimiter = ''): callable
     {
-        return static function (Collection $collection) use ($delimiter){
+        return static function (Collection $collection) use ($delimiter) {
             return implode($delimiter, $collection->toArray());
         };
     }
