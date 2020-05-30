@@ -7,6 +7,14 @@
     {
       "name": "Maxim Sokolovsky",
       "email": "sokolovsky@worksolutions.ru"
+    },
+    {
+      "name": "Anton Lytkin",
+      "email": "a.lytkin@worksolutions.ru"
+    },
+    {
+      "name": "Игорь Помилуйко",
+      "email": "pomiluyko@worksolutions.ru"
     }
   ],
   "require-dev": {
