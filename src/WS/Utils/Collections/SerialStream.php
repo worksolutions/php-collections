@@ -5,6 +5,9 @@
 
 namespace WS\Utils\Collections;
 
+use WS\Utils\Collections\Functions\CollectionAwareFunction;
+use WS\Utils\Collections\Functions\Predicates;
+
 class SerialStream implements Stream
 {
     /**
@@ -35,6 +38,11 @@ class SerialStream implements Stream
     {
         $collection = $this->collection;
         $this->collection = $this->emptyCollection();
+
+        if ($predicate instanceof CollectionAwareFunction) {
+            $predicate->withCollection($collection);
+        }
+
         foreach ($collection as $item) {
             if ($predicate($item)) {
                 $this->collection->add($item);
@@ -90,11 +98,7 @@ class SerialStream implements Stream
      */
     public function aggregate(callable $aggregator)
     {
-        $accumulate = null;
-        foreach ($this->collection as $item) {
-            $accumulate = $aggregator($item, $accumulate);
-        }
-        return $accumulate;
+        return $aggregator($this->getCollection());
     }
 
     /**
@@ -102,7 +106,8 @@ class SerialStream implements Stream
      */
     public function findAny()
     {
-        // TODO: Implement findAny() method.
+        return $this->filter(Predicates::random(1))
+            ->findFirst();
     }
 
     /**
@@ -110,7 +115,11 @@ class SerialStream implements Stream
      */
     public function findFirst()
     {
-        // TODO: Implement findFirst() method.
+        /** @noinspection LoopWhichDoesNotLoopInspection */
+        foreach ($this->collection as $item) {
+            return $item;
+        }
+        return null;
     }
 
     /**
@@ -118,7 +127,24 @@ class SerialStream implements Stream
      */
     public function min(callable $comparator)
     {
-        // TODO: Implement min() method.
+        $collection = $this->getCollection();
+        if ($collection->size() === 0) {
+            return null;
+        }
+
+        $el = $this->findFirst();
+
+        if ($collection->size() === 1) {
+            return $el;
+        }
+
+        foreach ($collection as $item) {
+            if ($comparator($item, $el) < 0) {
+                $el = $item;
+            }
+        }
+
+        return $el;
     }
 
     /**
@@ -126,7 +152,24 @@ class SerialStream implements Stream
      */
     public function max(callable $comparator)
     {
-        // TODO: Implement max() method.
+        $collection = $this->getCollection();
+        if ($collection->size() === 0) {
+            return null;
+        }
+
+        $el = $this->findFirst();
+
+        if ($collection->size() === 1) {
+            return $el;
+        }
+
+        foreach ($collection as $item) {
+            if ($comparator($item, $el) > 0) {
+                $el = $item;
+            }
+        }
+
+        return $el;
     }
 
     /**
@@ -134,7 +177,11 @@ class SerialStream implements Stream
      */
     public function reduce(callable $accumulator)
     {
-        // TODO: Implement reduce() method.
+        $accumulate = null;
+        foreach ($this->collection as $item) {
+            $accumulate = $accumulator($item, $accumulate);
+        }
+        return $accumulate;
     }
 
     /**
@@ -143,14 +190,6 @@ class SerialStream implements Stream
     public function parallel(): Stream
     {
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function of(...$elements): Stream
-    {
-        return new self(ArrayList::of());
     }
 
     public function getCollection(): Collection

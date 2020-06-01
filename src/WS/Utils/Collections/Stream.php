@@ -44,19 +44,19 @@ interface Stream
 
     /**
      * Call aggregator function for collection. Is terminate function
-     * @param callable $aggregator
+     * @param callable $aggregator Function f(Collection $c): mixed
      * @return mixed
      */
     public function aggregate(callable $aggregator);
 
     /**
-     * Returns any elements from collection
+     * Returns any elements from collection or null if ansent
      * @return mixed
      */
     public function findAny();
 
     /**
-     * Returns first collection element
+     * Returns first collection element or null if absent
      * @return mixed
      */
     public function findFirst();
@@ -93,11 +93,4 @@ interface Stream
      * @return Collection
      */
     public function getCollection(): Collection;
-
-    /**
-     * Initialize collection with params
-     * @param mixed|Collection ...$elements
-     * @return mixed
-     */
-    public static function of(...$elements): Stream;
 }

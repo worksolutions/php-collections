@@ -12,9 +12,10 @@ use WS\Utils\Collections\Utils\InvokesCounter;
 class SerialStreamTest extends TestCase
 {
 
+    /** @noinspection PhpUnusedParameterInspection */
     private static function fCountAggregator(): callable
     {
-        return static function (int $item, ?int $accumulate) {
+        return static function (int $_, ?int $accumulate) {
             $accumulate = $accumulate ?? 0;
 
             return ++$accumulate;
@@ -49,9 +50,23 @@ class SerialStreamTest extends TestCase
         };
     }
 
+    public static function fImplode(string $glue): callable
+    {
+        return static function (Collection $pieces) use ($glue){
+            return implode($glue, $pieces->toArray());
+        };
+    }
+
     public static function fInvokeCounter(): InvokesCounter
     {
         return new InvokesCounter();
+    }
+
+    public static function fIntComparator(): callable
+    {
+        return static function ($a, $b) {
+            return $a <=> $b;
+        };
     }
 
     public function filteringCases(): array
@@ -71,16 +86,16 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param $filter
-     * @param $result
+     * @param $expected
      */
-    public function filterChecking($input, $filter, $result): void
+    public function filterChecking($input, $filter, $expected): void
     {
         $initData = $this->createCollection($input);
         $resultCollection = $initData->stream()
             ->filter($filter)
             ->getCollection();
 
-        $this->assertTrue($resultCollection->equals(new ArrayList($result)));
+        $this->assertTrue($resultCollection->equals(new ArrayList($expected)));
     }
 
     public function iteratingCases(): array
@@ -97,15 +112,14 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param InvokesCounter $counter
-     * @param $count
+     * @param $expectedCount
      */
-    public function iterating($input, InvokesCounter $counter, $count)
+    public function iterating($input, InvokesCounter $counter, $expectedCount): void
     {
         $this->createCollection($input)
             ->stream()
             ->each($counter);
-        ;
-        $this->assertCount($count, $counter->calls());
+        $this->assertCount($expectedCount, $counter->calls());
     }
 
     public function allMatchingCases(): array
@@ -122,16 +136,16 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param $checker
-     * @param $result
+     * @param $expected
      */
-    public function fullMatchingChecking($input, $checker, $result): void
+    public function fullMatchingChecking($input, $checker, $expected): void
     {
         $collection = $this->createCollection($input);
         $actualResult = $collection
             ->stream()
             ->allMatch($checker);
 
-        $this->assertEquals($result, $actualResult);
+        $this->assertEquals($expected, $actualResult);
     }
 
     public function anyMatchingCases(): array
@@ -150,16 +164,16 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param $checker
-     * @param $result
+     * @param $expected
      */
-    public function anyMatchingChecking($input, $checker, $result): void
+    public function anyMatchingChecking($input, $checker, $expected): void
     {
         $collection = $this->createCollection($input);
         $actualResult = $collection
             ->stream()
             ->anyMatch($checker);
 
-        $this->assertEquals($actualResult, $result);
+        $this->assertEquals($actualResult, $expected);
     }
 
     public function mapConvertingCases(): array
@@ -176,19 +190,19 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param $modifier
-     * @param $result
+     * @param $expected
      */
-    public function mapConvertingChecking($input, $modifier, $result): void
+    public function mapConvertingChecking($input, $modifier, $expected): void
     {
         $collection = $this->createCollection($input);
         $actualCollection = $collection->stream()
             ->map($modifier)
             ->getCollection();
 
-        $this->assertThat($actualCollection, CollectionIsEqual::to(new ArrayList($result)));
+        $this->assertThat($actualCollection, CollectionIsEqual::to(new ArrayList($expected)));
     }
 
-    public function aggregatorCases(): array
+    public function reduceCases(): array
     {
         return [
             [[1,2,3], self::fSumAggregator(), 6],
@@ -198,17 +212,116 @@ class SerialStreamTest extends TestCase
     }
 
     /**
-     * @dataProvider aggregatorCases
+     * @dataProvider reduceCases
+     * @test
+     * @param $input
+     * @param $accumulator
+     * @param $expected
+     */
+    public function reduceChecking($input, $accumulator, $expected): void
+    {
+        $actual = $this->createCollection($input)
+            ->stream()
+            ->reduce($accumulator);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function aggregateCases(): array
+    {
+        return [
+            [[1, 2, 3], self::fImplode(''), '123'],
+            [['-'], self::fImplode('|'), '-'],
+            [[], self::fImplode('|'), ''],
+        ];
+    }
+
+    /**
+     * @dataProvider aggregateCases
      * @test
      * @param $input
      * @param $aggregator
      * @param $expected
      */
-    public function aggregationChecking($input, $aggregator, $expected): void
+    public function aggregateRightChecking($input, $aggregator, $expected): void
+    {
+        $collection = $this->createCollection($input);
+        $actual = $collection
+            ->stream()
+            ->aggregate($aggregator);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function setOfArrays(): array
+    {
+        return [
+            [[1, 2, 3, 4, 5, 6]],
+            [[]],
+            [['1', 2, '2', '4']],
+            [[1, 10, 9, 8]]
+        ];
+    }
+
+    /**
+     * @dataProvider setOfArrays
+     * @test
+     * @param $input
+     */
+    public function findAnyElementChecking($input): void
+    {
+        $el = $this->createCollection($input)
+            ->stream()
+            ->findAny();
+
+        if ($input === []) {
+            $this->assertNull($el);
+            return ;
+        }
+        $this->assertContains($el, $input);
+    }
+
+    public function sortDataSet(): array
+    {
+        return [
+            // input   | comparator             | min| max | sorted
+            [[1, 2, 3, 4], self::fIntComparator(), 1, 4, [1, 2, 3, 4]],
+            [[3, 12, 1, 4], self::fIntComparator(), 1, 12, [1, 3, 4, 12]],
+            [[], self::fIntComparator(), null, null, []],
+            [[1], self::fIntComparator(), 1, 1, [1]],
+        ];
+    }
+
+    /**
+     * @dataProvider sortDataSet
+     * @test
+     * @param $input
+     * @param $comparator
+     * @param $expected
+     */
+    public function minPickChecking($input, $comparator, $expected): void
     {
         $actual = $this->createCollection($input)
             ->stream()
-            ->aggregate($aggregator);
+            ->min($comparator);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider sortDataSet
+     * @test
+     * @param $input
+     * @param $comparator
+     * @param $_
+     * @param $expected
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function maxPickChecking($input, $comparator, $_, $expected): void
+    {
+        $actual = $this->createCollection($input)
+            ->stream()
+            ->max($comparator);
 
         $this->assertEquals($expected, $actual);
     }
