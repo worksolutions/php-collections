@@ -5,7 +5,7 @@
 
 namespace WS\Utils\Collections;
 
-abstract class AbstractList implements Collection
+abstract class AbstractCollection implements Collection
 {
     protected $elements = [];
 

@@ -7,7 +7,7 @@
 namespace WS\Utils\Collections;
 
 
-class ArrayQueue extends AbstractList implements Queue
+class ArrayQueue extends AbstractCollection implements Queue
 {
 
     public function offer($element): bool

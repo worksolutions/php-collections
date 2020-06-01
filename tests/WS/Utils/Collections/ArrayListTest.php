@@ -21,13 +21,13 @@ class ArrayListTest extends TestCase
 
     public function testAdd(): void
     {
-        $list = ArrayList::of(1, 2);
+        $list = ArrayCollection::of(1, 2);
         $this->assertEquals(2, $list->size());
 
         $this->assertTrue($list->add(-76));
         $this->assertEquals(3, $list->size());
 
-        $anotherList = new ArrayList();
+        $anotherList = new ArrayCollection();
         $this->assertTrue($anotherList->add('string'));
         $anotherList->merge($list);
         $this->assertEquals(4, $anotherList->size());
@@ -35,8 +35,8 @@ class ArrayListTest extends TestCase
 
     public function testMerge(): void
     {
-        $list = ArrayList::of(1, 2);
-        $anotherList = ArrayList::of(3, 4, 5);
+        $list = ArrayCollection::of(1, 2);
+        $anotherList = ArrayCollection::of(3, 4, 5);
         $clonedList = clone $list;
         $list->merge($anotherList);
         $this->assertEquals([1, 2, 3, 4, 5], $list->toArray());
@@ -46,14 +46,14 @@ class ArrayListTest extends TestCase
 
     public function testClear(): void
     {
-        $list = ArrayList::of(27, 'string');
+        $list = ArrayCollection::of(27, 'string');
         $list->clear();
         $this->assertEquals(0, $list->size());
     }
 
     public function testRemove(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
 
         $this->assertTrue($list->remove(-11));
         $this->assertEquals(3, $list->size());
@@ -70,7 +70,7 @@ class ArrayListTest extends TestCase
 
     public function testContains(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
         $this->assertTrue($list->contains('string'));
         $this->assertTrue($list->contains(-11));
         $this->assertFalse($list->contains(11));
@@ -78,15 +78,15 @@ class ArrayListTest extends TestCase
 
     public function testEquals(): void
     {
-        $list = ArrayList::of(189, 11, 789);
-        $anotherList = ArrayList::of(189, 11, 789);
+        $list = ArrayCollection::of(189, 11, 789);
+        $anotherList = ArrayCollection::of(189, 11, 789);
         $this->assertTrue($list->equals($anotherList));
         $this->assertTrue($anotherList->equals($list));
     }
 
     public function testSize(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
         $this->assertEquals(4, $list->size());
         $list->remove(-11);
         $this->assertEquals(3, $list->size());
@@ -96,7 +96,7 @@ class ArrayListTest extends TestCase
 
     public function testIsEmpty(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
         $this->assertFalse($list->isEmpty());
         $list->clear();
         $this->assertTrue($list->isEmpty());
@@ -104,13 +104,13 @@ class ArrayListTest extends TestCase
 
     public function testToArray(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
         $this->assertEquals([27, 'string', -11, 50], $list->toArray());
     }
 
     public function testIterator(): void
     {
-        $list = ArrayList::of(27, 'string', -11, 50);
+        $list = ArrayCollection::of(27, 'string', -11, 50);
         $iterator = $list->getIterator();
 
         $this->assertInstanceOf(\Traversable::class, $iterator);

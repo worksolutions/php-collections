@@ -22,7 +22,7 @@ class ArrayMap implements Map
 
     public function values(): Collection
     {
-        return ArrayList::of($this->entrySet);
+        return ArrayCollection::of($this->entrySet);
     }
 
     public function keySet(): Set

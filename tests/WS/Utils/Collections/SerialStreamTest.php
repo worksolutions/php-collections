@@ -33,7 +33,7 @@ class SerialStreamTest extends TestCase
 
     public function createCollection(array $els): Collection
     {
-        return new ArrayList($els);
+        return new ArrayCollection($els);
     }
 
     public static function fMoreThanTen(): callable
@@ -95,7 +95,7 @@ class SerialStreamTest extends TestCase
             ->filter($filter)
             ->getCollection();
 
-        $this->assertTrue($resultCollection->equals(new ArrayList($expected)));
+        $this->assertTrue($resultCollection->equals(new ArrayCollection($expected)));
     }
 
     public function iteratingCases(): array
@@ -199,7 +199,7 @@ class SerialStreamTest extends TestCase
             ->map($modifier)
             ->getCollection();
 
-        $this->assertThat($actualCollection, CollectionIsEqual::to(new ArrayList($expected)));
+        $this->assertThat($actualCollection, CollectionIsEqual::to(new ArrayCollection($expected)));
     }
 
     public function reduceCases(): array

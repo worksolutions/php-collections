@@ -234,6 +234,6 @@ class SerialStream implements Stream
 
     private function emptyCollection(): Collection
     {
-        return ArrayList::of();
+        return ArrayCollection::of();
     }
 }
