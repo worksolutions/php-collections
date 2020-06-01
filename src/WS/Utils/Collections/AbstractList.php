@@ -9,7 +9,7 @@ abstract class AbstractList implements Collection
 {
     protected $elements = [];
 
-    public function __construct(?array $elements)
+    public function __construct(?array $elements = null)
     {
         if ($elements === null) {
             return;
