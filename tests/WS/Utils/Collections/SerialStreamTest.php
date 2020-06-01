@@ -325,4 +325,48 @@ class SerialStreamTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @dataProvider sortDataSet
+     * @test
+     * @param $input
+     * @param $comparator
+     * @param $_1
+     * @param $_2
+     * @param $expected
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function sortChecking($input, $comparator, $_1, $_2, $expected): void
+    {
+        $actual = $this
+            ->createCollection($input)
+            ->stream()
+            ->sort($comparator)
+            ->getCollection()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider sortDataSet
+     * @test
+     * @param $input
+     * @param $comparator
+     * @param $_1
+     * @param $_2
+     * @param $expected
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function sortDescChecking($input, $comparator, $_1, $_2, $expected): void
+    {
+        $actual = $this
+            ->createCollection($input)
+            ->stream()
+            ->sortDesc($comparator)
+            ->getCollection()
+            ->toArray();
+
+        $this->assertEquals(array_reverse($expected), $actual);
+    }
 }

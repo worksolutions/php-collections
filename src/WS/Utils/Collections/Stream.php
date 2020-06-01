@@ -50,7 +50,7 @@ interface Stream
     public function aggregate(callable $aggregator);
 
     /**
-     * Returns any elements from collection or null if ansent
+     * Returns any elements from collection or null if absent
      * @return mixed
      */
     public function findAny();
@@ -74,6 +74,18 @@ interface Stream
      * @return mixed
      */
     public function max(callable $comparator);
+
+    /**
+     * @param callable $comparator
+     * @return mixed
+     */
+    public function sort(callable $comparator): Stream;
+
+    /**
+     * @param callable $comparator
+     * @return Stream
+     */
+    public function sortDesc(callable $comparator): Stream;
 
     /**
      * Reduce collection to single value with accumulator

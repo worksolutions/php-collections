@@ -96,6 +96,41 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
+    public function sort(callable $comparator): Stream
+    {
+        $collection = $this->getCollection();
+        $this->collection = $this->emptyCollection();
+
+        $array = $collection->toArray();
+        usort($array, $comparator);
+        foreach ($array as $item) {
+            $this->collection->add($item);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function sortDesc(callable $comparator): Stream
+    {
+        $collection = $this->getCollection();
+        $this->collection = $this->emptyCollection();
+
+        $array = $collection->toArray();
+        usort($array, static function ($a, $b) use ($comparator): int {
+            return -1 * $comparator($a, $b);
+        });
+        foreach ($array as $item) {
+            $this->collection->add($item);
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function aggregate(callable $aggregator)
     {
         return $aggregator($this->getCollection());
