@@ -5,7 +5,7 @@
 
 namespace WS\Utils\Collections\Functions;
 
-use WS\Utils\Collections\ArrayCollection;
+use WS\Utils\Collections\ArrayList;
 use WS\Utils\Collections\Collection;
 
 class Aggregators
@@ -23,7 +23,7 @@ class Aggregators
             $array = $collection->toArray();
             shuffle($array);
 
-            return new ArrayCollection($array);
+            return new ArrayList($array);
         };
     }
 }

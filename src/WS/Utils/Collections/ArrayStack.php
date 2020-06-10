@@ -79,7 +79,7 @@ class ArrayStack extends AbstractCollection implements Stack
 
     public function stream(): Stream
     {
-
+        return new SerialStream($this);
     }
 
     public function toArray(): array

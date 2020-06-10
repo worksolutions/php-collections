@@ -13,7 +13,7 @@ class PredicateFunctionTest extends TestCase
 
     public function createCollection(array $els): Collection
     {
-        return new ArrayCollection($els);
+        return new ArrayList($els);
     }
 
     public function randomDataSet(): array

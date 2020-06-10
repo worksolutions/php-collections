@@ -5,7 +5,7 @@
 
 namespace WS\Utils\Collections;
 
-class ArrayCollection extends AbstractCollection
+class ArrayList extends AbstractCollection
 {
 
     public function stream(): Stream

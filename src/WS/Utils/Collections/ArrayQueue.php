@@ -7,6 +7,8 @@
 namespace WS\Utils\Collections;
 
 
+use RuntimeException;
+
 class ArrayQueue extends AbstractCollection implements Queue
 {
 
@@ -18,7 +20,7 @@ class ArrayQueue extends AbstractCollection implements Queue
     public function poll()
     {
         if ($this->isEmpty()) {
-            throw new \RuntimeException('Queue is empty');
+            throw new RuntimeException('Queue is empty');
         }
 
         return array_shift($this->elements);
@@ -27,7 +29,7 @@ class ArrayQueue extends AbstractCollection implements Queue
     public function peek()
     {
         if ($this->isEmpty()) {
-            throw new \RuntimeException('Queue is empty');
+            throw new RuntimeException('Queue is empty');
         }
 
         return $this->elements[0];
@@ -35,6 +37,6 @@ class ArrayQueue extends AbstractCollection implements Queue
 
     public function stream(): Stream
     {
-        // TODO: Implement stream() method.
+        return new SerialStream($this);
     }
 }

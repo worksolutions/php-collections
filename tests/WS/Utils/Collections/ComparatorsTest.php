@@ -49,7 +49,7 @@ class ComparatorsTest extends TestCase
 
         $cases = [];
         for ($i = 0; $i < 2; $i++) {
-            $shuffledSequence = (new ArrayCollection($sequence))
+            $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
                 ->aggregate(Aggregators::shuffle())
                 ->toArray()
@@ -57,7 +57,7 @@ class ComparatorsTest extends TestCase
             $cases[] = [$shuffledSequence, 'property', $sequence];
         }
         for ($i = 0; $i < 2; $i++) {
-            $shuffledSequence = (new ArrayCollection($sequence))
+            $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
                 ->aggregate(Aggregators::shuffle())
                 ->toArray()
@@ -65,7 +65,7 @@ class ComparatorsTest extends TestCase
             $cases[] = [$shuffledSequence, 'name', $sequence];
         }
         for ($i = 0; $i < 2; $i++) {
-            $shuffledSequence = (new ArrayCollection($sequence))
+            $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
                 ->aggregate(Aggregators::shuffle())
                 ->toArray()
@@ -85,7 +85,7 @@ class ComparatorsTest extends TestCase
      */
     public function objectComparatorChecking($sequence, $field, $expected): void
     {
-        $actual = (new ArrayCollection($sequence))
+        $actual = (new ArrayList($sequence))
             ->stream()
             ->sort(Comparators::objectFieldComparator($field))
             ->getCollection()

@@ -6,7 +6,7 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\Functions\Aggregators;
+use Traversable;
 
 class ArrayListTest extends TestCase
 {
@@ -21,13 +21,13 @@ class ArrayListTest extends TestCase
 
     public function testAdd(): void
     {
-        $list = ArrayCollection::of(1, 2);
+        $list = ArrayList::of(1, 2);
         $this->assertEquals(2, $list->size());
 
         $this->assertTrue($list->add(-76));
         $this->assertEquals(3, $list->size());
 
-        $anotherList = new ArrayCollection();
+        $anotherList = new ArrayList();
         $this->assertTrue($anotherList->add('string'));
         $anotherList->merge($list);
         $this->assertEquals(4, $anotherList->size());
@@ -35,8 +35,8 @@ class ArrayListTest extends TestCase
 
     public function testMerge(): void
     {
-        $list = ArrayCollection::of(1, 2);
-        $anotherList = ArrayCollection::of(3, 4, 5);
+        $list = ArrayList::of(1, 2);
+        $anotherList = ArrayList::of(3, 4, 5);
         $clonedList = clone $list;
         $list->merge($anotherList);
         $this->assertEquals([1, 2, 3, 4, 5], $list->toArray());
@@ -46,14 +46,14 @@ class ArrayListTest extends TestCase
 
     public function testClear(): void
     {
-        $list = ArrayCollection::of(27, 'string');
+        $list = ArrayList::of(27, 'string');
         $list->clear();
         $this->assertEquals(0, $list->size());
     }
 
     public function testRemove(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
 
         $this->assertTrue($list->remove(-11));
         $this->assertEquals(3, $list->size());
@@ -70,7 +70,7 @@ class ArrayListTest extends TestCase
 
     public function testContains(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
         $this->assertTrue($list->contains('string'));
         $this->assertTrue($list->contains(-11));
         $this->assertFalse($list->contains(11));
@@ -78,15 +78,15 @@ class ArrayListTest extends TestCase
 
     public function testEquals(): void
     {
-        $list = ArrayCollection::of(189, 11, 789);
-        $anotherList = ArrayCollection::of(189, 11, 789);
+        $list = ArrayList::of(189, 11, 789);
+        $anotherList = ArrayList::of(189, 11, 789);
         $this->assertTrue($list->equals($anotherList));
         $this->assertTrue($anotherList->equals($list));
     }
 
     public function testSize(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
         $this->assertEquals(4, $list->size());
         $list->remove(-11);
         $this->assertEquals(3, $list->size());
@@ -96,7 +96,7 @@ class ArrayListTest extends TestCase
 
     public function testIsEmpty(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
         $this->assertFalse($list->isEmpty());
         $list->clear();
         $this->assertTrue($list->isEmpty());
@@ -104,26 +104,19 @@ class ArrayListTest extends TestCase
 
     public function testToArray(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
         $this->assertEquals([27, 'string', -11, 50], $list->toArray());
     }
 
     public function testIterator(): void
     {
-        $list = ArrayCollection::of(27, 'string', -11, 50);
+        $list = ArrayList::of(27, 'string', -11, 50);
         $iterator = $list->getIterator();
 
-        $this->assertInstanceOf(\Traversable::class, $iterator);
+        $this->assertInstanceOf(Traversable::class, $iterator);
         $this->assertEquals(27, $iterator->current());
         $iterator->next();
         $this->assertEquals('string', $iterator->current());
         $this->assertEquals(1, $iterator->key());
-    }
-
-    public function usingComparator(): void
-    {
-        $collection->filter()
-            ->map()
-            ->aggregate(Aggregators::strImplode(', '));
     }
 }
