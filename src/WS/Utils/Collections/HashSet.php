@@ -7,6 +7,8 @@
 
 namespace WS\Utils\Collections;
 
+use ArrayIterator;
+
 class HashSet implements Set
 {
     /**
@@ -73,7 +75,7 @@ class HashSet implements Set
 
     public function toArray(): array
     {
-        return $this->internalMap->values()->toArray();
+        return $this->internalMap->keySet()->toArray();
     }
 
     public function copy(): Collection
@@ -83,6 +85,6 @@ class HashSet implements Set
 
     public function getIterator()
     {
-        return $this->internalMap->values();
+        return new ArrayIterator($this->toArray());
     }
 }

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class HashMapTest extends TestCase
 {
-    use MapInterfaceTest;
+    use MapInterfaceTestTrait;
 
     private function createInstance(): Map
     {

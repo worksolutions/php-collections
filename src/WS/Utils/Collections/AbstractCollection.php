@@ -72,7 +72,7 @@ abstract class AbstractCollection implements Collection
 
     public function toArray(): array
     {
-        return $this->elements;
+        return array_values($this->elements);
     }
 
     public function getIterator()

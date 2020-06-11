@@ -37,18 +37,21 @@ class HashMap implements Map
         return new ArrayList($values);
     }
 
-    public function keySet(): Set
+    public function keySet(): Collection
     {
         $keys = [];
         /** @var MapEntry $entry */
         foreach ($this->entries as $entry) {
             $keys[] = $entry->getKey();
         }
-        return new HashSet($keys);
+        return new ArrayList($keys);
     }
 
     private function getKeyHash($key): string
     {
+        if ($key === null) {
+            return '__NULL__';
+        }
         if (is_scalar($key)) {
             return $key.'';
         }

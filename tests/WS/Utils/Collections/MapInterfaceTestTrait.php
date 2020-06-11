@@ -12,7 +12,7 @@ use WS\Utils\Collections\Utils\TestInteger;
  * Trait MapInterfaceTest
  * @package WS\Utils\Collections
  */
-trait MapInterfaceTest
+trait MapInterfaceTestTrait
 {
     /**
      * @test
@@ -67,7 +67,7 @@ trait MapInterfaceTest
     /**
      * @test
      */
-    public function geySetGetting(): void
+    public function keySetGetting(): void
     {
         $instance = $this->createInstance();
         $instance->put(1,1);
@@ -81,7 +81,7 @@ trait MapInterfaceTest
 
         $set = $instance->keySet();
 
-        $this->assertInstanceOf(Set::class, $set);
+        $this->assertInstanceOf(Collection::class, $set);
         $this->assertEquals(4, $set->size());
     }
 
