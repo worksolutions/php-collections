@@ -9,35 +9,41 @@ interface Stream
 {
     /**
      * Call function for each element in collection
-     * @param callable $consumer
+     * @param callable $consumer Function with f(mixed $element): void interface
      * @return Stream
      */
     public function each(callable $consumer): Stream;
 
     /**
      * Filter elements with predicate function
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return Stream
      */
     public function filter(callable $predicate): Stream;
 
     /**
+     * @param callable $reorganizer Function with f(Collection $c): Collection interface
+     * @return Stream
+     */
+    public function reorganize(callable $reorganizer): Stream;
+
+    /**
      * Returns true if all elements in collection tested with predicate
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return bool
      */
     public function allMatch(callable $predicate): bool;
 
     /**
      * Returns true if at least has noe element tested with predicate
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return bool
      */
     public function anyMatch(callable $predicate): bool;
 
     /**
      * Converts all collection elements with converter
-     * @param callable $converter
+     * @param callable $converter Function with f(mixed $element): mixed interface
      * @return Stream
      */
     public function map(callable $converter): Stream;

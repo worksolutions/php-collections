@@ -5,6 +5,7 @@
 
 namespace WS\Utils\Collections;
 
+use RuntimeException;
 use WS\Utils\Collections\Functions\CollectionAwareFunction;
 use WS\Utils\Collections\Functions\Predicates;
 
@@ -48,6 +49,17 @@ class SerialStream implements Stream
                 $this->collection->add($item);
             }
         }
+
+        return $this;
+    }
+
+    public function reorganize(callable $reorganizer): Stream
+    {
+        $reorganizedCollection = $reorganizer($this->collection);
+        if (! $reorganizedCollection instanceof Collection) {
+            throw new RuntimeException('Result set of reorganizer call must be instance of Collection interface');
+        }
+        $this->collection = $reorganizedCollection;
 
         return $this;
     }

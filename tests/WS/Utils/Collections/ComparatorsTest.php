@@ -6,8 +6,8 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\Functions\Aggregators;
 use WS\Utils\Collections\Functions\Comparators;
+use WS\Utils\Collections\Functions\Reorganizers;
 use WS\Utils\Collections\Utils\ExampleObject;
 
 class ComparatorsTest extends TestCase
@@ -51,7 +51,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Aggregators::shuffle())
+                ->aggregate(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'property', $sequence];
@@ -59,7 +59,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Aggregators::shuffle())
+                ->aggregate(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'name', $sequence];
@@ -67,7 +67,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Aggregators::shuffle())
+                ->aggregate(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'field', $sequence];
