@@ -7,12 +7,13 @@ namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
 
-class ArrayListTest extends TestCase
+class HashSetTest extends TestCase
 {
+    use SetInterfaceTestTrait;
     use CollectionInterfaceTestTrait;
 
-    public function createInstance(...$args): Collection
+    private function createInstance(...$args): Set
     {
-        return ArrayList::of(...$args);
+        return new HashSet($args);
     }
 }

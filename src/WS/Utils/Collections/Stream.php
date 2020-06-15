@@ -9,54 +9,60 @@ interface Stream
 {
     /**
      * Call function for each element in collection
-     * @param callable $f
+     * @param callable $consumer Function with f(mixed $element): void interface
      * @return Stream
      */
-    public function each(callable $f): Stream;
+    public function each(callable $consumer): Stream;
 
     /**
      * Filter elements with predicate function
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return Stream
      */
     public function filter(callable $predicate): Stream;
 
     /**
+     * @param callable $reorganizer Function with f(Collection $c): Collection interface
+     * @return Stream
+     */
+    public function reorganize(callable $reorganizer): Stream;
+
+    /**
      * Returns true if all elements in collection tested with predicate
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return bool
      */
     public function allMatch(callable $predicate): bool;
 
     /**
      * Returns true if at least has noe element tested with predicate
-     * @param callable $predicate
+     * @param callable $predicate Function with f(mixed $element): bool interface
      * @return bool
      */
     public function anyMatch(callable $predicate): bool;
 
     /**
      * Converts all collection elements with converter
-     * @param callable $converter
+     * @param callable $converter Function with f(mixed $element): mixed interface
      * @return Stream
      */
     public function map(callable $converter): Stream;
 
     /**
      * Call aggregator function for collection. Is terminate function
-     * @param callable $aggregator
+     * @param callable $aggregator Function f(Collection $c): mixed
      * @return mixed
      */
     public function aggregate(callable $aggregator);
 
     /**
-     * Returns any elements from collection
+     * Returns any elements from collection or null if absent
      * @return mixed
      */
     public function findAny();
 
     /**
-     * Returns first collection element
+     * Returns first collection element or null if absent
      * @return mixed
      */
     public function findFirst();
@@ -76,6 +82,18 @@ interface Stream
     public function max(callable $comparator);
 
     /**
+     * @param callable $comparator
+     * @return mixed
+     */
+    public function sort(callable $comparator): Stream;
+
+    /**
+     * @param callable $comparator
+     * @return Stream
+     */
+    public function sortDesc(callable $comparator): Stream;
+
+    /**
      * Reduce collection to single value with accumulator
      * @param callable $accumulator
      * @return mixed
@@ -89,9 +107,8 @@ interface Stream
     public function parallel(): Stream;
 
     /**
-     * Initialize collection with params
-     * @param mixed|Collection ...$elements
-     * @return mixed
+     * Returns collection
+     * @return Collection
      */
-    public static function of(...$elements): Collection;
+    public function getCollection(): Collection;
 }

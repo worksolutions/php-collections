@@ -9,7 +9,7 @@ namespace WS\Utils\Collections;
 
 use RuntimeException;
 
-class ArrayStack extends AbstractList implements Stack
+class ArrayStack extends AbstractCollection implements Stack
 {
 
     /**
@@ -79,7 +79,7 @@ class ArrayStack extends AbstractList implements Stack
 
     public function stream(): Stream
     {
-
+        return new SerialStream($this);
     }
 
     public function toArray(): array

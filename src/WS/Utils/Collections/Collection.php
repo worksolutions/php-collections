@@ -69,4 +69,6 @@ interface Collection extends IteratorAggregate
      * Returns an array containing all of the elements in this collection
      */
     public function toArray(): array;
+
+    public function copy(): Collection;
 }

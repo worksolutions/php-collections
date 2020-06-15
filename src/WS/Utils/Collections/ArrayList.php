@@ -5,11 +5,11 @@
 
 namespace WS\Utils\Collections;
 
-class ArrayList extends AbstractList
+class ArrayList extends AbstractCollection
 {
 
     public function stream(): Stream
     {
-        // TODO: Implement stream() method.
+        return new SerialStream($this);
     }
 }
