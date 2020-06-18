@@ -15,7 +15,7 @@ class ObjectFunctions
      * @param string $fieldName
      * @return mixed
      */
-    public static function getFieldValue($object, string $fieldName)
+    public static function getPropertyValue($object, string $fieldName)
     {
         /** @noinspection PhpUnhandledExceptionInspection */
         if (property_exists($object, $fieldName) && (new ReflectionProperty($object, $fieldName))->isPublic()) {

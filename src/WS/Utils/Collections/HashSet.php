@@ -17,7 +17,7 @@ class HashSet implements Set
     private $internalMap;
     public function __construct(?array $elements = null)
     {
-        $this->clear();
+        $this->internalMap = new HashMap();
         if ($elements !== null) {
             foreach ($elements as $element) {
                 $this->add($element);
@@ -86,5 +86,14 @@ class HashSet implements Set
     public function getIterator()
     {
         return new ArrayIterator($this->toArray());
+    }
+
+    public function addAll(iterable $elements): bool
+    {
+        $res = true;
+        foreach ($elements as $element) {
+            !$this->add($element) && $res = false;
+        }
+        return $res;
     }
 }

@@ -10,11 +10,18 @@ use IteratorAggregate;
 interface Collection extends IteratorAggregate
 {
     /**
-     * Ensures that this collection contains the specified element.
+     * Adds element in the end of collection.
      * @param $element
      * @return bool
      */
     public function add($element): bool;
+
+    /**
+     * Adds elements in the end of collection
+     * @param iterable $elements
+     * @return bool
+     */
+    public function addAll(iterable $elements): bool;
 
     /**
      * Merge the elements in the specified collection to this collection
