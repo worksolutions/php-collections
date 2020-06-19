@@ -5,6 +5,7 @@
 
 namespace WS\Utils\Collections;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
 use WS\Utils\Collections\Utils\InvokesCounter;
@@ -450,6 +451,22 @@ class SerialStreamTest extends TestCase
 
         $this->assertEquals($min, $actualMin->getValue());
         $this->assertEquals($max, $actualMax->getValue());
+    }
+
+    /**
+     * @test
+     */
+    public function sortingWithNotScalarValue(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->createCollection([1, 2])
+            ->stream()
+            ->sortBy(static function () {
+                return [];
+            })
+            ->getCollection()
+        ;
     }
 
     /**

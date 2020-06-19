@@ -6,6 +6,7 @@
 namespace WS\Utils\Collections\Functions;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use WS\Utils\Collections\Utils\CollectionAwareTrait;
 
 class RandomReorganizerTest extends TestCase
@@ -36,6 +37,22 @@ class RandomReorganizerTest extends TestCase
         $randomized = $f($this->toCollection($elements))->toArray();
 
         $this->analyze($elements, $randomized, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function failedReorganize(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->toCollection([1, 2, 3])
+            ->stream()
+            ->reorganize(static function () {
+                return [1, 2, 3];
+            })
+            ->getCollection()
+            ->toArray()
+        ;
     }
 
     /**

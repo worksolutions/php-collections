@@ -7,10 +7,17 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class ArrayStackTest extends TestCase
 {
-    
+    use CollectionInterfaceTestTrait;
+
+    private function createInstance(...$args): Stack
+    {
+        return new ArrayStack($args);
+    }
+
     public function testSize(): void
     {
         $stackData = [
@@ -46,7 +53,7 @@ class ArrayStackTest extends TestCase
     
     public function testPeekEmpty(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $stack = new ArrayStack();
         $stack->peek();
@@ -89,7 +96,7 @@ class ArrayStackTest extends TestCase
 
     public function testPopEmpty(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $stack = new ArrayStack();
         $stack->pop();

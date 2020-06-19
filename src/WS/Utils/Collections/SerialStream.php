@@ -273,14 +273,6 @@ class SerialStream implements Stream
         return $accumulate;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function parallel(): Stream
-    {
-        return $this;
-    }
-
     public function getCollection(): Collection
     {
         return $this->list;

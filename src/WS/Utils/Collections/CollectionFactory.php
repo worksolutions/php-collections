@@ -64,4 +64,9 @@ class CollectionFactory
 
         return $list;
     }
+
+    public static function from(array $values): Collection
+    {
+        return new ArrayList($values);
+    }
 }

@@ -142,12 +142,6 @@ interface Stream
     public function limit(int $count): Stream;
 
     /**
-     * Use stream in parallel manner
-     * @return mixed
-     */
-    public function parallel(): Stream;
-
-    /**
      * Returns collection
      * @return Collection
      */

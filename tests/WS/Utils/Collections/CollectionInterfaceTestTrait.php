@@ -5,7 +5,7 @@
 
 namespace WS\Utils\Collections;
 
-use Traversable;
+use WS\Utils\Collections\UnitConstraints\CollectionContainsSameElements;
 
 trait CollectionInterfaceTestTrait
 {
@@ -40,9 +40,9 @@ trait CollectionInterfaceTestTrait
 
         $clonedCollection = clone $collection;
         $collection->merge($anotherCollection);
-        $this->assertEquals([1, 2, 3, 4, 5], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([1, 2, 3, 4, 5]));
         $anotherCollection->merge($clonedCollection);
-        $this->assertEquals([3, 4, 5, 1, 2], $anotherCollection->toArray());
+        $this->assertThat($anotherCollection, CollectionContainsSameElements::with([3, 4, 5, 1, 2]));
     }
 
     /**
@@ -66,15 +66,15 @@ trait CollectionInterfaceTestTrait
 
         $this->assertTrue($collection->remove(-11));
         $this->assertEquals(3, $collection->size());
-        $this->assertEquals([27, 'string', 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 'string', 50]));
 
         $this->assertTrue($collection->remove('string'));
         $this->assertEquals(2, $collection->size());
-        $this->assertEquals([27, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 50]));
 
         $this->assertFalse($collection->remove(89));
         $this->assertEquals(2, $collection->size());
-        $this->assertEquals([27, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 50]));
     }
 
     /**
@@ -129,21 +129,43 @@ trait CollectionInterfaceTestTrait
     public function arrayGenerating(): void
     {
         $collection = $this->createInstance(27, 'string', -11, 50);
-        $this->assertEquals([27, 'string', -11, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 'string', -11, 50]));
     }
 
     /**
      * @test
      */
-    public function iterating(): void
+    public function coping(): void
     {
-        $collection = $this->createInstance(27, 'string', -11, 50);
-        $iterator = $collection->getIterator();
+        /** @var Collection $i1 */
+        $i1 = $this->createInstance(3, 2, 1);
+        $i2 = $i1->copy();
 
-        $this->assertInstanceOf(Traversable::class, $iterator);
-        $this->assertEquals(27, $iterator->current());
-        $iterator->next();
-        $this->assertEquals('string', $iterator->current());
-        $this->assertEquals(1, $iterator->key());
+        $this->assertEquals($i1->toArray(), $i2->toArray());
+        $this->assertNotSame($i1, $i2);
+    }
+
+    /**
+     * @test
+     */
+    public function streaming(): void
+    {
+        $i = $this->createInstance();
+
+        $this->assertInstanceOf(Stream::class, $i->stream());
+    }
+
+    /**
+     * @test
+     */
+    public function addingGroupOffElements(): void
+    {
+        /** @var Collection $i */
+        $i = $this->createInstance(1, 2, 3);
+
+        $i->addAll([4, 5, 6]);
+
+        $this->assertEquals(6, $i->size());
+        $this->assertThat($i, CollectionContainsSameElements::with([1, 2, 3, 4, 5, 6]));
     }
 }
