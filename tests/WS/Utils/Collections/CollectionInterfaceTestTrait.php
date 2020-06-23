@@ -80,6 +80,32 @@ trait CollectionInterfaceTestTrait
     /**
      * @test
      */
+    public function removingAbsent(): void
+    {
+        /** @var Collection $collection */
+        $collection = $this->createInstance(1, 2, 3);
+        $removingRes = $collection->remove(4);
+
+        $this->assertFalse($removingRes);
+        $this->assertEquals(3, $collection->size());
+    }
+
+    /**
+     * @test
+     */
+    public function removingFromEmptyCollection(): void
+    {
+        $collection = $this->createInstance();
+
+        $removingRes = $collection->remove(4);
+
+        $this->assertFalse($removingRes);
+        $this->assertEquals(0, $collection->size());
+    }
+
+    /**
+     * @test
+     */
     public function containingCheck(): void
     {
         $collction = $this->createInstance(27, 'string', -11, 50);

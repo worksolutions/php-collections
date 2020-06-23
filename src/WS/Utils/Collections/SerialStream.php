@@ -7,7 +7,7 @@ namespace WS\Utils\Collections;
 
 use RuntimeException;
 use WS\Utils\Collections\Functions\CollectionAwareFunction;
-use WS\Utils\Collections\Functions\Predicates;
+use WS\Utils\Collections\Functions\Reorganizers;
 
 class SerialStream implements Stream
 {
@@ -195,7 +195,7 @@ class SerialStream implements Stream
      */
     public function findAny()
     {
-        return $this->filter(Predicates::random(1))
+        return $this->reorganize(Reorganizers::random(1))
             ->findFirst();
     }
 

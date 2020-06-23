@@ -7,41 +7,36 @@ namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Predicates;
+use WS\Utils\Collections\Utils\CollectionAwareTrait;
 
 class PredicateFunctionTest extends TestCase
 {
 
-    public function createCollection(array $els): Collection
-    {
-        return new ArrayList($els);
-    }
+    use CollectionAwareTrait;
 
-    public function randomDataSet(): array
+    /**
+     * @test
+     */
+    public function notResistanceChecking(): void
     {
-        return [
-            [[1, 2, 3, 4, 5, 6], 2, 2],
-            [[1, 2, 3, 4, 5, 6], 3, 3],
-            [[1, 2, 3, 4, 5, 6], 4, 4],
-            [[1, 2, 3], 5, 3],
-            [[], 3, 0],
-            [[1, 2, 3], 0, 0]
-        ];
+        $f = Predicates::notResistance();
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->assertTrue($f($i));
+        }
     }
 
     /**
-     * @dataProvider randomDataSet
      * @test
-     * @param $input
-     * @param $count
-     * @param $expected
      */
-    public function randomPredicateChecking($input, $count, $expected): void
+    public function notResistanceIntegratedChecking(): void
     {
-        $randomCollection = $this->createCollection($input)
+        $actualSize = CollectionFactory::generate(10)
             ->stream()
-            ->filter(Predicates::random($count))
+            ->filter(Predicates::notResistance())
             ->getCollection()
-        ;
-        $this->assertEquals($expected, $randomCollection->size());
+            ->size();
+
+        $this->assertEquals(10, $actualSize);
     }
 }
