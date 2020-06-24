@@ -19,6 +19,9 @@ class CollectionFactory
      */
     public static function generate(int $times, ?callable $generator = null): Collection
     {
+        if ($times < 0) {
+            throw new RuntimeException('The count of values ($times) must be a positive value');
+        }
         $generator = $generator ?? static function (int $index) {
                 return $index;
         };
@@ -29,16 +32,6 @@ class CollectionFactory
         }
 
         return $collection;
-    }
-
-    /**
-     * Returns stream with generator
-     * @param callable|null $generator
-     * @return Stream
-     */
-    public static function stream(?callable $generator = null): Stream
-    {
-        return new SerialStream(self::toCollection());
     }
 
     /**
