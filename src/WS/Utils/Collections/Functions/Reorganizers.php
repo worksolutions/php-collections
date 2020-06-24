@@ -11,7 +11,7 @@ use WS\Utils\Collections\Collection;
 
 class Reorganizers
 {
-    private static function collectionConstructor(? array $elements = null): Collection {
+    private static function collectionConstructor(? array $elements = null): Collection  {
         return new ArrayList($elements);
     }
 
@@ -86,10 +86,23 @@ class Reorganizers
     public static function chunk(int $size): Closure
     {
         return static function (Collection $collection) use ($size): Collection {
-            $res = self::collectionConstructor();
-            $currentChunk = [];
+            $chunkCollection = self::collectionConstructor();
+            $currentChunk = self::collectionConstructor();
+            $pointer = $size;
+            $collection
+                ->stream()
+                ->each(static function ($el) use ($size, $chunkCollection, & $currentChunk, & $pointer) {
+                    $pointer--;
+                    $currentChunk->add($el);
 
-            return $res;
+                    if ($pointer === 0) {
+                        $chunkCollection->add($currentChunk);
+                        $currentChunk = self::collectionConstructor();
+                        $pointer = $size;
+                    }
+                })
+            ;
+            return $chunkCollection;
         };
     }
 
@@ -100,47 +113,22 @@ class Reorganizers
     public static function collapse(): Closure
     {
         return static function (Collection $collection): Collection {
-        };
-    }
-
-    /**
-     * Returns Closure that returns a collection of elements that are not present in the given arguments
-     * @param mixed ...$args
-     * @return Closure
-     */
-    public static function diff(...$args): Closure
-    {
-
-    }
-
-    /**
-     * Returns Closure that returns a collection of elements that are present in the given arguments
-     * @param mixed ...$args
-     * @return Closure
-     */
-    public static function intersect(...$args): Closure
-    {
-
-    }
-
-    /**
-     * Returns Closure that returns new collection without elements that present in $collection
-     * @param Collection $collection
-     * @return Closure
-     */
-    public static function remove(Collection $collection): Closure
-    {
-
-    }
-
-    public static function when(bool $condition, callable $reorganizer): Closure
-    {
-        if (!$condition) {
-            return static function (Collection $collection) {
-                return $collection;
+            $flatIterable = static function (iterable $collection) use (& $flatIterable): array  {
+                $res = [];
+                foreach ($collection as $item) {
+                    if (is_iterable($item)) {
+                        $toPush = $flatIterable($item);
+                        array_unshift($toPush, $res);
+                        array_push(...$toPush);
+                        $res = array_shift($toPush);
+                    } else {
+                        $res[] = $item;
+                    }
+                }
+                return $res;
             };
-        }
 
-        return $reorganizer;
+            return self::collectionConstructor($flatIterable($collection));
+        };
     }
 }
