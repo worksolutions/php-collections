@@ -51,16 +51,6 @@ abstract class AbstractCollection implements Collection
         $this->elements = [];
     }
 
-    public function remove($element): bool
-    {
-        $key = array_search($element, $this->elements, true);
-        if (false === $key) {
-            return false;
-        }
-        unset($this->elements[$key]);
-        return true;
-    }
-
     public function contains($element): bool
     {
         return in_array($element, $this->elements, true);

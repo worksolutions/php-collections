@@ -26,19 +26,36 @@ class ArrayList extends AbstractCollection implements ListSequence
         return $res;
     }
 
-    public function indexOf($el)
+    public function indexOf($el): ?int
     {
-        return array_search($el, $this->elements, true);
+        return array_search($el, $this->elements, true) ?: null;
     }
 
-    public function lastIndexOf($el)
+    public function remove($element): bool
+    {
+        $hashCodeRemoved = false;
+        if ($element instanceof HashCodeAware) {
+            $hashCodeRemoved = $this->removeThroughHashCode($element);
+        }
+        if ($hashCodeRemoved) {
+            return true;
+        }
+        $key = array_search($element, $this->elements, true);
+        if (false === $key) {
+            return false;
+        }
+        $this->removeAt($key);
+        return true;
+    }
+
+    public function lastIndexOf($el): ?int
     {
         $reverseIndex = array_search($el, array_reverse($this->elements), true);
         if ($reverseIndex === false) {
-            return false;
+            return null;
         }
 
-        return count($el) - $reverseIndex - 1;
+        return count($this->elements) - $reverseIndex - 1;
     }
 
     public function removeAt(int $index)
@@ -53,5 +70,16 @@ class ArrayList extends AbstractCollection implements ListSequence
         $this->elements = array_values($this->elements);
 
         return $el;
+    }
+
+    private function removeThroughHashCode(HashCodeAware $element): bool
+    {
+        foreach ($this->elements as $i => $iElement) {
+            if ($iElement instanceof HashCodeAware && $iElement->getHashCode() === $element->getHashCode()) {
+                $this->removeAt($i);
+                return true;
+            }
+        }
+        return false;
     }
 }

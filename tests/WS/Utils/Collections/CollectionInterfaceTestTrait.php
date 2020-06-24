@@ -6,6 +6,7 @@
 namespace WS\Utils\Collections;
 
 use WS\Utils\Collections\UnitConstraints\CollectionContainsSameElements;
+use WS\Utils\Collections\Utils\TestInteger;
 
 trait CollectionInterfaceTestTrait
 {
@@ -193,5 +194,57 @@ trait CollectionInterfaceTestTrait
 
         $this->assertEquals(6, $i->size());
         $this->assertThat($i, CollectionContainsSameElements::with([1, 2, 3, 4, 5, 6]));
+    }
+
+    /**
+     * @test
+     */
+    public function removingWithCollectionAwareInterface(): void
+    {
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+
+        /** @var Collection $collection */
+        $collection = $this->createInstance($i1, $i2, $i3);
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertTrue($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains($i2));
+    }
+
+    /**
+     * @test
+     */
+    public function removingByAwareCollectionInterfaceWithMixedCollection(): void
+    {
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+        $i4 = 4;
+
+        /** @var Collection $collection */
+        $collection = $this->createInstance($i1, $i2, $i3,$i4);
+
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertTrue($res);
+        $this->assertEquals(3, $collection->size());
+        $this->assertFalse($collection->contains($i2));
+
+        $this->assertTrue($collection->contains(4));
+
+        $res = $collection->remove(4);
+
+        $this->assertTrue($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains(4));
+
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertFalse($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains($i2));
     }
 }

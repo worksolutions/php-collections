@@ -23,19 +23,19 @@ interface ListSequence extends Collection
     public function set($el, int $index);
 
     /**
-     * Returns index of specified element
+     * Returns index of specified element of NULL if element is absent
      * @param $el
      * @return mixed
      */
-    public function indexOf($el);
+    public function indexOf($el): ?int;
 
     /**
      * Returns the index of the last occurrence of the specified element in this list,
-     * or FALSE if this list does not contain the element
+     * or NULL if this list does not contain the element
      * @param $el
      * @return mixed
      */
-    public function lastIndexOf($el);
+    public function lastIndexOf($el): ?int;
 
     /**
      * Removes the element at the specified position in this list

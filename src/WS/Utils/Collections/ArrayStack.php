@@ -65,8 +65,19 @@ class ArrayStack extends AbstractCollection implements Stack
             return false;
         }
         $index = $this->size() - 1;
+        $fMatch = static function ($tested) use ($element): bool {
+            return $tested === $element;
+        };
+        if ($element instanceof HashCodeAware) {
+            $fMatch = static function ($tested) use ($element): bool {
+                if ($tested instanceof HashCodeAware) {
+                    return $tested->getHashCode() === $element->getHashCode();
+                }
+                return $tested === $element;
+            };
+        }
         while ($index >= 0) {
-            if ($this->elements[$index] === $element) {
+            if ($fMatch($this->elements[$index])) {
                 unset($this->elements[$index]);
                 $this->elements = array_values($this->elements);
                 return true;
