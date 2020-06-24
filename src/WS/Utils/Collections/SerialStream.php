@@ -6,7 +6,6 @@
 namespace WS\Utils\Collections;
 
 use RuntimeException;
-use WS\Utils\Collections\Functions\CollectionAwareFunction;
 use WS\Utils\Collections\Functions\Reorganizers;
 
 class SerialStream implements Stream
@@ -41,10 +40,6 @@ class SerialStream implements Stream
     {
         $collection = $this->list;
         $this->list = $this->emptyList();
-
-        if ($predicate instanceof CollectionAwareFunction) {
-            $predicate->withCollection($collection);
-        }
 
         foreach ($collection as $item) {
             if ($predicate($item)) {
