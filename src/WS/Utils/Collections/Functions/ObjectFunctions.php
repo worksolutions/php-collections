@@ -29,6 +29,6 @@ class ObjectFunctions
         if (method_exists($object, 'get'.$fieldName)) {
             return $object->{'get'.$fieldName}();
         }
-        throw new RuntimeException("Field $fieldName is not exist for object $object");
+        throw new RuntimeException("Field $fieldName is not exist for object ".var_export($object, true));
     }
 }

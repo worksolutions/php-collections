@@ -42,27 +42,51 @@ class Aggregators
     }
 
     /**
-     * Returns closure for getting map. keys - collection uniq values, values - count of repeats
+     * Returns closure for getting map<value, int repeats>. keys - collection uniq values, values - count of repeats
      * @return Closure
      */
-    public static function countByValue(): Closure
+    public static function group(): Closure
     {
         return static function (Collection $collection): Map {
-            return new HashMap();
+            $groupBy = self::groupBy(static function ($el) {
+                return $el;
+            });
+            return $groupBy($collection);
         };
     }
 
     /**
      * Returns closure for getting map. keys - collection uniq fieldName values, values - collection of objects
-     * @param string $fieldName
+     * @param string $property
      * @return Closure
      */
-    public static function groupByObjectField(string $fieldName): Closure
+    public static function groupByProperty(string $property): Closure
     {
-        return static function (Collection $collection) use ($fieldName): Map {
-            return new HashMap();
+        return static function (Collection $collection) use ($property): Map {
+            $fGetValue = static function ($obj) use ($property) {
+                return ObjectFunctions::getPropertyValue($obj, $property);
+            };
+
+            $groupBy = self::groupBy($fGetValue);
+            return $groupBy($collection);
         };
     }
 
-
+    public static function groupBy(callable $f): Closure
+    {
+        return static function (Collection $collection) use ($f): Map {
+            $group = new HashMap();
+            $collection
+                ->stream()
+                ->each(static function ($el) use ($group, $f) {
+                    $value = $f($el);
+                    $count = 0;
+                    if (($gCount = $group->get($value)) !== null) {
+                        $count = $gCount;
+                    }
+                    $group->put($value, $count + 1);
+                });
+            return $group;
+        };
+    }
 }

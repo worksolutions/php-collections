@@ -87,7 +87,7 @@ class ComparatorsTest extends TestCase
     {
         $actual = (new ArrayList($sequence))
             ->stream()
-            ->sort(Comparators::objectFieldComparator($field))
+            ->sort(Comparators::objectPropertyComparator($field))
             ->getCollection()
             ->toArray();
 
