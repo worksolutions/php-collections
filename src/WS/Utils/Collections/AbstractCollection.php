@@ -26,7 +26,18 @@ abstract class AbstractCollection implements Collection
 
     public function add($element): bool
     {
-        return (bool)array_push($this->elements, $element);
+        $beforeSize = count($this->elements);
+        $this->elements[] = $element;
+        return $beforeSize < count($this->elements);
+    }
+
+    public function addAll(iterable $elements): bool
+    {
+        $res = true;
+        foreach ($elements as $element) {
+            !$this->add($element) && $res = false;
+        }
+        return $res;
     }
 
     public function merge(Collection $collection): bool
@@ -38,16 +49,6 @@ abstract class AbstractCollection implements Collection
     public function clear(): void
     {
         $this->elements = [];
-    }
-
-    public function remove($element): bool
-    {
-        $key = array_search($element, $this->elements, true);
-        if (false === $key) {
-            return false;
-        }
-        unset($this->elements[$key]);
-        return true;
     }
 
     public function contains($element): bool

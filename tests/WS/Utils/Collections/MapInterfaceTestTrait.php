@@ -5,6 +5,7 @@
 
 namespace WS\Utils\Collections;
 
+use Exception;
 use SplObjectStorage;
 use WS\Utils\Collections\Utils\TestInteger;
 
@@ -75,7 +76,7 @@ trait MapInterfaceTestTrait
         $instance->put(2,1);
         $instance->put(3,1);
         $instance->put(4,1);
-        $instance->put(5,1);
+        $instance->put(null,1);
 
         $instance->remove(4);
 
@@ -189,5 +190,24 @@ trait MapInterfaceTestTrait
         $instance = $this->createInstance();
         $instance->put(static function () {}, null);
         $this->assertFalse($instance->containsKey(static function () {}));
+    }
+
+    /**
+     * @test
+     */
+    public function unsupportedKeyType(): void
+    {
+        $this->expectException(Exception::class);
+        /** @var Map $map */
+        $map = $this->createInstance();
+        $f = null;
+        try {
+            $f = fopen(__FILE__, 'rb');
+            $map->put($f, null);
+        } catch (Exception $exception) {
+            fclose($f);
+            /** @noinspection PhpUnhandledExceptionInspection */
+            throw $exception;
+        }
     }
 }

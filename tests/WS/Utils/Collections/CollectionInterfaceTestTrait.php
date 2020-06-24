@@ -5,7 +5,8 @@
 
 namespace WS\Utils\Collections;
 
-use Traversable;
+use WS\Utils\Collections\UnitConstraints\CollectionContainsSameElements;
+use WS\Utils\Collections\Utils\TestInteger;
 
 trait CollectionInterfaceTestTrait
 {
@@ -40,9 +41,9 @@ trait CollectionInterfaceTestTrait
 
         $clonedCollection = clone $collection;
         $collection->merge($anotherCollection);
-        $this->assertEquals([1, 2, 3, 4, 5], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([1, 2, 3, 4, 5]));
         $anotherCollection->merge($clonedCollection);
-        $this->assertEquals([3, 4, 5, 1, 2], $anotherCollection->toArray());
+        $this->assertThat($anotherCollection, CollectionContainsSameElements::with([3, 4, 5, 1, 2]));
     }
 
     /**
@@ -66,15 +67,41 @@ trait CollectionInterfaceTestTrait
 
         $this->assertTrue($collection->remove(-11));
         $this->assertEquals(3, $collection->size());
-        $this->assertEquals([27, 'string', 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 'string', 50]));
 
         $this->assertTrue($collection->remove('string'));
         $this->assertEquals(2, $collection->size());
-        $this->assertEquals([27, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 50]));
 
         $this->assertFalse($collection->remove(89));
         $this->assertEquals(2, $collection->size());
-        $this->assertEquals([27, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 50]));
+    }
+
+    /**
+     * @test
+     */
+    public function removingAbsent(): void
+    {
+        /** @var Collection $collection */
+        $collection = $this->createInstance(1, 2, 3);
+        $removingRes = $collection->remove(4);
+
+        $this->assertFalse($removingRes);
+        $this->assertEquals(3, $collection->size());
+    }
+
+    /**
+     * @test
+     */
+    public function removingFromEmptyCollection(): void
+    {
+        $collection = $this->createInstance();
+
+        $removingRes = $collection->remove(4);
+
+        $this->assertFalse($removingRes);
+        $this->assertEquals(0, $collection->size());
     }
 
     /**
@@ -129,21 +156,95 @@ trait CollectionInterfaceTestTrait
     public function arrayGenerating(): void
     {
         $collection = $this->createInstance(27, 'string', -11, 50);
-        $this->assertEquals([27, 'string', -11, 50], $collection->toArray());
+        $this->assertThat($collection, CollectionContainsSameElements::with([27, 'string', -11, 50]));
     }
 
     /**
      * @test
      */
-    public function iterating(): void
+    public function coping(): void
     {
-        $collection = $this->createInstance(27, 'string', -11, 50);
-        $iterator = $collection->getIterator();
+        /** @var Collection $i1 */
+        $i1 = $this->createInstance(3, 2, 1);
+        $i2 = $i1->copy();
 
-        $this->assertInstanceOf(Traversable::class, $iterator);
-        $this->assertEquals(27, $iterator->current());
-        $iterator->next();
-        $this->assertEquals('string', $iterator->current());
-        $this->assertEquals(1, $iterator->key());
+        $this->assertEquals($i1->toArray(), $i2->toArray());
+        $this->assertNotSame($i1, $i2);
+    }
+
+    /**
+     * @test
+     */
+    public function streaming(): void
+    {
+        $i = $this->createInstance();
+
+        $this->assertInstanceOf(Stream::class, $i->stream());
+    }
+
+    /**
+     * @test
+     */
+    public function addingGroupOffElements(): void
+    {
+        /** @var Collection $i */
+        $i = $this->createInstance(1, 2, 3);
+
+        $i->addAll([4, 5, 6]);
+
+        $this->assertEquals(6, $i->size());
+        $this->assertThat($i, CollectionContainsSameElements::with([1, 2, 3, 4, 5, 6]));
+    }
+
+    /**
+     * @test
+     */
+    public function removingWithCollectionAwareInterface(): void
+    {
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+
+        /** @var Collection $collection */
+        $collection = $this->createInstance($i1, $i2, $i3);
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertTrue($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains($i2));
+    }
+
+    /**
+     * @test
+     */
+    public function removingByAwareCollectionInterfaceWithMixedCollection(): void
+    {
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+        $i4 = 4;
+
+        /** @var Collection $collection */
+        $collection = $this->createInstance($i1, $i2, $i3,$i4);
+
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertTrue($res);
+        $this->assertEquals(3, $collection->size());
+        $this->assertFalse($collection->contains($i2));
+
+        $this->assertTrue($collection->contains(4));
+
+        $res = $collection->remove(4);
+
+        $this->assertTrue($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains(4));
+
+        $res = $collection->remove(new TestInteger(2));
+
+        $this->assertFalse($res);
+        $this->assertEquals(2, $collection->size());
+        $this->assertFalse($collection->contains($i2));
     }
 }

@@ -18,10 +18,10 @@ class Comparators
         };
     }
 
-    public static function objectFieldComparator(string $fieldName): callable
+    public static function objectPropertyComparator(string $property): callable
     {
-        return static function ($a, $b) use ($fieldName) {
-            return ObjectFunctions::getFieldValue($a, $fieldName) <=> ObjectFunctions::getFieldValue($b, $fieldName);
+        return static function ($a, $b) use ($property) {
+            return ObjectFunctions::getPropertyValue($a, $property) <=> ObjectFunctions::getPropertyValue($b, $property);
         };
     }
 }

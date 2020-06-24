@@ -25,7 +25,12 @@ class Reorganizers
         };
     }
 
-    public static function random($count = 1): Closure
+    /**
+     * Returns Closure of random collection
+     * @param int $count
+     * @return Closure
+     */
+    public static function random(int $count = 1): Closure
     {
         return static function (Collection $collection) use ($count): Collection {
             /**
@@ -71,5 +76,71 @@ class Reorganizers
                 ->filter($trier)
                 ->getCollection();
         };
+    }
+
+    /**
+     * Returns Closure that split collection into sub collections with $size
+     * @param int $size
+     * @return Closure
+     */
+    public static function chunk(int $size): Closure
+    {
+        return static function (Collection $collection) use ($size): Collection {
+            $res = self::collectionConstructor();
+            $currentChunk = [];
+
+            return $res;
+        };
+    }
+
+    /**
+     * Returns Closure that collapses a collection of arrays into a single, flat collection
+     * @return Closure
+     */
+    public static function collapse(): Closure
+    {
+        return static function (Collection $collection): Collection {
+        };
+    }
+
+    /**
+     * Returns Closure that returns a collection of elements that are not present in the given arguments
+     * @param mixed ...$args
+     * @return Closure
+     */
+    public static function diff(...$args): Closure
+    {
+
+    }
+
+    /**
+     * Returns Closure that returns a collection of elements that are present in the given arguments
+     * @param mixed ...$args
+     * @return Closure
+     */
+    public static function intersect(...$args): Closure
+    {
+
+    }
+
+    /**
+     * Returns Closure that returns new collection without elements that present in $collection
+     * @param Collection $collection
+     * @return Closure
+     */
+    public static function remove(Collection $collection): Closure
+    {
+
+    }
+
+    public static function when(bool $condition, callable $reorganizer): Closure
+    {
+        if (!$condition) {
+            return static function (Collection $collection) {
+                return $collection;
+            };
+        }
+
+        return $reorganizer;
     }
 }

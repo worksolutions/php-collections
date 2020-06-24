@@ -5,9 +5,11 @@
 
 namespace WS\Utils\Collections;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
 use WS\Utils\Collections\Utils\InvokesCounter;
+use WS\Utils\Collections\Utils\TestInteger;
 
 class SerialStreamTest extends TestCase
 {
@@ -368,5 +370,216 @@ class SerialStreamTest extends TestCase
             ->toArray();
 
         $this->assertEquals(array_reverse($expected), $actual);
+    }
+
+    /**
+     * @return array
+     */
+    public function firstLastElementCases(): array
+    {
+        return [
+            [ [1, 2, 3], 1, 3],
+            [ [1], 1 ,1],
+            [[], null, null]
+        ];
+    }
+
+    /**
+     * @dataProvider firstLastElementCases
+     * @test
+     * @param $input
+     * @param $first
+     */
+    public function findFirstElement($input, $first): void
+    {
+        $actual = $this->createCollection($input)
+            ->stream()
+            ->findFirst();
+        $this->assertEquals($first, $actual);
+    }
+
+    /** @noinspection PhpUnusedParameterInspection */
+    /**
+     * @dataProvider firstLastElementCases
+     * @test
+     * @param $input
+     * @param $_
+     * @param $last
+     */
+    public function findLastElement($input, $_, $last): void
+    {
+        $actual = $this->createCollection($input)
+            ->stream()
+            ->findLast()
+        ;
+        $this->assertEquals($last, $actual);
+    }
+
+    public function sortCases(): array
+    {
+        return [
+            [[1, 2, 4, 3], 1, 4],
+            [[1], 1, 1],
+            [[4, 5, 2, 2, 7], 2, 7],
+            [[4, 5, 2, 2, 7], 2, 7],
+        ];
+    }
+
+    /**
+     * @dataProvider sortCases
+     * @test
+     * @param $input
+     * @param $min
+     * @param $max
+     * @return void
+     */
+    public function sortingWithExtractor($input, $min, $max): void
+    {
+        $sortedCollection = $this->createCollection($input)
+            ->stream()
+            ->map(static function (int $num) {
+                return TestInteger::of($num);
+            })
+            ->sortBy(static function (TestInteger $integer) {
+                return $integer->getValue();
+            })
+            ->getCollection()
+        ;
+
+        $actualMin = $sortedCollection->stream()->findFirst();
+        $actualMax = $sortedCollection->stream()->findLast();
+
+        $this->assertEquals($min, $actualMin->getValue());
+        $this->assertEquals($max, $actualMax->getValue());
+    }
+
+    /**
+     * @test
+     */
+    public function sortingWithNotScalarValue(): void
+    {
+        $this->expectException(Exception::class);
+
+        $this->createCollection([1, 2])
+            ->stream()
+            ->sortBy(static function () {
+                return [];
+            })
+            ->getCollection()
+        ;
+    }
+
+    /**
+     * @dataProvider sortCases
+     * @test
+     * @param $input
+     * @param $min
+     * @param $max
+     */
+    public function descSortingWithExtractor($input, $min, $max): void
+    {
+        $sortedCollection = $this->createCollection($input)
+            ->stream()
+            ->map(static function (int $num) {
+                return TestInteger::of($num);
+            })
+            ->sortByDesc(static function (TestInteger $integer) {
+                return $integer->getValue();
+            })
+            ->getCollection()
+        ;
+
+        $actualMax = $sortedCollection->stream()->findFirst();
+        $actualMin = $sortedCollection->stream()->findLast();
+
+        $this->assertEquals($min, $actualMin->getValue());
+        $this->assertEquals($max, $actualMax->getValue());
+    }
+
+    /**
+     * @test
+     */
+    public function limitedWalkCheck(): void
+    {
+        $invokesCounter = new InvokesCounter();
+        CollectionFactory::numbers(10)
+            ->stream()
+            ->walk($invokesCounter, 5);
+
+        $this->assertEquals(5, $invokesCounter->countOfInvoke());
+    }
+
+    /**
+     * @test
+     */
+    public function suspendedWalkCheck(): void
+    {
+        CollectionFactory::numbers(10)
+            ->stream()
+            ->walk(function ($i) {
+                if ($i === 2) {
+                    return false;
+                }
+                if ($i > 2) {
+                    $this->fail('El this index > 2 should not be here');
+                }
+                return null;
+            });
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @test
+     */
+    public function checkLimitStream(): void
+    {
+        $collection = CollectionFactory::numbers(10)
+            ->stream()
+            ->limit(4)
+            ->getCollection()
+        ;
+
+        $this->assertEquals(4, $collection->size());
+    }
+
+    public function reverseCases(): array
+    {
+        return [
+            [[1, 2, 3], [3, 2, 1]],
+            [['s', 2, 'sad'], ['sad', 2, 's']],
+            [[1], [1]],
+            [[], []]
+        ];
+    }
+
+    /**
+     * @dataProvider reverseCases
+     * @test
+     * @param $array
+     * @param $reversed
+     */
+    public function checkReverse($array, $reversed): void
+    {
+        $actual = $this->createCollection($array)
+            ->stream()
+            ->reverse()
+            ->getCollection()
+            ->toArray()
+        ;
+        $this->assertEquals($reversed, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function findFirstChecking(): void
+    {
+        $first = CollectionFactory::numbers(4, 7)
+            ->stream()
+            ->findFirst()
+        ;
+
+        $this->assertEquals(4, $first);
     }
 }

@@ -6,19 +6,19 @@
 namespace WS\Utils\Collections;
 
 use RuntimeException;
-use WS\Utils\Collections\Functions\CollectionAwareFunction;
-use WS\Utils\Collections\Functions\Predicates;
+use WS\Utils\Collections\Functions\Reorganizers;
 
 class SerialStream implements Stream
 {
     /**
-     * @var Collection
+     * @var ListSequence
      */
-    private $collection;
+    private $list;
 
     public function __construct(Collection $collection)
     {
-        $this->collection = $collection->copy();
+        $this->list = new ArrayList();
+        $this->list->addAll($collection);
     }
 
     /**
@@ -26,8 +26,9 @@ class SerialStream implements Stream
      */
     public function each(callable $consumer): Stream
     {
-        foreach ($this->collection as $item) {
-            $consumer($item);
+        $i = 0;
+        foreach ($this->list as $item) {
+            $consumer($item, $i++);
         }
         return $this;
     }
@@ -37,16 +38,12 @@ class SerialStream implements Stream
      */
     public function filter(callable $predicate): Stream
     {
-        $collection = $this->collection;
-        $this->collection = $this->emptyCollection();
-
-        if ($predicate instanceof CollectionAwareFunction) {
-            $predicate->withCollection($collection);
-        }
+        $collection = $this->list;
+        $this->list = $this->emptyList();
 
         foreach ($collection as $item) {
             if ($predicate($item)) {
-                $this->collection->add($item);
+                $this->list->add($item);
             }
         }
 
@@ -55,11 +52,11 @@ class SerialStream implements Stream
 
     public function reorganize(callable $reorganizer): Stream
     {
-        $reorganizedCollection = $reorganizer($this->collection);
+        $reorganizedCollection = $reorganizer($this->list);
         if (! $reorganizedCollection instanceof Collection) {
             throw new RuntimeException('Result set of reorganizer call must be instance of Collection interface');
         }
-        $this->collection = $reorganizedCollection;
+        $this->list = $reorganizedCollection;
 
         return $this;
     }
@@ -69,7 +66,7 @@ class SerialStream implements Stream
      */
     public function allMatch(callable $predicate): bool
     {
-        foreach ($this->collection as $item) {
+        foreach ($this->list as $item) {
             if (!$predicate($item)) {
                 return false;
             }
@@ -82,7 +79,7 @@ class SerialStream implements Stream
      */
     public function anyMatch(callable $predicate): bool
     {
-        foreach ($this->collection as $item) {
+        foreach ($this->list as $item) {
             if ($predicate($item)) {
                 return true;
             }
@@ -96,11 +93,11 @@ class SerialStream implements Stream
      */
     public function map(callable $converter): Stream
     {
-        $collection = $this->collection;
-        $this->collection = $this->emptyCollection();
+        $collection = $this->list;
+        $this->list = $this->emptyList();
 
         foreach ($collection as $item) {
-            $this->collection->add($converter($item));
+            $this->list->add($converter($item));
         }
         return $this;
     }
@@ -111,13 +108,44 @@ class SerialStream implements Stream
     public function sort(callable $comparator): Stream
     {
         $collection = $this->getCollection();
-        $this->collection = $this->emptyCollection();
+        $this->list = $this->emptyList();
 
         $array = $collection->toArray();
         usort($array, $comparator);
         foreach ($array as $item) {
-            $this->collection->add($item);
+            $this->list->add($item);
         }
+
+        return $this;
+    }
+
+    public function sortBy(callable $extractor): Stream
+    {
+        $values = [];
+        $map = [];
+        $this->each(static function ($el) use ($extractor, & $map, & $values) {
+            $value = $extractor($el);
+            if (!is_scalar($value)) {
+                throw new RuntimeException('Only scalar value can be as result of sort extractor');
+            }
+            $values[] = $value;
+            $map[$value.''][] = $el;
+        });
+        sort($values);
+        $newList = $this->emptyList();
+        foreach ($values as $value) {
+            $els = $map[$value] ?? [];
+            $newList->addAll($els);
+        }
+        $this->list = $newList;
+
+        return $this;
+    }
+
+    public function sortByDesc(callable $extractor): Stream
+    {
+        $this->sortBy($extractor)
+            ->reverse();
 
         return $this;
     }
@@ -127,16 +155,25 @@ class SerialStream implements Stream
      */
     public function sortDesc(callable $comparator): Stream
     {
-        $collection = $this->getCollection();
-        $this->collection = $this->emptyCollection();
+        $this->sort($comparator)
+            ->reverse();
 
-        $array = $collection->toArray();
-        usort($array, static function ($a, $b) use ($comparator): int {
-            return -1 * $comparator($a, $b);
-        });
-        foreach ($array as $item) {
-            $this->collection->add($item);
-        }
+        return $this;
+    }
+
+    public function reverse(): Stream
+    {
+        $size = $this->list->size();
+        /** @var ListSequence $list */
+        $list = $this->list->copy();
+        $this->walk(static function ($head, $index) use ($list, $size) {
+            $tailIndex = $size - $index - 1;
+            $tail = $list->get($tailIndex);
+            $list->set($tail, $index);
+            $list->set($head, $tailIndex);
+        }, (int)($size/2));
+        $this->list = $list;
+
         return $this;
     }
 
@@ -153,7 +190,7 @@ class SerialStream implements Stream
      */
     public function findAny()
     {
-        return $this->filter(Predicates::random(1))
+        return $this->reorganize(Reorganizers::random(1))
             ->findFirst();
     }
 
@@ -163,7 +200,7 @@ class SerialStream implements Stream
     public function findFirst()
     {
         /** @noinspection LoopWhichDoesNotLoopInspection */
-        foreach ($this->collection as $item) {
+        foreach ($this->list as $item) {
             return $item;
         }
         return null;
@@ -225,27 +262,52 @@ class SerialStream implements Stream
     public function reduce(callable $accumulator)
     {
         $accumulate = null;
-        foreach ($this->collection as $item) {
+        foreach ($this->list as $item) {
             $accumulate = $accumulator($item, $accumulate);
         }
         return $accumulate;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function parallel(): Stream
+    public function getCollection(): Collection
     {
+        return $this->list;
+    }
+
+    private function emptyList(): Collection
+    {
+        return ArrayList::of();
+    }
+
+    public function findLast()
+    {
+        $array = $this->list->toArray();
+        return array_pop($array);
+    }
+
+    public function walk(callable $consumer, ?int $limit = null): Stream
+    {
+        $iterationsCount = $limit ?? $this->list->size();
+        foreach ($this->list as $i => $item) {
+            $consumerRes = $consumer($item, $i);
+            if ($consumerRes === false) {
+                break;
+            }
+            if ($i + 1 >= $iterationsCount) {
+                break;
+            }
+        }
+
         return $this;
     }
 
-    public function getCollection(): Collection
+    public function limit(int $count): Stream
     {
-        return $this->collection;
-    }
+        $newCollection = $this->emptyList();
+        $this->walk(static function ($el) use ($newCollection) {
+            $newCollection->add($el);
+        }, $count);
 
-    private function emptyCollection(): Collection
-    {
-        return ArrayList::of();
+        $this->list = $newCollection;
+        return $this;
     }
 }

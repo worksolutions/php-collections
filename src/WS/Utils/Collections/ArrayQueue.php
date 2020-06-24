@@ -6,11 +6,13 @@
 
 namespace WS\Utils\Collections;
 
-
 use RuntimeException;
+use WS\Utils\Collections\Iterator\Iterator;
+use WS\Utils\Collections\Iterator\IteratorFactory;
 
-class ArrayQueue extends AbstractCollection implements Queue
+class ArrayQueue extends AbstractCollection implements Queue, IndexIterable
 {
+    use RemoveTraverseTrait;
 
     public function offer($element): bool
     {
@@ -38,5 +40,10 @@ class ArrayQueue extends AbstractCollection implements Queue
     public function stream(): Stream
     {
         return new SerialStream($this);
+    }
+
+    public function getIndexIterator(): Iterator
+    {
+        return IteratorFactory::directSequence($this->size());
     }
 }

@@ -6,11 +6,14 @@
 
 namespace WS\Utils\Collections;
 
-
 use RuntimeException;
+use WS\Utils\Collections\Iterator\Iterator;
+use WS\Utils\Collections\Iterator\IteratorFactory;
 
-class ArrayStack extends AbstractCollection implements Stack
+class ArrayStack extends AbstractCollection implements Stack, IndexIterable
 {
+
+    use RemoveTraverseTrait;
 
     /**
      * Adds element to the top of stack
@@ -59,24 +62,6 @@ class ArrayStack extends AbstractCollection implements Stack
         return true;
     }
 
-    public function remove($element): bool
-    {
-        if ($this->isEmpty()) {
-            return false;
-        }
-        $index = $this->size() - 1;
-        while ($index >= 0) {
-            if ($this->elements[$index] === $element) {
-                unset($this->elements[$index]);
-                $this->elements = array_values($this->elements);
-                return true;
-            }
-            $index--;
-        }
-
-        return false;
-    }
-
     public function stream(): Stream
     {
         return new SerialStream($this);
@@ -87,4 +72,8 @@ class ArrayStack extends AbstractCollection implements Stack
         return array_reverse($this->elements);
     }
 
+    public function getIndexIterator(): Iterator
+    {
+        return IteratorFactory::reverseSequence($this->size());
+    }
 }

@@ -10,7 +10,7 @@ use RuntimeException;
 use WS\Utils\Collections\Collection;
 use WS\Utils\Collections\CollectionFactory;
 
-class CollectionIsEqual extends Constraint implements StaticCompareCreation
+class CollectionContainsSameElements extends Constraint
 {
     private $expectedCollection;
 
@@ -35,7 +35,7 @@ class CollectionIsEqual extends Constraint implements StaticCompareCreation
             throw new RuntimeException('Value of comparision need to be a Collection');
         }
 
-        return $other->equals($this->expectedCollection);
+        return array_diff($other->toArray(), $this->expectedCollection->toArray()) === [];
     }
 
     public function toString(): string
@@ -46,7 +46,7 @@ class CollectionIsEqual extends Constraint implements StaticCompareCreation
         );
     }
 
-    public static function to($expectedValue): CollectionIsEqual
+    public static function with($expectedValue): CollectionContainsSameElements
     {
         return new self($expectedValue);
     }

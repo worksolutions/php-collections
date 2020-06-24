@@ -15,7 +15,7 @@ class ObjectFunctions
      * @param string $fieldName
      * @return mixed
      */
-    public static function getFieldValue($object, string $fieldName)
+    public static function getPropertyValue($object, string $fieldName)
     {
         /** @noinspection PhpUnhandledExceptionInspection */
         if (property_exists($object, $fieldName) && (new ReflectionProperty($object, $fieldName))->isPublic()) {
@@ -29,6 +29,6 @@ class ObjectFunctions
         if (method_exists($object, 'get'.$fieldName)) {
             return $object->{'get'.$fieldName}();
         }
-        throw new RuntimeException("Field $fieldName is not exist for object $object");
+        throw new RuntimeException("Field $fieldName is not exist for object ".var_export($object, true));
     }
 }
