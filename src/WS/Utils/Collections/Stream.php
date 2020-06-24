@@ -142,6 +142,13 @@ interface Stream
     public function limit(int $count): Stream;
 
     /**
+     * If condition is false stream became inert with stream functions and if next call will be true stream became operated again
+     * @param bool $condition
+     * @return Stream
+     */
+    public function when(bool $condition): Stream;
+
+    /**
      * Returns collection
      * @return Collection
      */

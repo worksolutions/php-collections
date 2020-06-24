@@ -310,4 +310,13 @@ class SerialStream implements Stream
         $this->list = $newCollection;
         return $this;
     }
+
+    public function when(bool $condition): Stream
+    {
+        if (!$condition) {
+            return new DummyStreamDecorator($this);
+        }
+
+        return $this;
+    }
 }
