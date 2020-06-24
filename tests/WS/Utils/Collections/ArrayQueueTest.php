@@ -12,6 +12,13 @@ use RuntimeException;
 class ArrayQueueTest extends TestCase
 {
 
+    use CollectionInterfaceTestTrait;
+
+    public function createInstance(...$args): Queue
+    {
+        return new ArrayQueue($args);
+    }
+
     public function testToArray()
     {
         $queueProvider = [100, 0, 20, 10, 9];

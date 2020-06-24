@@ -55,7 +55,7 @@ class ShuffleReorganizerTest extends TestCase
     private function compare($list, callable $shuffle): void
     {
         $shuffled = [];
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $shuffled = $shuffle($list);
             if ($shuffled !== $list) {
                 break;
