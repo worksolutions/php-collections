@@ -91,13 +91,13 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
-    public function map(callable $extractor): Stream
+    public function map(callable $converter): Stream
     {
         $collection = $this->list;
         $this->list = $this->emptyList();
 
         foreach ($collection as $item) {
-            $this->list->add($extractor($item));
+            $this->list->add($converter($item));
         }
         return $this;
     }

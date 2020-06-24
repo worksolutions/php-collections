@@ -51,10 +51,10 @@ interface Stream
 
     /**
      * Converts all collection elements with converter
-     * @param callable $extractor Function with f(mixed $element): mixed interface
+     * @param callable $converter Function with f(mixed $element): mixed interface
      * @return Stream
      */
-    public function map(callable $extractor): Stream;
+    public function map(callable $converter): Stream;
 
     /**
      * Call aggregator function for collection. Is terminate function
