@@ -18,17 +18,17 @@ class ArrayList extends AbstractCollection implements ListSequence
         return $this->elements[$index];
     }
 
-    public function set($el, int $index)
+    public function set($element, int $index)
     {
         $res = $this->elements[$index];
-        $this->elements[$index] = $el;
+        $this->elements[$index] = $element;
 
         return $res;
     }
 
-    public function indexOf($el): ?int
+    public function indexOf($element): ?int
     {
-        return array_search($el, $this->elements, true) ?: null;
+        return array_search($element, $this->elements, true) ?: null;
     }
 
     public function remove($element): bool
@@ -48,9 +48,9 @@ class ArrayList extends AbstractCollection implements ListSequence
         return true;
     }
 
-    public function lastIndexOf($el): ?int
+    public function lastIndexOf($element): ?int
     {
-        $reverseIndex = array_search($el, array_reverse($this->elements), true);
+        $reverseIndex = array_search($element, array_reverse($this->elements), true);
         if ($reverseIndex === false) {
             return null;
         }
