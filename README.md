@@ -1,4 +1,4 @@
-# php-collections
+# PHP Collections
 
 ![Tests](https://github.com/worksolutions/php-collections/workflows/Tests/badge.svg?branch=master)
 
