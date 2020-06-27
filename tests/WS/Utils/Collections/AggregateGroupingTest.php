@@ -61,7 +61,7 @@ class AggregateGroupingTest extends TestCase
             new TestInteger(3),
             new TestInteger(3),
             new TestInteger(2),
-            new TestInteger(2),
+            new TestInteger(2)
         )
             ->stream()
             ->aggregate(Aggregators::group())
