@@ -1,5 +1,5 @@
 # php-collections
 
-![Tests](https://github.com/worksolutions/php-collections/workflows/Tests/badge.svg?branch=master)
+![Tests](https://github.com/worksolutions/php-collections/workflows/Unit%20tests/badge.svg)
 
 Collection library for php language
