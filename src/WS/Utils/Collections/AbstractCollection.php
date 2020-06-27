@@ -5,22 +5,39 @@
 
 namespace WS\Utils\Collections;
 
-abstract class AbstractList implements Collection
+abstract class AbstractCollection implements Collection
 {
-    protected array $elements = [];
+    protected $elements = [];
+
+    public function __construct(?array $elements = null)
+    {
+        if ($elements === null) {
+            return;
+        }
+        foreach ($elements as $element) {
+            $this->add($element);
+        }
+    }
 
     public static function of(...$elements): self
     {
-        $list = new static();
-        foreach ($elements as $element) {
-            $list->add($element);
-        }
-        return $list;
+        return new static($elements ?: null);
     }
 
     public function add($element): bool
     {
-        return (bool)array_push($this->elements, $element);
+        $beforeSize = count($this->elements);
+        $this->elements[] = $element;
+        return $beforeSize < count($this->elements);
+    }
+
+    public function addAll(iterable $elements): bool
+    {
+        $res = true;
+        foreach ($elements as $element) {
+            !$this->add($element) && $res = false;
+        }
+        return $res;
     }
 
     public function merge(Collection $collection): bool
@@ -32,16 +49,6 @@ abstract class AbstractList implements Collection
     public function clear(): void
     {
         $this->elements = [];
-    }
-
-    public function remove($element): bool
-    {
-        $key = array_search($element, $this->elements, true);
-        if (false === $key) {
-            return false;
-        }
-        unset($this->elements[$key]);
-        return true;
     }
 
     public function contains($element): bool
@@ -66,12 +73,17 @@ abstract class AbstractList implements Collection
 
     public function toArray(): array
     {
-        return $this->elements;
+        return array_values($this->elements);
     }
 
     public function getIterator()
     {
         yield from $this->toArray();
+    }
+
+    public function copy(): Collection
+    {
+        return clone $this;
     }
 
     abstract public function stream(): Stream;

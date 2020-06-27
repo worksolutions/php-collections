@@ -7,9 +7,17 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class ArrayQueueTest extends TestCase
 {
+
+    use CollectionInterfaceTestTrait;
+
+    public function createInstance(...$args): Queue
+    {
+        return new ArrayQueue($args);
+    }
 
     public function testToArray()
     {
@@ -43,7 +51,7 @@ class ArrayQueueTest extends TestCase
 
     public function testPollEmpty()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $queueProvider = [];
         $queue = ArrayQueue::of(...$queueProvider);
         $queue->poll();
@@ -66,7 +74,7 @@ class ArrayQueueTest extends TestCase
 
     public function testPeekEmpty()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $queueProvider = [];
         $queue = ArrayQueue::of(...$queueProvider);
         $queue->peek();
@@ -91,5 +99,4 @@ class ArrayQueueTest extends TestCase
         $this->assertEquals(0, $queue->size());
         $this->assertTrue($queue->isEmpty());
     }
-
 }

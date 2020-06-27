@@ -6,124 +6,138 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\Functions\Aggregators;
+use WS\Utils\Collections\Utils\TestInteger;
 
 class ArrayListTest extends TestCase
 {
+    use CollectionInterfaceTestTrait;
+    use ListInterfaceTestTrait;
+
+    public function createInstance(...$args): ListSequence
+    {
+        return ArrayList::of(...$args);
+    }
 
     /**
      * @test
      */
-    public function hello(): void
+    public function gettingByIndex(): void
     {
-        $this->assertTrue(true);
+        $list = $this->createInstance(1, 2, 3);
+
+        $this->assertEquals(1, $list->get(0));
+        $this->assertEquals(2, $list->get(1));
+        $this->assertEquals(3, $list->get(2));
     }
 
-    public function testAdd(): void
+    /**
+     * @test
+     */
+    public function settingAtIndex(): void
     {
-        $list = ArrayList::of(1, 2);
+        $list = $this->createInstance(1, 2, 3);
+
+        $list->set(4, 1);
+
+        $this->assertEquals(1, $list->get(0));
+        $this->assertEquals(4, $list->get(1));
+        $this->assertEquals(3, $list->get(2));
+    }
+
+    /**
+     * @test
+     */
+    public function gettingIndexOf(): void
+    {
+        $list = $this->createInstance(1, 2, 3);
+
+        $this->assertEquals(0, $list->indexOf(1));
+        $this->assertEquals(1, $list->indexOf(2));
+        $this->assertEquals(2, $list->indexOf(3));
+    }
+
+    /**
+     * @test
+     */
+    public function indexOfObjectGetting(): void
+    {
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+
+        $list = $this->createInstance($i1, $i2, $i3);
+
+        $this->assertEquals(0, $list->indexOf($i1));
+        $this->assertEquals(1, $list->indexOf($i2));
+        $this->assertEquals(2, $list->indexOf($i3));
+    }
+
+    /**
+     * @test
+     */
+    public function lastIndexOfElementGetting(): void
+    {
+        $i0 = new TestInteger(0);
+        $i1 = new TestInteger(1);
+        $i2 = new TestInteger(2);
+        $i3 = new TestInteger(3);
+
+        $list = $this->createInstance($i0, $i1, $i2, $i3, $i2, $i1);
+
+        $this->assertEquals(4, $list->lastIndexOf($i2));
+        $this->assertEquals(5, $list->lastIndexOf($i1));
+        $this->assertEquals(3, $list->lastIndexOf($i3));
+        $this->assertEquals(0, $list->lastIndexOf($i0));
+    }
+
+    /**
+     * @test
+     */
+    public function lastIndexGettingOfEmptyCollection(): void
+    {
+        $list = $this->createInstance();
+
+        $res = $list->lastIndexOf(10);
+
+        $this->assertNull($res);
+    }
+
+    /**
+     * @test
+     */
+    public function removingAtPositionElement(): void
+    {
+        $list = $this->createInstance(1, 2, 3);
+
+        $el = $list->removeAt(0);
+
+        $this->assertEquals(1, $el);
+        $this->assertEquals(2, $list->get(0));
         $this->assertEquals(2, $list->size());
+    }
 
-        $this->assertTrue($list->add(-76));
+    /**
+     * @test
+     */
+    public function removingAtEmptyCollection(): void
+    {
+        $list = $this->createInstance();
+
+        $res = $list->removeAt(10);
+
+        $this->assertNull($res);
+    }
+
+    /**
+     * @test
+     */
+    public function removingWithoutGaps(): void
+    {
+        $list = $this->createInstance(1, 2, 3, 4);
+
+        $list->remove(2);
+
         $this->assertEquals(3, $list->size());
-
-        $anotherList = new ArrayList();
-        $this->assertTrue($anotherList->add('string'));
-        $anotherList->merge($list);
-        $this->assertEquals(4, $anotherList->size());
-    }
-
-    public function testMerge(): void
-    {
-        $list = ArrayList::of(1, 2);
-        $anotherList = ArrayList::of(3, 4, 5);
-        $clonedList = clone $list;
-        $list->merge($anotherList);
-        $this->assertEquals([1, 2, 3, 4, 5], $list->toArray());
-        $anotherList->merge($clonedList);
-        $this->assertEquals([3, 4, 5, 1, 2], $anotherList->toArray());
-    }
-
-    public function testClear(): void
-    {
-        $list = ArrayList::of(27, 'string');
-        $list->clear();
-        $this->assertEquals(0, $list->size());
-    }
-
-    public function testRemove(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-
-        $this->assertTrue($list->remove(-11));
-        $this->assertEquals(3, $list->size());
-        $this->assertEquals([27, 'string', 3 => 50], $list->toArray());
-
-        $this->assertTrue($list->remove('string'));
-        $this->assertEquals(2, $list->size());
-        $this->assertEquals([27, 3 => 50], $list->toArray());
-
-        $this->assertFalse($list->remove(89));
-        $this->assertEquals(2, $list->size());
-        $this->assertEquals([27, 3 => 50], $list->toArray());
-    }
-
-    public function testContains(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-        $this->assertTrue($list->contains('string'));
-        $this->assertTrue($list->contains(-11));
-        $this->assertFalse($list->contains(11));
-    }
-
-    public function testEquals(): void
-    {
-        $list = ArrayList::of(189, 11, 789);
-        $anotherList = ArrayList::of(189, 11, 789);
-        $this->assertTrue($list->equals($anotherList));
-        $this->assertTrue($anotherList->equals($list));
-    }
-
-    public function testSize(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-        $this->assertEquals(4, $list->size());
-        $list->remove(-11);
-        $this->assertEquals(3, $list->size());
-        $list->add('anotherString');
-        $this->assertEquals(4, $list->size());
-    }
-
-    public function testIsEmpty(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-        $this->assertFalse($list->isEmpty());
-        $list->clear();
-        $this->assertTrue($list->isEmpty());
-    }
-
-    public function testToArray(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-        $this->assertEquals([27, 'string', -11, 50], $list->toArray());
-    }
-
-    public function testIterator(): void
-    {
-        $list = ArrayList::of(27, 'string', -11, 50);
-        $iterator = $list->getIterator();
-
-        $this->assertInstanceOf(\Traversable::class, $iterator);
-        $this->assertEquals(27, $iterator->current());
-        $iterator->next();
-        $this->assertEquals('string', $iterator->current());
-        $this->assertEquals(1, $iterator->key());
-    }
-
-    public function usingComparator(): void
-    {
-        $collection->filter()
-            ->map()
-            ->aggregate(Aggregators::strImplode(', '));
+        $this->assertEquals(3, $list->get(1));
     }
 }

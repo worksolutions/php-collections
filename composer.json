@@ -7,8 +7,20 @@
     {
       "name": "Maxim Sokolovsky",
       "email": "sokolovsky@worksolutions.ru"
+    },
+    {
+      "name": "Anton Lytkin",
+      "email": "a.lytkin@worksolutions.ru"
+    },
+    {
+      "name": "Igor Pomiluyko",
+      "email": "pomiluyko@worksolutions.ru"
     }
   ],
+  "require": {
+    "php": ">=7.2",
+    "ext-json": "*"
+  },
   "require-dev": {
     "phpunit/phpunit": "^8.5"
   },

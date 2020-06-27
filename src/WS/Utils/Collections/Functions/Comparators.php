@@ -7,10 +7,21 @@ namespace WS\Utils\Collections\Functions;
 
 class Comparators
 {
-    public static function numericComparator(): callable
+    /**
+     * Used for scalar value compares such as int, bool, float, string
+     * @return callable
+     */
+    public static function scalarComparator(): callable
     {
         return static function ($a, $b) {
             return $a <=> $b;
+        };
+    }
+
+    public static function objectPropertyComparator(string $property): callable
+    {
+        return static function ($a, $b) use ($property) {
+            return ObjectFunctions::getPropertyValue($a, $property) <=> ObjectFunctions::getPropertyValue($b, $property);
         };
     }
 }
