@@ -1,22 +1,31 @@
-name: Tests
+name: Unit tests
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - dev
+    paths:
+      - '!*.md'
   pull_request:
     branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
+        php-versions: ['7.2', '7.3', '7.4']
+    name: Testing with PHP ${{ matrix.php-versions }}
+
     steps:
     - uses: actions/checkout@v2
-    
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+
     - name: Get Composer Cache Directory
       id: composer-cache
       run: |
@@ -41,10 +50,6 @@ jobs:
 
     - name: Install dependencies
       run: composer install --dev --no-progress
-      with:
-        php-version: ${{ matrix.php-versions }}
 
     - name: Run test suite
       run: composer run-script test
-      with:
-        php-version: ${{ matrix.php-versions }}
