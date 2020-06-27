@@ -16,26 +16,26 @@ interface ListSequence extends Collection
 
     /**
      * Replaces the element at the specified position in this list with the specified element
-     * @param $el
+     * @param $element
      * @param int $index
      * @return mixed
      */
-    public function set($el, int $index);
+    public function set($element, int $index);
 
     /**
      * Returns index of specified element of NULL if element is absent
-     * @param $el
+     * @param $element
      * @return mixed
      */
-    public function indexOf($el): ?int;
+    public function indexOf($element): ?int;
 
     /**
      * Returns the index of the last occurrence of the specified element in this list,
      * or NULL if this list does not contain the element
-     * @param $el
+     * @param $element
      * @return mixed
      */
-    public function lastIndexOf($el): ?int;
+    public function lastIndexOf($element): ?int;
 
     /**
      * Removes the element at the specified position in this list
