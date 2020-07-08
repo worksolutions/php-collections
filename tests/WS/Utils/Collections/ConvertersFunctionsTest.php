@@ -32,4 +32,26 @@ class ConvertersFunctionsTest extends TestCase
 
         $this->assertThat($collection, CollectionIsEqual::to(['first', 'second', 'third']));
     }
+
+    /**
+     * @test
+     */
+    public function propertyValueAssocConverting(): void
+    {
+        $array = self::toCollection(
+            (new ExampleObject())->setName('first')->setField('f1'),
+            (new ExampleObject())->setName('second')->setField('f2'),
+            (new ExampleObject())->setName('third')->setField('f3')
+        )
+            ->stream()
+            ->map(Converters::toProperties(['name', 'field']))
+            ->getCollection()
+            ->toArray();
+
+        $this->assertSame($array, [
+            ['name' => 'first', 'field' => 'f1'],
+            ['name' => 'second', 'field' => 'f2'],
+            ['name' => 'third', 'field' => 'f3']
+        ]);
+    }
 }
