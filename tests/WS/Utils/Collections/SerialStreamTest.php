@@ -582,4 +582,16 @@ class SerialStreamTest extends TestCase
 
         $this->assertEquals(4, $first);
     }
+
+    /**
+     * @test
+     */
+    public function copyOfCollectionWhenStreaming(): void
+    {
+        $source = CollectionFactory::generate(2);
+        $dest = $source->stream()
+            ->getCollection();
+
+        $this->assertNotSame($dest, $source);
+    }
 }
