@@ -22,7 +22,7 @@ class IteratorFactory
     public static function reverseSequence($length): Iterator
     {
         $current = $length - 1;
-        return new CallbackIterator(static function () use (& $current, $length) {
+        return new CallbackIterator(static function () use (& $current) {
             if ($current === -1) {
                 return (new IterateResult())->setAsRunOut();
             }
