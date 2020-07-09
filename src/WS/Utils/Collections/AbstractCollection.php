@@ -86,5 +86,15 @@ abstract class AbstractCollection implements Collection
         return clone $this;
     }
 
+    protected function setElements(array $elements): void
+    {
+        $this->elements = $elements;
+    }
+
+    protected function getElements(): array
+    {
+        return $this->elements;
+    }
+
     abstract public function stream(): Stream;
 }

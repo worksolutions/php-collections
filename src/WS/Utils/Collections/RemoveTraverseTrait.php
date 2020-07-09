@@ -5,6 +5,8 @@
 
 namespace WS\Utils\Collections;
 
+use WS\Utils\Collections\Iterator\Iterator;
+
 trait RemoveTraverseTrait
 {
     public function remove($element): bool
@@ -24,14 +26,23 @@ trait RemoveTraverseTrait
             };
         }
         $indexIterator = $this->getIndexIterator();
+        $elements = $this->getElements();
         while ($indexIterator->hasNext()) {
             $index = $indexIterator->next();
-            if ($fMatch($this->elements[$index])) {
-                unset($this->elements[$index]);
-                $this->elements = array_values($this->elements);
+            if ($fMatch($elements[$index])) {
+                unset($elements[$index]);
+                $this->setElements(array_values($elements));
                 return true;
             }
         }
         return false;
     }
+
+    abstract public function getIndexIterator(): Iterator;
+
+    abstract public function isEmpty(): bool;
+
+    abstract protected function setElements(array $elements);
+
+    abstract protected function getElements(): array;
 }
