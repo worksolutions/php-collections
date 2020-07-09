@@ -56,8 +56,7 @@ class HashMap implements Map
             return $key.'';
         }
         if (is_array($key)) {
-            /** @noinspection JsonEncodingApiUsageInspection */
-            return md5(json_encode($key, true));
+            return md5(json_encode($key));
         }
         if ($key instanceof HashCodeAware) {
             return $key->getHashCode();
