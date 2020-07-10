@@ -114,4 +114,32 @@ class Predicates
             return !in_array(ObjectFunctions::getPropertyValue($ob, $property), $values, true);
         };
     }
+
+    public static function whereMoreThan(string $property, $value): Closure
+    {
+        return static function (object $ob) use ($property, $value) {
+            return ObjectFunctions::getPropertyValue($ob, $property) > $value;
+        };
+    }
+
+    public static function whereLessThan(string $property, $value): Closure
+    {
+        return static function (object $ob) use ($property, $value) {
+            return ObjectFunctions::getPropertyValue($ob, $property) < $value;
+        };
+    }
+
+    public static function whereMoreOrEqual(string $property, $value): Closure
+    {
+        return static function (object $ob) use ($property, $value) {
+            return ObjectFunctions::getPropertyValue($ob, $property) >= $value;
+        };
+    }
+
+    public static function whereLessOrEqual(string $property, $value): Closure
+    {
+        return static function (object $ob) use ($property, $value) {
+            return ObjectFunctions::getPropertyValue($ob, $property) <= $value;
+        };
+    }
 }

@@ -106,6 +106,47 @@ class PredicatesFunctionsTest extends TestCase
     /**
      * @test
      */
+    public function comparingPropertiesFiltering(): void
+    {
+        $o1 = (new ExampleObject())->setField(1);
+        $o2 = (new ExampleObject())->setField(2);
+        $o3 = (new ExampleObject())->setField(3);
+        $o4 = (new ExampleObject())->setField(4);
+
+        $collection = self::toCollection($o1, $o2, $o3, $o4);
+
+        $filtered = $collection
+            ->stream()
+            ->filter(Predicates::whereMoreThan('field', 2))
+            ->getCollection()
+        ;
+        $this->assertThat($filtered, CollectionIsEqual::to([$o3, $o4]));
+
+        $filtered = $collection
+            ->stream()
+            ->filter(Predicates::whereLessThan('field', 2))
+            ->getCollection()
+        ;
+        $this->assertThat($filtered, CollectionIsEqual::to([$o1]));
+
+        $filtered = $collection
+            ->stream()
+            ->filter(Predicates::whereMoreOrEqual('field', 2))
+            ->getCollection()
+        ;
+        $this->assertThat($filtered, CollectionIsEqual::to([$o2, $o3, $o4]));
+
+        $filtered = $collection
+            ->stream()
+            ->filter(Predicates::whereLessOrEqual('field', 2))
+            ->getCollection()
+        ;
+        $this->assertThat($filtered, CollectionIsEqual::to([$o1, $o2]));
+    }
+
+    /**
+     * @test
+     */
     public function matchingValuesFiltering(): void
     {
         $collection = self::toCollection(1, 2, 3, 4, 5);
