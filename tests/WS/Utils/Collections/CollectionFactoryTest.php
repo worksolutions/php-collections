@@ -5,6 +5,7 @@
 
 namespace WS\Utils\Collections;
 
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
@@ -67,6 +68,15 @@ class CollectionFactoryTest extends TestCase
         $collection = CollectionFactory::from([1, 2, 3]);
 
         $this->assertEquals(3, $collection->size());
+        $this->assertThat($collection, CollectionIsEqual::to([1, 2, 3]));
+    }
+
+    /**
+     * @test
+     */
+    public function fromIteratorCollectionGenerating(): void
+    {
+        $collection = CollectionFactory::fromIterable(new ArrayIterator([1, 2, 3]));
         $this->assertThat($collection, CollectionIsEqual::to([1, 2, 3]));
     }
 }

@@ -23,7 +23,7 @@ class CollectionFactory
             throw new RuntimeException('The count of values ($times) must be a positive value');
         }
         $generator = $generator ?? static function (int $index) {
-                return $index;
+            return $index;
         };
 
         $collection = self::toCollection();
@@ -61,5 +61,15 @@ class CollectionFactory
     public static function from(array $values): Collection
     {
         return new ArrayList($values);
+    }
+
+    public static function fromIterable(iterable $iterable): Collection
+    {
+        $list = ArrayList::of();
+        foreach ($iterable as $item) {
+            $list->add($item);
+        }
+
+        return $list;
     }
 }
