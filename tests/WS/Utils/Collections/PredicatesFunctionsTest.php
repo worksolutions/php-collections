@@ -65,6 +65,32 @@ class PredicatesFunctionsTest extends TestCase
     /**
      * @test
      */
+    public function eachEvenFunctionChecking():void
+    {
+        $collection = self::toCollection(1, 2, 3, 4, 5)
+            ->stream()
+            ->filter(Predicates::eachEven())
+            ->getCollection()
+        ;
+        $this->assertThat($collection, CollectionIsEqual::to([2, 4]));
+    }
+
+    /**
+     * @test
+     */
+    public function eachNthChecking(): void
+    {
+        $collection = self::toCollection(1, 2, 3, 4, 5, 6, 7)
+            ->stream()
+            ->filter(Predicates::nth(3))
+            ->getCollection()
+        ;
+        $this->assertThat($collection, CollectionIsEqual::to([3, 6]));
+    }
+
+    /**
+     * @test
+     */
     public function matchingPropertyFiltering(): void
     {
         $o1 = (new ExampleObject())->setName('first');

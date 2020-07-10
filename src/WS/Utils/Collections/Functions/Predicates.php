@@ -31,6 +31,29 @@ class Predicates
         };
     }
 
+    public static function eachEven(): Closure
+    {
+        $isEven = false;
+        return static function () use (& $isEven) {
+            $res = $isEven;
+            $isEven = !$isEven;
+
+            return $res;
+        };
+    }
+
+    public static function nth($number): Closure
+    {
+        $counter = 0;
+        return static function () use ($number, & $counter) {
+            $res = ++$counter % $number === 0;
+            if ($res) {
+                $counter = 0;
+            }
+            return $res;
+        };
+    }
+
     public static function equal($value): Closure
     {
         return static function ($el) use ($value): bool {
