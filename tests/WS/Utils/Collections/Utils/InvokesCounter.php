@@ -14,7 +14,7 @@ class InvokesCounter
         $this->calls[] = func_get_args();
     }
 
-    public function countOfInvoke(): int
+    public function countOfInvokes(): int
     {
         return count($this->calls);
     }

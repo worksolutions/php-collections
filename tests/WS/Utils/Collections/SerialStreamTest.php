@@ -506,7 +506,7 @@ class SerialStreamTest extends TestCase
             ->stream()
             ->walk($invokesCounter, 5);
 
-        $this->assertEquals(5, $invokesCounter->countOfInvoke());
+        $this->assertEquals(5, $invokesCounter->countOfInvokes());
     }
 
     /**

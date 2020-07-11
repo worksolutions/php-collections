@@ -85,22 +85,22 @@ class DummyStreamDecorator implements Stream
 
     public function sort(callable $comparator): Stream
     {
-        return $this->decoratedStream->sort($comparator);
+        return $this;
     }
 
     public function sortBy(callable $extractor): Stream
     {
-        return $this->decoratedStream->sortBy($extractor);
+        return $this;
     }
 
     public function sortDesc(callable $comparator): Stream
     {
-        return $this->decoratedStream->sortDesc($comparator);
+        return $this;
     }
 
     public function sortByDesc(callable $extractor): Stream
     {
-        return $this->decoratedStream->sortByDesc($extractor);
+        return $this;
     }
 
     public function reverse(): Stream
