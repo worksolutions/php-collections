@@ -8,7 +8,7 @@ namespace WS\Utils\Collections\Functions;
 class Comparators
 {
     /**
-     * Used for scalar value compares such as int, bool, float, string
+     * Return <Fn($a: scalar, $b: scalar): int> for scalar value compares such as int, bool, float, string
      * @return callable
      */
     public static function scalarComparator(): callable
@@ -18,6 +18,11 @@ class Comparators
         };
     }
 
+    /**
+     * Return <Fn($a: object, $b: object): int>  for scalar object property value compares such as int, bool, float, string
+     * @param string $property
+     * @return callable
+     */
     public static function objectPropertyComparator(string $property): callable
     {
         return static function ($a, $b) use ($property) {

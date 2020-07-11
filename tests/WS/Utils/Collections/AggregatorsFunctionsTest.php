@@ -17,7 +17,7 @@ class AggregatorsFunctionsTest extends TestCase
      */
     public function stringImploding(): void
     {
-        $f = Aggregators::strImplode(', ');
+        $f = Aggregators::concat(', ');
         $this->assertEquals('1, 2, 3', $f(self::toCollection(1, 2, 3)));
     }
 
@@ -28,7 +28,7 @@ class AggregatorsFunctionsTest extends TestCase
     {
         $res = self::toCollection(1, 2, 3)
             ->stream()
-            ->aggregate(Aggregators::strImplode(', '));
+            ->aggregate(Aggregators::concat(', '));
 
         $this->assertEquals('1, 2, 3', $res);
     }

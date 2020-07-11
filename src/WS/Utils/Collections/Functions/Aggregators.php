@@ -12,12 +12,17 @@ use WS\Utils\Collections\Map;
 
 /**
  * Class Aggregators
- * This class consist of static methods with <f(...$args): Closure<f(Collection $c): mixed>>
+ * This class consist of static methods with < Fn(...$args: mixed): <Fn($c: Collection): mixed> >
  * @package WS\Utils\Collections\Functions
  */
 class Aggregators
 {
-    public static function strImplode(string $delimiter = ''): Closure
+    /**
+     * Returns function with interface <Fn($c: Collection): string> for concatenating collection strings
+     * @param string $delimiter
+     * @return Closure
+     */
+    public static function concat(string $delimiter = ''): Closure
     {
         return static function (Collection $collection) use ($delimiter) {
             return implode($delimiter, $collection->toArray());
@@ -25,7 +30,7 @@ class Aggregators
     }
 
     /**
-     * Returns closure for getting average collection value
+     * Returns closure <Fn($c: Collection): float> for getting average collection value
      * @return Closure
      */
     public static function average(): Closure
@@ -42,7 +47,7 @@ class Aggregators
     }
 
     /**
-     * Returns closure for getting map<value, int repeats>. keys - collection uniq values, values - count of repeats
+     * Returns closure for getting <Fn($c: Collection): Map<value: mixed, repeats: int>>. keys - collection uniq values, values - count of repeats
      * @return Closure
      */
     public static function group(): Closure
@@ -56,7 +61,7 @@ class Aggregators
     }
 
     /**
-     * Returns closure for getting map. keys - collection uniq fieldName values, values - collection of objects
+     * Returns closure for getting map <Fn($c: Collection): Map<value: mixed, repeats: int>>. keys - value uniq fieldName values, values - count of repeats
      * @param string $property
      * @return Closure
      */
@@ -72,6 +77,11 @@ class Aggregators
         };
     }
 
+    /**
+     * Returns closure for getting map <Fn($c: Collection): Map<value: mixed, repeats: int>>. keys - value uniq fieldName values, values - count of repeats
+     * @param callable $f
+     * @return Closure
+     */
     public static function groupBy(callable $f): Closure
     {
         return static function (Collection $collection) use ($f): Map {

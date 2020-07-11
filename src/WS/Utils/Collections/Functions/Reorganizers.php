@@ -15,6 +15,10 @@ class Reorganizers
         return new ArrayList($elements);
     }
 
+    /**
+     * Returns <Fn($c: Collection): Collection> that shuffles elements
+     * @return Closure
+     */
     public static function shuffle(): Closure
     {
         return static function (Collection $collection): Collection {
@@ -26,7 +30,7 @@ class Reorganizers
     }
 
     /**
-     * Returns Closure of random collection
+     * Returns Closure <Fn($c: Collection): Collection> that gets $count random elements from collection
      * @param int $count
      * @return Closure
      */
@@ -79,7 +83,7 @@ class Reorganizers
     }
 
     /**
-     * Returns Closure that split collection into sub collections with $size
+     * Returns Closure <Fn($c: Collection): Collection> that split collection into sub collections with $size
      * @param int $size
      * @return Closure
      */
@@ -107,7 +111,7 @@ class Reorganizers
     }
 
     /**
-     * Returns Closure that collapses a collection of arrays into a single, flat collection
+     * Returns Closure <Fn($c: Collection): Collection> that collapses a collection of arrays into a single, flat collection
      * @return Closure
      */
     public static function collapse(): Closure

@@ -11,7 +11,7 @@ class Converters
 {
 
     /**
-     * Returns function <f(object $obj): mixed>
+     * Returns function <Fn($obj: object): mixed>
      * @param string $name
      * @return Closure
      */
@@ -23,7 +23,7 @@ class Converters
     }
 
     /**
-     * Returns function <f(object $obj): array> that returns assoc array ['fieldName1' => 'value', 'fieldName2' => 'value2']
+     * Returns function <Fn($obj: object): array> that returns assoc array ['fieldName1' => 'value', 'fieldName2' => 'value2']
      * @param array $names
      * @return Closure
      */

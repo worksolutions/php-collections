@@ -18,7 +18,7 @@ class StrImplodeAggregatorTest extends TestCase
      */
     public function isCallable(): void
     {
-        $f = Aggregators::strImplode();
+        $f = Aggregators::concat();
         $this->assertIsCallable($f);
     }
 
@@ -41,7 +41,7 @@ class StrImplodeAggregatorTest extends TestCase
      */
     public function imploding($data, $glue, $result): void
     {
-        $f = Aggregators::strImplode($glue);
+        $f = Aggregators::concat($glue);
         $this->assertSame($f($this->toCollection($data)), $result);
     }
 }

@@ -14,6 +14,7 @@ class ObjectFunctions
      * @param $object
      * @param string $fieldName
      * @return mixed
+     * @noinspection PhpDocMissingThrowsInspection
      */
     public static function getPropertyValue($object, string $fieldName)
     {

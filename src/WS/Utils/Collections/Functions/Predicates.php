@@ -10,6 +10,10 @@ use Closure;
 class Predicates
 {
 
+    /**
+     * Returns <Fn($el: mixed): bool> blocked all tries
+     * @return Closure
+     */
     public static function lock(): Closure
     {
         return static function (): bool {
@@ -17,6 +21,10 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed all not null elements
+     * @return Closure
+     */
     public static function notNull(): Closure
     {
         return static function ($el): bool {
@@ -24,6 +32,10 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed all tries
+     * @return Closure
+     */
     public static function notResistance(): Closure
     {
         return static function (): bool {
@@ -31,6 +43,10 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed each even element of call
+     * @return Closure
+     */
     public static function eachEven(): Closure
     {
         $isEven = false;
@@ -42,6 +58,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed each nth element of call
+     * @param $number
+     * @return Closure
+     */
     public static function nth($number): Closure
     {
         $counter = 0;
@@ -54,6 +75,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with equal value
+     * @param $value
+     * @return Closure
+     */
     public static function equal($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -61,6 +87,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with less than value comparing
+     * @param $value
+     * @return Closure
+     */
     public static function lessThan($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -68,6 +99,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with less or equal value comparing
+     * @param $value
+     * @return Closure
+     */
     public static function lessOrEqual($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -75,6 +111,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with more than value comparing
+     * @param $value
+     * @return Closure
+     */
     public static function moreThan($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -82,6 +123,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with more or equal value comparing
+     * @param $value
+     * @return Closure
+     */
     public static function moreOrEqual($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -89,6 +135,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with not value comparing
+     * @param $value
+     * @return Closure
+     */
     public static function not($value): Closure
     {
         return static function ($el) use ($value): bool {
@@ -96,6 +147,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with include of set value comparing
+     * @param array $values
+     * @return Closure
+     */
     public static function in(array $values): Closure
     {
         return static function ($el) use ($values): bool {
@@ -103,6 +159,11 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with not include of set value comparing
+     * @param array $values
+     * @return Closure
+     */
     public static function notIn(array $values): Closure
     {
         return static function ($el) use ($values): bool {
@@ -110,6 +171,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with where object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function where(string $property, $value): Closure
     {
         return static function ($ob) use ($property, $value) {
@@ -117,6 +184,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with where not object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function whereNot(string $property, $value): Closure
     {
         return static function ($ob) use ($property, $value) {
@@ -124,6 +197,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with where present in a set of object property value comparing
+     * @param string $property
+     * @param array $values
+     * @return Closure
+     */
     public static function whereIn(string $property, array $values): Closure
     {
         return static function ($ob) use ($property, $values) {
@@ -131,6 +210,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with where not present in a set of object property value comparing
+     * @param string $property
+     * @param array $values
+     * @return Closure
+     */
     public static function whereNotIn(string $property, array $values): Closure
     {
         return static function ($ob) use ($property, $values) {
@@ -138,6 +223,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with more than object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function whereMoreThan(string $property, $value): Closure
     {
         return static function (object $ob) use ($property, $value) {
@@ -145,6 +236,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with less than object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function whereLessThan(string $property, $value): Closure
     {
         return static function (object $ob) use ($property, $value) {
@@ -152,6 +249,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with more or equal object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function whereMoreOrEqual(string $property, $value): Closure
     {
         return static function (object $ob) use ($property, $value) {
@@ -159,6 +262,12 @@ class Predicates
         };
     }
 
+    /**
+     * Returns <Fn($el: mixed): bool> passed with less or equal object property value comparing
+     * @param string $property
+     * @param $value
+     * @return Closure
+     */
     public static function whereLessOrEqual(string $property, $value): Closure
     {
         return static function (object $ob) use ($property, $value) {
