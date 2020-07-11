@@ -131,4 +131,9 @@ class DummyStreamDecorator implements Stream
 
         return $this;
     }
+
+    public function always(): Stream
+    {
+        return $this->decoratedStream;
+    }
 }

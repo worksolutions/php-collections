@@ -153,4 +153,6 @@ interface Stream
      * @return Collection
      */
     public function getCollection(): Collection;
+
+    public function always(): Stream;
 }

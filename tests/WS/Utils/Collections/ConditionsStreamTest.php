@@ -49,6 +49,23 @@ class ConditionsStreamTest extends TestCase
     /**
      * @test
      */
+    public function obtainNormalStreamWithAlwaysCondition(): void
+    {
+        $collection = CollectionFactory::numbers(10)
+            ->stream()
+            ->when(false)
+            ->filter(Predicates::lessOrEqual(5))
+            ->always()
+            ->filter(Predicates::moreOrEqual(5))
+            ->getCollection()
+        ;
+
+        $this->assertThat($collection, CollectionIsEqual::to([5, 6, 7, 8, 9]));
+    }
+
+    /**
+     * @test
+     */
     public function dontObtainNormalStreamFromDummy(): void
     {
         $sourceCollection = CollectionFactory::numbers(10);
