@@ -32,6 +32,21 @@ class ConditionsStreamTest extends TestCase
     /**
      * @test
      */
+    public function keepingOriginalStream(): void
+    {
+        $collection = CollectionFactory::numbers(10)
+            ->stream()
+            ->always()
+            ->filter(Predicates::eachEven())
+            ->getCollection()
+        ;
+
+        $this->assertEquals(5, $collection->size());
+    }
+
+    /**
+     * @test
+     */
     public function obtainNormalStreamFromDummy(): void
     {
         $collection = CollectionFactory::numbers(10)
