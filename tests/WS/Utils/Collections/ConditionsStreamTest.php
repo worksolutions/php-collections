@@ -10,7 +10,7 @@ use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Predicates;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
-use WS\Utils\Collections\Utils\InvokesCounter;
+use WS\Utils\Collections\Utils\InvokeCounter;
 
 class ConditionsStreamTest extends TestCase
 {
@@ -116,15 +116,15 @@ class ConditionsStreamTest extends TestCase
     public function streamModifiers(): array
     {
         return [
-            ['each', new InvokesCounter()],
-            ['walk', new InvokesCounter()],
-            ['filter', new InvokesCounter()],
-            ['reorganize', new InvokesCounter()],
-            ['map', new InvokesCounter()],
-            ['sort', new InvokesCounter()],
-            ['sortBy', new InvokesCounter()],
-            ['sortDesc', new InvokesCounter()],
-            ['sortByDesc', new InvokesCounter()],
+            ['each', new InvokeCounter()],
+            ['walk', new InvokeCounter()],
+            ['filter', new InvokeCounter()],
+            ['reorganize', new InvokeCounter()],
+            ['map', new InvokeCounter()],
+            ['sort', new InvokeCounter()],
+            ['sortBy', new InvokeCounter()],
+            ['sortDesc', new InvokeCounter()],
+            ['sortByDesc', new InvokeCounter()],
             ['reverse'],
             ['limit', 2]
         ];
@@ -148,7 +148,7 @@ class ConditionsStreamTest extends TestCase
         call_user_func_array([$stream, $method], $args);
 
         foreach ($args as $arg) {
-            if ($arg instanceof InvokesCounter && $arg->countOfInvokes() > 0) {
+            if ($arg instanceof InvokeCounter && $arg->countOfInvokes() > 0) {
                 $this->fail("Modifier callback shouldn't be called");
             }
         }
@@ -162,7 +162,7 @@ class ConditionsStreamTest extends TestCase
         return [
             ['allMatch', $f],
             ['anyMatch', $f],
-            ['aggregate', $f],
+            ['collect', $f],
             ['findAny', $f],
             ['findFirst', $f],
             ['findLast', $f],

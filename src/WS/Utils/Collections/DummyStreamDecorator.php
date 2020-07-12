@@ -53,9 +53,9 @@ class DummyStreamDecorator implements Stream
         return $this;
     }
 
-    public function aggregate(callable $aggregator)
+    public function collect(callable $collector)
     {
-        return $this->decoratedStream->aggregate($aggregator);
+        return $this->decoratedStream->collect($collector);
     }
 
     public function findAny()

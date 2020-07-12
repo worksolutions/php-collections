@@ -7,7 +7,7 @@ namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
 use SplObjectStorage;
-use WS\Utils\Collections\Functions\Aggregators;
+use WS\Utils\Collections\Functions\Collectors;
 use WS\Utils\Collections\Utils\ExampleObject;
 use WS\Utils\Collections\Utils\TestInteger;
 
@@ -23,7 +23,7 @@ class AggregateGroupingTest extends TestCase
         /** @var Map $map */
         $map = self::toCollection(1, 2, 3, 3, 2, 2)
             ->stream()
-            ->aggregate(Aggregators::group())
+            ->collect(Collectors::group())
         ;
 
         $this->assertEquals(1, $map->get(1));
@@ -42,7 +42,7 @@ class AggregateGroupingTest extends TestCase
 
         $map = self::toCollection($o1, $o2, $o3, $o3, $o2, $o2)
             ->stream()
-            ->aggregate(Aggregators::group())
+            ->collect(Collectors::group())
         ;
 
         $this->assertEquals(1, $map->get($o1));
@@ -64,7 +64,7 @@ class AggregateGroupingTest extends TestCase
             new TestInteger(2)
         )
             ->stream()
-            ->aggregate(Aggregators::group())
+            ->collect(Collectors::group())
         ;
 
         $this->assertEquals(1, $map->get(new TestInteger(1)));
@@ -81,7 +81,7 @@ class AggregateGroupingTest extends TestCase
                 1, 2, 3, 3, 2, 2
             )
             ->stream()
-            ->aggregate(Aggregators::groupBy(static function ($v) {
+            ->collect(Collectors::groupBy(static function ($v) {
                 return $v * 10;
             }))
         ;
@@ -105,7 +105,7 @@ class AggregateGroupingTest extends TestCase
 
         $map = self::toCollection($o1, $o2, $o3, $o31, $o21, $o22)
             ->stream()
-            ->aggregate(Aggregators::groupByProperty('name'))
+            ->collect(Collectors::groupByProperty('name'))
             ;
 
         $this->assertEquals(1, $map->get('first'));

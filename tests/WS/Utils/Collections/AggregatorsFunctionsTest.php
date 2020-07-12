@@ -6,7 +6,7 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
-use WS\Utils\Collections\Functions\Aggregators;
+use WS\Utils\Collections\Functions\Collectors;
 
 class AggregatorsFunctionsTest extends TestCase
 {
@@ -17,7 +17,7 @@ class AggregatorsFunctionsTest extends TestCase
      */
     public function stringImploding(): void
     {
-        $f = Aggregators::concat(', ');
+        $f = Collectors::concat(', ');
         $this->assertEquals('1, 2, 3', $f(self::toCollection(1, 2, 3)));
     }
 
@@ -28,7 +28,7 @@ class AggregatorsFunctionsTest extends TestCase
     {
         $res = self::toCollection(1, 2, 3)
             ->stream()
-            ->aggregate(Aggregators::concat(', '));
+            ->collect(Collectors::concat(', '));
 
         $this->assertEquals('1, 2, 3', $res);
     }
@@ -38,7 +38,7 @@ class AggregatorsFunctionsTest extends TestCase
      */
     public function averageCalculating(): void
     {
-        $f = Aggregators::average();
+        $f = Collectors::average();
         $this->assertEquals(2, $f(self::toCollection(1, 2, 3)));
     }
 
@@ -49,7 +49,7 @@ class AggregatorsFunctionsTest extends TestCase
     {
         $res = self::toCollection(1, 2, 3)
             ->stream()
-            ->aggregate(Aggregators::average());
+            ->collect(Collectors::average());
 
         $this->assertEquals(2, $res);
     }

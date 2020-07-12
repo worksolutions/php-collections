@@ -8,7 +8,10 @@ namespace WS\Utils\Collections;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Comparators;
 use WS\Utils\Collections\Functions\Reorganizers;
+use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
+use WS\Utils\Collections\UnitConstraints\CollectionIsNotEqual;
 use WS\Utils\Collections\Utils\ExampleObject;
+use WS\Utils\Collections\Utils\InvokeCounter;
 
 class ComparatorsTest extends TestCase
 {
@@ -28,6 +31,9 @@ class ComparatorsTest extends TestCase
     /**
      * @dataProvider scalarComparatorCases
      * @test
+     * @param $a
+     * @param $b
+     * @param $expected
      */
     public function scalarComparatorChecking($a, $b, $expected): void
     {
@@ -51,7 +57,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Reorganizers::shuffle())
+                ->collect(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'property', $sequence];
@@ -59,7 +65,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Reorganizers::shuffle())
+                ->collect(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'name', $sequence];
@@ -67,7 +73,7 @@ class ComparatorsTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $shuffledSequence = (new ArrayList($sequence))
                 ->stream()
-                ->aggregate(Reorganizers::shuffle())
+                ->collect(Reorganizers::shuffle())
                 ->toArray()
             ;
             $cases[] = [$shuffledSequence, 'field', $sequence];
@@ -92,5 +98,46 @@ class ComparatorsTest extends TestCase
             ->toArray();
 
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider scalarComparatorCases
+     * @test
+     * @param $a
+     * @param $b
+     * @param $expected
+     */
+    public function callbackComparatorChecking($a, $b, $expected): void
+    {
+        $f = new InvokeCounter(static function ($value) {
+            return $value;
+        });
+        $comparator = Comparators::callbackComparator($f);
+        $this->assertEquals($comparator($a, $b), $expected);
+        $this->assertTrue($f->countOfInvokes() > 0);
+    }
+
+    /**
+     * @test
+     */
+    public function integrateCallbackComparatorChecking(): void
+    {
+        $f = new InvokeCounter(static function ($value) {
+            return $value;
+        });
+
+        $sourceCollection = CollectionFactory::numbers(10);
+        $shuffledCollection = $sourceCollection
+            ->stream()
+            ->reorganize(Reorganizers::shuffle())
+            ->getCollection();
+
+        $this->assertThat($sourceCollection, CollectionIsNotEqual::to($shuffledCollection));
+
+        $sortedCollection = $shuffledCollection->stream()
+            ->sort(Comparators::callbackComparator($f))
+            ->getCollection()
+        ;
+        $this->assertThat($sourceCollection, CollectionIsEqual::to($sortedCollection));
     }
 }

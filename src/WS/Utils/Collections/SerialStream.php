@@ -180,9 +180,9 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
-    public function aggregate(callable $aggregator)
+    public function collect(callable $collector)
     {
-        return $aggregator($this->getCollection());
+        return $collector($this->getCollection());
     }
 
     /**

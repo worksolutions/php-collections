@@ -8,7 +8,7 @@ namespace WS\Utils\Collections;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
-use WS\Utils\Collections\Utils\InvokesCounter;
+use WS\Utils\Collections\Utils\InvokeCounter;
 use WS\Utils\Collections\Utils\TestInteger;
 
 class SerialStreamTest extends TestCase
@@ -59,9 +59,9 @@ class SerialStreamTest extends TestCase
         };
     }
 
-    public static function fInvokeCounter(): InvokesCounter
+    public static function fInvokeCounter(): InvokeCounter
     {
-        return new InvokesCounter();
+        return new InvokeCounter();
     }
 
     public static function fIntComparator(): callable
@@ -113,10 +113,10 @@ class SerialStreamTest extends TestCase
      * @dataProvider iteratingCases
      * @test
      * @param $input
-     * @param InvokesCounter $counter
+     * @param InvokeCounter $counter
      * @param $expectedCount
      */
-    public function iterating($input, InvokesCounter $counter, $expectedCount): void
+    public function iterating($input, InvokeCounter $counter, $expectedCount): void
     {
         $this->createCollection($input)
             ->stream()
@@ -250,7 +250,7 @@ class SerialStreamTest extends TestCase
         $collection = $this->createCollection($input);
         $actual = $collection
             ->stream()
-            ->aggregate($aggregator);
+            ->collect($aggregator);
 
         $this->assertEquals($expected, $actual);
     }
@@ -501,7 +501,7 @@ class SerialStreamTest extends TestCase
      */
     public function limitedWalkCheck(): void
     {
-        $invokesCounter = new InvokesCounter();
+        $invokesCounter = new InvokeCounter();
         CollectionFactory::numbers(10)
             ->stream()
             ->walk($invokesCounter, 5);

@@ -57,11 +57,11 @@ interface Stream
     public function map(callable $converter): Stream;
 
     /**
-     * Call aggregator function for collection. Is terminate function
-     * @param callable $aggregator Function f(Collection $c): mixed
+     * Call collector function for collection. It is terminate function
+     * @param callable $collector Function f(Collection $c): mixed
      * @return mixed
      */
-    public function aggregate(callable $aggregator);
+    public function collect(callable $collector);
 
     /**
      * Returns any elements from collection or null if absent
@@ -154,5 +154,9 @@ interface Stream
      */
     public function getCollection(): Collection;
 
+    /**
+     * Clear current condition. The same as when(true)
+     * @return Stream
+     */
     public function always(): Stream;
 }

@@ -15,7 +15,7 @@ use WS\Utils\Collections\Map;
  * This class consist of static methods with < Fn(...$args: mixed): <Fn($c: Collection): mixed> >
  * @package WS\Utils\Collections\Functions
  */
-class Aggregators
+class Collectors
 {
     /**
      * Returns function with interface <Fn($c: Collection): string> for concatenating collection strings
