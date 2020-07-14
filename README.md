@@ -17,7 +17,7 @@ Read this in other languages: [Русский](doc/README.ru.md)
 composer require worksolutions/php-collections
 ``` 
 
-## Usage examples
+## Examples
 ```php
 <?php
 use WS\Utils\Collections;
