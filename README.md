@@ -5,4 +5,35 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/worksolutions/php-collections/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/worksolutions/php-collections/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/worksolutions/php-collections?style=flat-square)](https://packagist.org/packages/worksolutions/php-collections)
 
-Collection library for php language
+Collection library for php language. It is used for convenient work with common data structures through functional approach. The main data structures are: List, Map, Stack, Queue, Set. 
+
+The part of library is stream api. The stream api provides a more functional programming approach to iterating and processing elements.
+
+Read this in other languages: [Русский](doc/README.ru.md)
+
+
+##Install 
+```bash
+composer require worksolutions/php-collections
+``` 
+
+##Usage examples
+```php
+<?php
+use WS\Utils\Collections;
+use WS\Utils\Collections\Functions;
+
+// Отобрать элементы по фильтру
+CollectionFactory::from([1, 2, 3])
+    ->stream()
+    ->filter(Predicates::moreThan(1))
+    ->getCollection(); // Collection [2, 3]
+
+// Распечатать все файлы в директории
+CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
+    ->stream()
+    ->each(static function (SplFileInfo $fileInfo) {
+        echo $fileInfo->getFilename() . "\n";
+    });
+
+```
