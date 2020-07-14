@@ -6,8 +6,10 @@
 namespace WS\Utils\Collections;
 
 use PHPUnit\Framework\TestCase;
+use WS\Utils\Collections\Functions\Predicates;
 use WS\Utils\Collections\Functions\Reorganizers;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
+use WS\Utils\Collections\Utils\TestInteger;
 
 class ReorganizersFunctionsTest extends TestCase
 {
@@ -44,5 +46,25 @@ class ReorganizersFunctionsTest extends TestCase
             ->getCollection()
         ;
         $this->assertThat($collapsedCollection, CollectionIsEqual::to([1, 2, 3, 4, 5, 6]));
+    }
+
+    /**
+     * @test
+     */
+    public function filterDistinctElements(): void
+    {
+        $o1 = new TestInteger(1);
+        $o2 = new TestInteger(2);
+        $o3 = new TestInteger(3);
+        $o4 = new TestInteger(1);
+        $o5 = new TestInteger(2);
+
+        $uniqCollection = CollectionFactory::from([$o1, $o2, $o3, $o4, $o5])
+            ->stream()
+            ->filter(Predicates::lockDuplicated())
+            ->getCollection()
+        ;
+
+        self::assertThat($uniqCollection, CollectionIsEqual::to([$o1, $o2, $o3]));
     }
 }

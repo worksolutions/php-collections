@@ -6,6 +6,7 @@
 namespace WS\Utils\Collections\Functions;
 
 use Closure;
+use WS\Utils\Collections\HashSet;
 
 class Predicates
 {
@@ -84,6 +85,19 @@ class Predicates
     {
         return static function ($el) use ($value): bool {
             return $el === $value;
+        };
+    }
+
+    /**
+     * Returns <Fn($el: mixed): bool> passed unique element at once
+     */
+    public static function lockDuplicated(): Closure
+    {
+        $set = new HashSet();
+        return static function ($el) use ($set): bool {
+            $res = !$set->contains($el);
+            $set->add($el);
+            return $res;
         };
     }
 
