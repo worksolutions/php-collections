@@ -23,13 +23,13 @@ composer require worksolutions/php-collections
 use WS\Utils\Collections;
 use WS\Utils\Collections\Functions;
 
-// Отобрать элементы по фильтру
+// Getting filtered elements
 CollectionFactory::from([1, 2, 3])
     ->stream()
     ->filter(Predicates::moreThan(1))
     ->getCollection(); // Collection [2, 3]
 
-// Распечатать все файлы в директории
+// Print directory files
 CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
     ->stream()
     ->each(static function (SplFileInfo $fileInfo) {
