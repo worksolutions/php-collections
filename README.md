@@ -12,12 +12,12 @@ The part of library is stream api. The stream api provides a more functional pro
 Read this in other languages: [Русский](doc/README.ru.md)
 
 
-##Install 
+## Install 
 ```bash
 composer require worksolutions/php-collections
 ``` 
 
-##Usage examples
+## Usage examples
 ```php
 <?php
 use WS\Utils\Collections;
