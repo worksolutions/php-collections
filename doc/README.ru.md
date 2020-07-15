@@ -56,7 +56,7 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 #### Методы интерфейса
 
-##### ```add($element: mixed): bool;```
+- ##### ```add($element: mixed): bool;```
 
 Добавляет элемент в конец коллекции.
 
