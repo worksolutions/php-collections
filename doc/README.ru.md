@@ -56,12 +56,18 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 #### Методы интерфейса
 
-- [add](#addelement-mixed-bool)
+- [add. Добавление элемента в коллекцию](#addelement-mixed-bool)
 - [addAll](#addallelements-iterable-bool)
 - [merge](#mergecollection-collection-bool)
 - [clear](#clear-void)
+- [remove](#removeelement-mixed-bool)
+- [contains](#containceelement-mixed-bool)
 
-- ##### ```add($element: mixed): bool;```
+- ##### Добавление элемента в коллекцию
+
+```
+add($element: mixed): bool;
+```
 
 Добавляет элемент в конец коллекции. Возвращает `true` в случае успешного ответа или `false` при неудаче.
 
@@ -114,6 +120,36 @@ $collection->clear(); // null
 $collection->toArray(); // [];
 
 ```
+
+- ##### ```remove($element: mixed): bool;```
+
+Удаление конкретного элемента в коллекции. Метод возвращает признак удаления элемента. Если элемента не существовало, вернется `false`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection->remove(2); // true
+$collection->remove(4); // false
+$collection->toArray(); // [1, 3];
+
+```
+
+- ##### ```contains($element: mixed): bool;```
+
+Проверка наличия конкретного элемента в коллекции. Если элемента не существует, вернется `false`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection->contains(2); // true
+$collection->contains(4); // false
+
+```
+
 
 ### Список (List)
 
