@@ -56,12 +56,12 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 #### Методы интерфейса
 
-- [*add* Добавление элемента в коллекцию](#добавление-элемента-в-коллекцию)
-- [addAll](#addallelements-iterable-bool)
-- [merge](#mergecollection-collection-bool)
-- [clear](#clear-void)
-- [remove](#removeelement-mixed-bool)
-- [contains](#containceelement-mixed-bool)
+- [*add* – Добавление элемента в коллекцию](#добавление-элемента-в-коллекцию)
+- [*addAll* – Добавление множества элементов в коллекцию](#addallelements-iterable-bool)
+- [*merge* – Слияние коллекций](#mergecollection-collection-bool)
+- [*clear* – Удаление всех элементов коллекции](#clear-void)
+- [*remove* – Удаление элемента коллекции](#removeelement-mixed-bool)
+- [*contains* – Проверка на существование элемента в коллекции](#containceelement-mixed-bool)
 
 ##### Добавление элемента в коллекцию
 
