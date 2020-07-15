@@ -57,20 +57,17 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 #### Методы интерфейса
 
 - [*add* – Добавление элемента в коллекцию](#добавление-элемента-в-коллекцию)
-- [*addAll* – Добавление множества элементов в коллекцию](#addallelements-iterable-bool)
-- [*merge* – Слияние коллекций](#mergecollection-collection-bool)
-- [*clear* – Удаление всех элементов коллекции](#clear-void)
-- [*remove* – Удаление элемента коллекции](#removeelement-mixed-bool)
-- [*contains* – Проверка на существование элемента в коллекции](#containceelement-mixed-bool)
+- [*addAll* – Добавление множества элементов в коллекцию](#Добавление-множества-элементов-в-коллекцию)
+- [*merge* – Слияние коллекций](#Слияние-коллекций)
+- [*clear* – Удаление всех элементов коллекции](#Удаление-всех-элементов-коллекции)
+- [*remove* – Удаление элемента коллекции](#Удаление-элемента-коллекции)
+- [*contains* – Проверка на существование элемента в коллекции](#Проверка-на-существование-элемента-в-коллекции)
 
 ##### Добавление элемента в коллекцию
-
 ```
 add($element: mixed): bool;
 ```
-
 Добавляет элемент в конец коллекции. Возвращает `true` в случае успешного ответа или `false` при неудаче.
-
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -79,10 +76,11 @@ $collection = CollectionFactory::from([1, 2]); // [1, 2]
 $collection->add(10); // [1, 2] -> [1, 2, 10];
 
 ```
-- ##### ```addAll($elements: iterable): bool;```
-
+##### Добавление множества элементов в коллекцию
+```
+addAll($elements: iterable): bool;
+```
 Добавляет множества элементов в конец коллекции. Возвращает `true` в случае успешного ответа или `false` при неудаче.
-
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -92,11 +90,11 @@ $collection->add([10, 11, 12]); // true
 $collection->toArray(); // [1, 2] -> [1, 2, 10, 11, 12];
 
 ```
-
-- ##### ```merge($collection: Collection): bool;```
-
+##### Слияние коллекций
+```
+merge($collection: Collection): bool;
+```
 Метод объединяет текущую коллекцию с переданной. Возвращает `true` в случае успешного ответа или `false` при неудаче.
-
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -107,10 +105,13 @@ $collection->merge($mergingCollection); // true
 $collection->toArray(); // [1, 2, 10, 11, 12];
 
 ```
-- ##### ```clear(): void;```
+##### Удаление всех элементов коллекции
 
-Удаление всех элементов коллекции.
+```
+clear(): void;
+```
 
+Метод удаляет все элементы коллекции.
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -121,7 +122,10 @@ $collection->toArray(); // [];
 
 ```
 
-- ##### ```remove($element: mixed): bool;```
+##### Удаление элемента коллекции
+```
+remove($element: mixed): bool;
+```
 
 Удаление конкретного элемента в коллекции. Метод возвращает признак удаления элемента. Если элемента не существовало, вернется `false`.
 
@@ -135,8 +139,10 @@ $collection->remove(4); // false
 $collection->toArray(); // [1, 3];
 
 ```
-
-- ##### ```contains($element: mixed): bool;```
+##### Проверка на существование элемента в коллекции
+```
+contains($element: mixed): bool;
+```
 
 Проверка наличия конкретного элемента в коллекции. Если элемента не существует, вернется `false`.
 
@@ -149,7 +155,6 @@ $collection->contains(2); // true
 $collection->contains(4); // false
 
 ```
-
 
 ### Список (List)
 
