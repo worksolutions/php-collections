@@ -24,7 +24,7 @@ interface Collection extends IteratorAggregate
     public function addAll(iterable $elements): bool;
 
     /**
-     * Merge the elements in the specified collection to this collection
+     * Merges the elements in the specified collection to this collection
      * @param Collection $collection
      * @return bool
      */
@@ -73,9 +73,13 @@ interface Collection extends IteratorAggregate
     public function stream(): Stream;
 
     /**
-     * Returns an array containing all of the elements in this collection
+     * Returns an indexed array containing all of the elements in this collection
      */
     public function toArray(): array;
 
+    /**
+     * Returns a copy of collection for secure usage
+     * @return Collection
+     */
     public function copy(): Collection;
 }
