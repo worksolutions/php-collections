@@ -5,9 +5,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/worksolutions/php-collections/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/worksolutions/php-collections/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/worksolutions/php-collections?style=flat-square)](https://packagist.org/packages/worksolutions/php-collections)
 
-Collection library for php language. It is used for convenient work with common data structures through functional approach. The main data structures are: List, Map, Stack, Queue, Set. 
-
-The part of library is stream api. The stream api provides a more functional programming approach to iterating and processing elements.
+A collection library for PHP. It is used for convenient work with common data structures through functional approach. The main data structures are: List, Map, Stack, Queue, Set.
+Part of the library is a Stream API. It provides a more functional programming approach to iterating and processing elements.
 
 Read this in other languages: [Русский](doc/README.ru.md)
 
