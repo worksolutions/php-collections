@@ -56,16 +56,16 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 #### Методы интерфейса
 
-##### Add
+##### ```add($element: mixed): bool;```
 
-```add($element: mixed): bool;``` Добавляет элемент в конец коллекции.
+Добавляет элемент в конец коллекции.
 
 ```php
 
-    use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\CollectionFactory;
 
-    $collection = CollectionFactory::from([1, 2]); // [1, 2]
-    $collection->add(10); // [1, 2] -> [1, 2, 10];
+$collection = CollectionFactory::from([1, 2]); // [1, 2]
+$collection->add(10); // [1, 2] -> [1, 2, 10];
 
 ```
 
