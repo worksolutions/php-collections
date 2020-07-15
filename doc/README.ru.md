@@ -41,7 +41,7 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 Фундаментально библиотека состоит из нескольких частей, это: 
 
-- [Структуры данных][## Структуры данных] Каждая имеет свою особенность, выраженную при помощи интерфейса и описания к нему, и реализацию. При этом реализации поведения структур данных могут быть разные.
+- [Структуры данных][Структуры данных] Каждая имеет свою особенность, выраженную при помощи интерфейса и описания к нему, и реализацию. При этом реализации поведения структур данных могут быть разные.
 - [Фабрика создания коллекции] Имеет множество статических методов для удобного создания коллекций.
 - [Потоки обхода коллекций] Предназначен для обхода и преобразования коллекций, при этом каждое преобразование создает новый экземпляр коллекции.
 - [Набор функций обхода и преобразования] Состоит из заранее подготовленных конструкторов функций для удобного использования в момент обхода. Можно создать использовать собственные функции более специфичные для вашей предметной области.
@@ -56,13 +56,14 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 #### Методы интерфейса
 
-- [add][add($element: mixed): bool;]
-- [addAll]
-
+- [add](#addelement-mixed-bool)
+- [addAll](#addallelements-iterable-bool)
+- [merge](#mergecollection-collection-bool)
+- [clear](#clear-void)
 
 - ##### ```add($element: mixed): bool;```
 
-Добавляет элемент в конец коллекции.
+Добавляет элемент в конец коллекции. Возвращает `true` в случае успешного ответа или `false` при неудаче.
 
 ```php
 
@@ -70,6 +71,47 @@ use WS\Utils\Collections\CollectionFactory;
 
 $collection = CollectionFactory::from([1, 2]); // [1, 2]
 $collection->add(10); // [1, 2] -> [1, 2, 10];
+
+```
+- ##### ```addAll($elements: iterable): bool;```
+
+Добавляет множества элементов в конец коллекции. Возвращает `true` в случае успешного ответа или `false` при неудаче.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2]); // [1, 2]
+$collection->add([10, 11, 12]); // true
+$collection->toArray(); // [1, 2] -> [1, 2, 10, 11, 12];
+
+```
+
+- ##### ```merge($collection: Collection): bool;```
+
+Метод объединяет текущую коллекцию с переданной. Возвращает `true` в случае успешного ответа или `false` при неудаче.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2]); // [1, 2]
+$mergingCollection = CollectionFactory::from([11, 12]); // [11, 12]
+$collection->merge($mergingCollection); // true
+$collection->toArray(); // [1, 2, 10, 11, 12];
+
+```
+- ##### ```clear(): void;```
+
+Удаление всех элементов коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2]); // [1, 2]
+$collection->clear(); // null
+$collection->toArray(); // [];
 
 ```
 
