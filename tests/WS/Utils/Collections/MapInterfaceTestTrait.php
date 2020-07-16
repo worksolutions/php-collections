@@ -70,6 +70,7 @@ trait MapInterfaceTestTrait
      */
     public function keySetGetting(): void
     {
+        /** @var Map $instance */
         $instance = $this->createInstance();
         $instance->put(1,1);
         $instance->put(2,1);
@@ -80,9 +81,8 @@ trait MapInterfaceTestTrait
 
         $instance->remove(4);
 
-        $set = $instance->keySet();
+        $set = $instance->keys();
 
-        $this->assertInstanceOf(Collection::class, $set);
         $this->assertEquals(4, $set->size());
     }
 
@@ -91,6 +91,7 @@ trait MapInterfaceTestTrait
      */
     public function valuesGetting(): void
     {
+        /** @var Map $instance */
         $instance = $this->createInstance();
         $instance->put(1,1);
         $instance->put(2,1);
@@ -103,7 +104,6 @@ trait MapInterfaceTestTrait
 
         $values = $instance->values();
 
-        $this->assertInstanceOf(Collection::class, $values);
         $this->assertEquals(4, $values->size());
     }
 
