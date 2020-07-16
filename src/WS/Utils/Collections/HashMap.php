@@ -37,7 +37,7 @@ class HashMap implements Map
         return new ArrayList($values);
     }
 
-    public function keySet(): Collection
+    public function keys(): Collection
     {
         $keys = [];
         /** @var MapEntry $entry */

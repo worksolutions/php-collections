@@ -11,7 +11,7 @@ interface Map extends IteratorAggregate
 {
     public function put($key, $value): bool;
 
-    public function keySet(): Collection;
+    public function keys(): Collection;
 
     public function values(): Collection;
 
@@ -35,6 +35,10 @@ interface Map extends IteratorAggregate
      */
     public function containsValue($value): bool;
 
+    /**
+     * Returns count of map pairs
+     * @return int
+     */
     public function size(): int;
 
     /**

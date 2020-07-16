@@ -75,7 +75,7 @@ class HashSet implements Set
 
     public function toArray(): array
     {
-        return $this->internalMap->keySet()->toArray();
+        return $this->internalMap->keys()->toArray();
     }
 
     public function copy(): Collection
