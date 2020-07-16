@@ -62,6 +62,12 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 - [*clear* – Удаление всех элементов коллекции](#Удаление-всех-элементов-коллекции)
 - [*remove* – Удаление элемента коллекции](#Удаление-элемента-коллекции)
 - [*contains* – Проверка на существование элемента в коллекции](#Проверка-на-существование-элемента-в-коллекции)
+- [*equals* – Сравнение двух коллекций на эквивалентность](#Сравнение-двух-коллекций-на-эквивалентность)
+- [*size* – Получение количества элементов в коллекции](#Получение-количества-элементов-в-коллекции)
+- [*isEmpty* – Проверка коллекции на пустоту](#Проверка-коллекции-на-пустоту)
+- [*toArray* – Получение элементов коллекции в виде массива](#Получение-элементов-коллекции-в-виде-массива)
+- [*copy* – Получение копии коллекции](#Получение-копии-коллекции)
+- [*stream* – Получение потока обхода коллекции (Stream)](#Получение-потока-обхода-коллекции-(Stream))
 
 ##### Добавление элемента в коллекцию
 ```
@@ -155,6 +161,115 @@ $collection->contains(2); // true
 $collection->contains(4); // false
 
 ```
+##### Сравнение двух коллекций на эквивалентность
+```
+equals($collection: Collection): bool;
+```
+
+Метод проверяет, что переданная коллекция эквивалентна текущей, это означает что все элементы одной коллекции содержатся в другой коллекции и количество элементов равно. В случае неравенства коллекций, вернется `false`.
+
+```php
+
+use WS\Utils\Collections\HashSet;
+
+$set1 = new HashSet([1, 2, 3]);
+$set2 = new HashSet([3, 2, 1]);
+$set3 = new HashSet([3, 2]);
+
+$set1->equals($set2); // true
+$set2->equals($set1); // true
+$set1->equals($set3); // false
+
+```
+##### Получение количества элементов в коллекции
+```
+size(): int;
+```
+
+Метод возвращает число элементов в коллекции. Если коллекция пустая - 0.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection->size(); // 3
+
+$emptyCollection = CollectionFactory::from([]);
+$emptyCollection->size(); // false
+
+```
+##### Проверка коллекции на пустоту
+```
+isEmpty(): bool;
+```
+
+Метод возвращает признак пустой коллекции. Если в коллекции существуют элементы, вернется `false`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection->isEmpty(); // false
+
+$emptyCollection = CollectionFactory::from([]);
+$emptyCollection->isEmpty(); // true
+
+```
+##### Получение элементов коллекции в виде массива
+```
+toArray(): array;
+```
+
+Метод индексированный массив состоящий из элементов коллекции, порядок следования элементов зависит от внутреннего представления.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection->toArray(); // [1, 2, 3]
+
+$emptyCollection = CollectionFactory::from([]);
+$emptyCollection->toArray(); // []
+
+```
+##### Получение копии коллекции
+```
+copy(): Collection;
+```
+
+Метод возвращает точную копию коллекции. Коллекции - мутабельны. Это означает, что применение методов модификации изменяет коллекцию, для гарантии неизменности коллекции рекомендуется применять метод копирования.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$copyOfCollection = $collection->copy(); // Collection
+
+$copyOfCollection === $collection; // false
+
+```
+##### Получение потока обхода коллекции (Stream)
+```
+stream(): Stream;
+```
+
+Метод объект который реализует интерфейс обхода коллекции (Stream). Поток обхода коллекции является очень мощным инструментом и в большинстве случаев при разработке приходится иметь дело именно с ним. [Подробнее...](#Поток обхода коллекции)
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::from([1, 2, 3]); // [1, 2, 3]
+$collection
+    ->stream()
+    ->each(static function (int $el) {var_export($el);}); // 1 2 3
+
+```
+
 
 ### Список (List)
 
@@ -168,4 +283,6 @@ $collection->contains(4); // false
 
 ## Фабрика создания коллекции
 
-### Потоки обхода коллекций
+## Потоки обхода коллекций
+
+## Набор функций обхода и преобразования
