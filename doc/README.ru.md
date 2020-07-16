@@ -73,7 +73,9 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 - [*copy* – Получение копии коллекции](#Получение-копии-коллекции)
 - [*stream* – Получение потока обхода коллекции (Stream)](#Получение-потока-обхода-коллекции-Stream)
 
-#### Добавление элемента в коллекцию [[↑]](#коллекция-collection)
+#### Добавление элемента в коллекцию
+
+[[↑ К разделу]](#коллекция-collection)
 ```
 add($element: mixed): bool;
 ```
@@ -86,7 +88,8 @@ $collection = CollectionFactory::from([1, 2]); // [1, 2]
 $collection->add(10); // [1, 2] -> [1, 2, 10];
 
 ```
-#### Добавление множества элементов в коллекцию [[↑]](#коллекция-collection)
+#### Добавление множества элементов в коллекцию
+[[↑ К разделу]](#коллекция-collection)
 ```
 addAll($elements: iterable): bool;
 ```
@@ -100,7 +103,8 @@ $collection->add([10, 11, 12]); // true
 $collection->toArray(); // [1, 2] -> [1, 2, 10, 11, 12];
 
 ```
-#### Слияние коллекций [[↑]](#коллекция-collection)
+#### Слияние коллекций
+[[↑ К разделу]](#коллекция-collection)
 ```
 merge($collection: Collection): bool;
 ```
@@ -115,7 +119,8 @@ $collection->merge($mergingCollection); // true
 $collection->toArray(); // [1, 2, 10, 11, 12];
 
 ```
-#### Удаление всех элементов коллекции [[↑]](#коллекция-collection)
+#### Удаление всех элементов коллекции
+[[↑ К разделу]](#коллекция-collection)
 ```
 clear(): void;
 ```
@@ -129,7 +134,8 @@ $collection->clear(); // null
 $collection->toArray(); // [];
 
 ```
-#### Удаление элемента коллекции [[↑]](#коллекция-collection)
+#### Удаление элемента коллекции
+[[↑ К разделу]](#коллекция-collection)
 ```
 remove($element: mixed): bool;
 ```
@@ -146,7 +152,8 @@ $collection->remove(4); // false
 $collection->toArray(); // [1, 3];
 
 ```
-#### Проверка на существование элемента в коллекции [[↑]](#коллекция-collection)
+#### Проверка на существование элемента в коллекции
+[[↑ К разделу]](#коллекция-collection)
 ```
 contains($element: mixed): bool;
 ```
@@ -162,7 +169,8 @@ $collection->contains(2); // true
 $collection->contains(4); // false
 
 ```
-#### Сравнение двух коллекций на эквивалентность [[↑]](#коллекция-collection)
+#### Сравнение двух коллекций на эквивалентность
+[[↑ К разделу]](#коллекция-collection)
 ```
 equals($collection: Collection): bool;
 ```
@@ -182,7 +190,8 @@ $set2->equals($set1); // true
 $set1->equals($set3); // false
 
 ```
-#### Получение количества элементов в коллекции [[↑]](#коллекция-collection)
+#### Получение количества элементов в коллекции
+[[↑ К разделу]](#коллекция-collection)
 ```
 size(): int;
 ```
@@ -200,13 +209,12 @@ $emptyCollection = CollectionFactory::from([]);
 $emptyCollection->size(); // false
 
 ```
-#### Проверка коллекции на пустоту [[↑]](#коллекция-collection)
+#### Проверка коллекции на пустоту
+[[↑ К разделу]](#коллекция-collection)
 ```
 isEmpty(): bool;
 ```
-
 Метод возвращает признак пустой коллекции. Если в коллекции существуют элементы, вернется `false`.
-
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -218,7 +226,8 @@ $emptyCollection = CollectionFactory::from([]);
 $emptyCollection->isEmpty(); // true
 
 ```
-#### Получение элементов коллекции в виде массива [[↑]](#коллекция-collection)
+#### Получение элементов коллекции в виде массива
+[[↑ К разделу]](#коллекция-collection)
 ```
 toArray(): array;
 ```
@@ -236,13 +245,12 @@ $emptyCollection = CollectionFactory::from([]);
 $emptyCollection->toArray(); // []
 
 ```
-#### Получение копии коллекции [[↑]](#коллекция-collection)
+#### Получение копии коллекции
+[[↑ К разделу]](#коллекция-collection)
 ```
 copy(): Collection;
 ```
-
 Метод возвращает точную копию коллекции. Коллекции - мутабельны. Это означает, что применение методов модификации изменяет коллекцию, для гарантии неизменности коллекции рекомендуется применять метод копирования.
-
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -253,7 +261,8 @@ $copyOfCollection = $collection->copy(); // Collection
 $copyOfCollection === $collection; // false
 
 ```
-#### Получение потока обхода коллекции (Stream) [[↑]](#коллекция-collection)
+#### Получение потока обхода коллекции (Stream)
+[[↑ К разделу]](#коллекция-collection)
 ```
 stream(): Stream;
 ```
@@ -282,7 +291,8 @@ $collection
 - [*lastIndexOf* – Получение порядкового индекса последнего подходящего элемента](#Получение-порядкового-индекса-последнего-подходящего-элемента)
 - [*removeAt* – Удаление элемента по индексу](#Удаление-элемента-по-индексу)
 
-#### Получение элемента по порядковому индексу [[↑]](#список-listsequence)
+#### Получение элемента по порядковому индексу
+[[↑ К разделу]](#список-listsequence)
 ```
 get($index: int): mixed;
 ```
@@ -298,7 +308,8 @@ $list->get(1); // 2
 $list->get(2); // null
 
 ```
-#### Замена элемента списка [[↑]](#список-listsequence)
+#### Замена элемента списка
+[[↑ К разделу]](#список-listsequence)
 ```
 set($element: mixed, $index: int): mixed;
 ```
@@ -314,7 +325,8 @@ $list->set(4, 1); // 2
 $list->set(4, 2); // OutOfRangeException
 
 ```
-#### Получение порядкового индекса элемента [[↑]](#список-listsequence)
+#### Получение порядкового индекса элемента
+[[↑ К разделу]](#список-listsequence)
 ```
 indexOf($element: mixed): ?int;
 ```
@@ -330,7 +342,8 @@ $list->indexOf(2); // 1
 $list->indexOf(4); // null
 
 ```
-#### Получение порядкового индекса последнего подходящего элемента [[↑]](#список-listsequence)
+#### Получение порядкового индекса последнего подходящего элемента
+[[↑ К разделу]](#список-listsequence)
 ```
 lastIndexOf($element: mixed): ?int;
 ```
@@ -346,7 +359,8 @@ $list->indexOf(2); // 1
 $list->indexOf(3); // null
 
 ```
-#### Удаление элемента по индексу [[↑]](#список-listsequence)
+#### Удаление элемента по индексу
+[[↑ К разделу]](#список-listsequence)
 ```
 removeAt(int $index): mixed;
 ```
