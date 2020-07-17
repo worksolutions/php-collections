@@ -9,5 +9,8 @@ use WS\Utils\Collections\Iterator\Iterator;
 
 interface IndexIterable
 {
+    /**
+     * @return Iterator
+     */
     public function getIndexIterator(): Iterator;
 }
