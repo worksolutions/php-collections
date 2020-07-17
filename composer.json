@@ -38,6 +38,5 @@
     "test-with-coverage": [
       "phpunit --coverage-clover coverage.xml"
     ]
-  },
-  "lock": false
+  }
 }
