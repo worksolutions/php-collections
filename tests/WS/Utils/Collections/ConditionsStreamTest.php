@@ -5,8 +5,8 @@
 
 namespace WS\Utils\Collections;
 
+use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Predicates;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
@@ -26,7 +26,7 @@ class ConditionsStreamTest extends TestCase
             ->filter(Predicates::lessThan(4))
             ->getCollection()
         ;
-        $this->assertEquals(10, $collection->size());
+        self::assertEquals(10, $collection->size());
     }
 
     /**
@@ -41,7 +41,7 @@ class ConditionsStreamTest extends TestCase
             ->getCollection()
         ;
 
-        $this->assertEquals(5, $collection->size());
+        self::assertEquals(5, $collection->size());
     }
 
     /**
@@ -58,7 +58,7 @@ class ConditionsStreamTest extends TestCase
             ->getCollection()
         ;
 
-        $this->assertThat($collection, CollectionIsEqual::to([5, 6, 7, 8, 9]));
+        self::assertThat($collection, CollectionIsEqual::to([5, 6, 7, 8, 9]));
     }
 
     /**
@@ -75,7 +75,7 @@ class ConditionsStreamTest extends TestCase
             ->getCollection()
         ;
 
-        $this->assertThat($collection, CollectionIsEqual::to([5, 6, 7, 8, 9]));
+        self::assertThat($collection, CollectionIsEqual::to([5, 6, 7, 8, 9]));
     }
 
     /**
@@ -93,7 +93,7 @@ class ConditionsStreamTest extends TestCase
             ->getCollection()
         ;
 
-        $this->assertThat($resultCollection, CollectionIsEqual::to($sourceCollection));
+        self::assertThat($resultCollection, CollectionIsEqual::to($sourceCollection));
     }
 
     /**
@@ -110,7 +110,7 @@ class ConditionsStreamTest extends TestCase
             ->getCollection()
         ;
 
-        $this->assertThat($collection, CollectionIsEqual::to([4, 5, 6]));
+        self::assertThat($collection, CollectionIsEqual::to([4, 5, 6]));
     }
 
     public function streamModifiers(): array
@@ -149,11 +149,11 @@ class ConditionsStreamTest extends TestCase
 
         foreach ($args as $arg) {
             if ($arg instanceof InvokeCounter && $arg->countOfInvokes() > 0) {
-                $this->fail("Modifier callback shouldn't be called");
+                self::fail("Modifier callback shouldn't be called");
             }
         }
 
-        $this->assertThat($sourceCollection, CollectionIsEqual::to($stream->getCollection()));
+        self::assertThat($sourceCollection, CollectionIsEqual::to($stream->getCollection()));
     }
 
     public function dummyStreamWrapperMethods(): array
