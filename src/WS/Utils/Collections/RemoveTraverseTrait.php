@@ -42,7 +42,7 @@ trait RemoveTraverseTrait
 
     abstract public function isEmpty(): bool;
 
-    abstract protected function setElements(array $elements);
+    abstract protected function setElements(array $elements): void;
 
     abstract protected function getElements(): array;
 }
