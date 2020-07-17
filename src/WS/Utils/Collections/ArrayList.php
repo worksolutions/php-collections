@@ -5,6 +5,8 @@
 
 namespace WS\Utils\Collections;
 
+use OutOfRangeException;
+
 class ArrayList extends AbstractCollection implements ListSequence
 {
 
@@ -20,6 +22,9 @@ class ArrayList extends AbstractCollection implements ListSequence
 
     public function set($element, int $index)
     {
+        if (!isset($this->elements[$index])) {
+            throw new OutOfRangeException("Index $index is out of list range with size: {$this->size()} ");
+        }
         $res = $this->elements[$index];
         $this->elements[$index] = $element;
 

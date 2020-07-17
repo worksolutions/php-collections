@@ -15,7 +15,7 @@ interface ListSequence extends Collection
     public function get(int $index);
 
     /**
-     * Replaces the element at the specified position in this list with the specified element
+     * Replaces the element at the specified position in this list with the specified element. If $index is more than elements count OutOfRangeException will occur
      * @param $element
      * @param int $index
      * @return mixed

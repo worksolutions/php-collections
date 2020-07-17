@@ -7,6 +7,7 @@ namespace WS\Utils\Collections;
 
 use SplObjectStorage;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
+use WS\Utils\Collections\UnitConstraints\CollectionIsNotEqual;
 use WS\Utils\Collections\Utils\TestInteger;
 
 trait SetInterfaceTestTrait
@@ -67,10 +68,66 @@ trait SetInterfaceTestTrait
         $instance->add(3);
 
         $anotherInstance = $this->createInstance();
-        $instance->add(3);
-        $instance->add(2);
-        $instance->add(1);
+        $anotherInstance->add(3);
+        $anotherInstance->add(2);
+        $anotherInstance->add(1);
 
         self::assertThat($anotherInstance, CollectionIsEqual::to($instance));
+    }
+
+    /**
+     * @test
+     */
+    public function notEqualsSetCheckingRight(): void
+    {
+        $instance = $this->createInstance();
+        $instance->add(1);
+        $instance->add(2);
+        $instance->add(3);
+        $instance->add(4);
+
+        $anotherInstance = $this->createInstance();
+        $anotherInstance->add(3);
+        $anotherInstance->add(2);
+        $anotherInstance->add(1);
+
+        self::assertThat($anotherInstance, CollectionIsNotEqual::to($instance));
+    }
+
+    /**
+     * @test
+     */
+    public function notEqualsSetCheckingBack(): void
+    {
+        $instance = $this->createInstance();
+        $instance->add(1);
+        $instance->add(2);
+        $instance->add(3);
+
+        $anotherInstance = $this->createInstance();
+        $anotherInstance->add(4);
+        $anotherInstance->add(3);
+        $anotherInstance->add(2);
+        $anotherInstance->add(1);
+
+        self::assertThat($anotherInstance, CollectionIsNotEqual::to($instance));
+    }
+
+    /**
+     * @test
+     */
+    public function notEqualsSetCheckingDiffElements(): void
+    {
+        $instance = $this->createInstance();
+        $instance->add(1);
+        $instance->add(2);
+        $instance->add(3);
+
+        $anotherInstance = $this->createInstance();
+        $anotherInstance->add(4);
+        $anotherInstance->add(2);
+        $anotherInstance->add(1);
+
+        self::assertThat($anotherInstance, CollectionIsNotEqual::to($instance));
     }
 }

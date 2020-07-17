@@ -60,11 +60,13 @@ class HashSet implements Set
 
     public function equals(Collection $collection): bool
     {
+        if ($this->size() !== $collection->size()) {
+            return false;
+        }
         foreach ($collection as $item) {
             if (!$this->contains($item)) {
                 return false;
             }
-
         }
         return true;
     }
