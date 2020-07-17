@@ -11,7 +11,7 @@ Part of the library is a Stream API. It provides a more functional programming a
 Read this in other languages: [Русский](doc/README.ru.md)
 
 ## Requirements 
-[```PHP 7.2+```](https://www.php.net/downloads)
+[```PHP 7.1+```](https://www.php.net/downloads)
 
 ## Install 
 ```bash
