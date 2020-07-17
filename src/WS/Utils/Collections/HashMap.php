@@ -47,6 +47,10 @@ class HashMap implements Map
         return new ArrayList($keys);
     }
 
+    /**
+     * @param $key
+     * @return string
+     */
     private function getKeyHash($key): string
     {
         if (is_scalar($key)) {
