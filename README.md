@@ -21,8 +21,8 @@ composer require worksolutions/php-collections
 ## Examples
 ```php
 <?php
-use WS\Utils\Collections;
-use WS\Utils\Collections\Functions;
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
 
 // Getting filtered elements
 CollectionFactory::from([1, 2, 3])
