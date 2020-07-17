@@ -12,7 +12,7 @@ class HashSetTest extends TestCase
     use SetInterfaceTestTrait;
     use CollectionInterfaceTestTrait;
 
-    private function createInstance(...$args): Set
+    protected function createInstance(...$args): Set
     {
         return new HashSet($args);
     }

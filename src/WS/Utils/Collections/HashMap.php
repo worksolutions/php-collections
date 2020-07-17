@@ -49,20 +49,20 @@ class HashMap implements Map
 
     private function getKeyHash($key): string
     {
-        if ($key === null) {
-            return '__NULL__';
-        }
         if (is_scalar($key)) {
             return $key.'';
-        }
-        if (is_array($key)) {
-            return md5(json_encode($key));
         }
         if ($key instanceof HashCodeAware) {
             return $key->getHashCode();
         }
         if (is_object($key)) {
             return spl_object_hash($key);
+        }
+        if ($key === null) {
+            return '__NULL__';
+        }
+        if (is_array($key)) {
+            return md5(json_encode($key));
         }
         throw new RuntimeException("The type of $key is not supported");
     }
