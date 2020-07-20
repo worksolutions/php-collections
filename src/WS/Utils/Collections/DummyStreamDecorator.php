@@ -113,7 +113,7 @@ class DummyStreamDecorator implements Stream
         return $this->decoratedStream->reduce($accumulator);
     }
 
-    public function limit(int $count): Stream
+    public function limit(int $size): Stream
     {
         return $this;
     }
