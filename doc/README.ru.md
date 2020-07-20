@@ -815,7 +815,8 @@ generate($times: int, $generator: ?callable): Collection
 ```
 Метод создает коллекцию размерности ```$times```, элементы которой состоят из значений результатов вызова генератора ```$generator```.
 
-На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```.
+На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```. Если нужно конкретный тип экземпляра коллекций - нужно использовать конструкторы реализаций или их статические методы.
+
 ```php
 
 use WS\Utils\Collections\CollectionFactory;
@@ -829,5 +830,565 @@ CollectionFactory::generate(3, static function () {
 ```
 
 ## Потоки обхода коллекций
+
+Для более удобного обхода и преобразования коллекций необходимо использовать потоки обхода коллекций (Stream). В основном все вычисления должны производится через stream. Для получения потока нужно вызвать метод коллекции ``Collection::stream()``. 
+
+Обработка коллекции при помощи stream происходит через выполнения функций, интерфейсы которых должны соответствовать назначению обхода/преобразования. Всего их шесть:
+- *Предикат (Predicate)*. Используется для фильтра элементов ``filter``, элемент остается в коллекции потока (stream) в случае если предикат вызванный для данного элемента вернет булевое положительное значение. Библиотека уже содержит некоторые [подготовленные предикаты](#предикаты-predicates).
+- *Конвертер (Converter)*. Функции этого типа используются для преобразования коллекции потока ``map``. Конвертер должен вернуть значение которое по некоторому признаку соответствует переданному элементу коллекции. Библиотека уже содержит некоторые [подготовленные конвертеры](#конвертеры-converters).
+- *Потребитель (Consumer)*. Функции потребителей не изменяют коллекцию потока, а используются для ее обхода  ``each``. Переданная функция будет вызвана для каждого элемента коллекции, результат выполнения функции не учитывается. Библиотека уже содержит некоторые [подготовленные потребители](#потребители-consumers).
+- *Функции сравнения (Comparator)*. Компораторы участвуют в сортировке элементов для определения порядка сортировки двух значений. Должна возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php). Библиотека уже содержит некоторые [подготовленные функции сравнения](#функции-сравнения-comparators).
+- *Преобразователь (Reorganizer)*. Функции преобразователей преобразуют одну коллекцию в другую  ``reorganize`` не изменяя при этом объекта потока. Преобразования необходимы когда нужно получить итоговую коллекцию не просто преобразовывая один элемент в другой, а сформировать новую коллекцию основываясь на всей информации исходной коллекции. Примером могут служить методы перемешивания ```shuffle``` элементов или формирования порций ``chunk``. Библиотека уже содержит некоторые [подготовленные преобразователи](#преобразователи-reorganizers).
+- *Функции сбора данных (Collector)*. Функции сбора данных применяются к потоку при помощи метода ``collect``, по сути результат выполнения функций этой группы и будет являться результатом выполнения потока. Метод  ```collect``` является терминальным, то есть вызовом этого метода поток обрывается. Библиотека уже содержит некоторые [подготовленные функции сбора данных](#функции-сбора-данных-collectors).
+
+Все потоки принадлежат интерфейсу ```Stream```, это означает что описание интерфейса гарантирует его корректное исполнение вне зависимости от конкретной реализации, исключения лишь составляют частные случаи поведения потоков (```when```).
+
+
+Stream`s гарантируют, что после каждого метода модификации метод ``getCollection`` будет возвращать разные экземпляры объектов, что является надежным способом с точки зрения безопасности для поддержания иммутабельности при преобразовании.
+
+#### Методы интерфейса потока
+
+- [*each* – Обход элементов коллекции](#обход-элементов-коллекции)
+- [*walk* – Ограниченный обход элементов коллекции](#ограниченный-обход-элементов-коллекции)
+- [*filter* – Фильтрация элементов коллекции](#фильтрация-элементов-коллекции)
+- [*map* – Отражение элементов коллекции потока](#отражение-элементов-коллекции-потока)
+- [*reorganize* – Преобразование коллекции потока](#преобразование-коллекции-потока)
+- [*collect* – Сбор данных коллекции](#сбор-данных-коллекции)
+- [*sort* – Сортировка элементов коллекции](#сортировка-элементов-коллекции)
+- [*sortBy* – Сортировка элементов коллекции по значению](#сортировка-элементов-коллекции-по-значению)
+- [*sortDesc* – Сортировка элементов коллекции в обратном порядке](#сортировка-элементов-коллекции-в-обратном-порядке)
+- [*sortByDesc* – Сортировка элементов коллекции по значению в обратном порядке](#сортировка-элементов-коллекции-по-значению)
+- [*reduce* – Сокращение коллекции в единое значение](#сокращение-коллекции-в-единое-значение)
+- [*when* – Ограничение модификации потока по условию](#ограничение-модификации-потока-по-условию)
+- [*always* – Отмена ограничений модификации потока](#отмена-ограничений-модификации-потока)
+- [*getCollection* – Получение коллекции потока](#получение-коллекции-потока)
+- [*allMatch* – Полное совпадение всех элементов по предикату](#полное-совпадение-всех-элементов-по-предикату)
+- [*anyMatch* – Частичное совпадение всех элементов по предикату](#частичное-совпадение-всех-элементов-по-предикату)
+- [*findAny* – Получение произвольного элемента коллекции](#получение-произвольного-элемента-коллекции)
+- [*findFirst* – Получение первого элемента коллекции](#получение-первого-элемента-коллекции)
+- [*findLast* – Получение последнего элемента коллекции](#получение-последнего-элемента-коллекции)
+- [*min* – Получение минимального элемента коллекции](#получение-минимального-элемента-коллекции)
+- [*max* – Получение максимального элемента коллекции](#получение-максимального-элемента-коллекции)
+- [*reverse* – Расположить элементы коллекции в обратном порядке](#расположить-элементы-коллекции-в-обратном-порядке)
+- [*limit* – Сократить коллекцию до указанного размера](#сократить-коллекцию-до-указанного-размера)
+
+#### Обход элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+each($consumer: <fn($element: mixed, $index: int): void>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию $consumer. Результат выполнения функции не учитывается. Вызов метода ```each``` не изменяет коллекцию потока, но в то же время получает доступ к каждому элементу в коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->each(Consumers::dump()) // dumps each element
+    ->each(static function ($el) { // prints strings 0, 1, 2, 3
+        echo $el."\n"; 
+    })
+;
+
+```
+#### Ограниченный обход элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+walk($consumer: <fn($element: mixed, $index: int): false|void>, $limit: ?int): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию ``$consumer``, так же как и в методе ``each``. Результат выполнения функции не учитывается. Вызов метода ```each``` не изменяет коллекцию потока, но в то же время получает доступ к каждому элементу в коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->walk(Consumers::dump(), 5) // dumps only first 5 elements: 0, 1, 2, 3, 4
+    ->walk(static function ($el) { // prints strings 0, 1, 2, 3. Method will be called only 5 times
+        if ($el === 4) {
+            return false;
+        }
+        echo $el."\n";
+    })
+;
+
+```
+#### Фильтрация элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+filter($predicate: <fn($element: mixed): bool>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию ``$predicate``. В случае если вызов предиката с элементов вернет отрицательный результат - ```false, 0, '', []```, элемент исключается из коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->filter(static function (int $el): bool {
+        return $el % 2 === 0;
+    })
+    ->getCollection() // returns only first 5 elements: 0, 2, 4, 6, 8
+;
+
+```
+#### Отражение элементов коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+map($converter: <fn($element: mixed): mixed>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, подменяет переданные элементы коллекции на результаты выполнения функции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->map(static function (int $el): int {
+        return $el * 10;
+    })
+    ->getCollection() // returns 0, 10, 20, 30, 40, 50, 60, 70, 80, 90
+;
+
+```
+#### Преобразование коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reorganize($reorganizer: <fn($collection: Collection): Collection>): Stream;
+```
+Метод применяет ``$reorganizer`` к внутренней коллекции, затем заменяет внутреннюю коллекцию на результат вызова метода. Необходим когда следует выполнить преобразования основываясь на данных полной коллекции.
+
+```php
+
+use WS\Utils\Collections\ArrayStack;
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    // reverse collection 
+    ->reorganize(static function (Collection $collection): Collection {
+        $stack = new ArrayStack();
+        foreach ($collection as $item) {
+            $stack->push($item);
+        }
+        $reversed = CollectionFactory::empty();
+        while (!$stack->isEmpty()) {
+            $reversed->add($stack->pop());
+        }
+        return $reversed;
+    })
+    ->getCollection()
+;
+
+```
+#### Сбор данных коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+collect($collector: <fn ($collection: Collection): mixed>): mixed;
+```
+Метод применяет ``$collector`` к внутренней коллекции и возвращает результат. Необходим, когда необходимо выполнить финальное действие над коллекцией с использованием потока. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+$sumOfElements = CollectionFactory::numbers(10)
+    ->stream()
+    // get sum of collection elements
+    ->collect(static function (Collection $collection): int {
+        $res = 0;
+        foreach ($collection as $item) {
+            $res += $item;
+        }
+        return $res;
+    })
+;
+
+```
+#### Сортировка элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sort($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
+```
+Метод сортирует элементы согласно работе ``$comparator`` (компаратора). Компоратор определяет порядок сортировки двух значений. Должен возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php)
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sortedCollection = CollectionFactory::generate(10, static function (): int {
+        return random_int(0, 100);
+    })
+    ->stream()
+    // get sorted collection
+    ->sort(static function (int $a, int $b): int {
+        return $a <=> $b;
+    })
+    ->getCollection()
+;
+
+```
+#### Сортировка элементов коллекции в обратном порядке
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sort($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
+```
+Метод сортирует элементы согласно работе ``$comparator`` (компаратора), но в отличии от обычной функции сортировки элемнты будут выстроены по убыванию. Компоратор определяет порядок сортировки двух значений. Должен возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php)
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sortedDescendentCollection = CollectionFactory::generate(10, static function (): int {
+        return random_int(0, 100);
+    })
+    ->stream()
+    // get sorted collection in the reverse order
+    ->sortDesc(static function (int $a, int $b): int {
+        return $a <=> $b;
+    })
+    ->getCollection()
+;
+
+```
+#### Сортировка элементов коллекции по значению
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sortBy($extractor: <fn($el: mixed): scalar>): Stream;
+```
+Метод сортирует элементы согласно полученному значению функции ``$extractor`` для каждого элемента. Функция должна вернуть скалярное значение для возможности независимой оптимизированной сортировки. Аналогично работает метод сортировки по значению в обратном порядке ``sortByDesc``.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+class Container {
+    private $value;
+
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$sortedCollection = CollectionFactory::generate(10, static function (): Container {
+        return new Container(random_int(0, 100));
+    })
+    ->stream()
+    // get sorted collection
+    ->sortBy(static function (Container $container): int {
+        return $container->getValue();
+    })
+    ->getCollection()
+;
+
+```
+#### Сокращение коллекции в единое значение
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reduce($accumulator: <fn($el: mixed, $carry: mixed): mixed>): mixed;
+```
+Метод приводит коллекцию к единому значению. Функции передаются значения ``$el`` итерируемого элемента и результат вызова этой же функции на предыдущем элементе ``$carry``. В первой итерации ``$carry === null``. Терминальный метод. 
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sumOfCollection = CollectionFactory::numbers(10)
+    ->stream()
+    // get sum of collection elements
+    ->reduce(static function (int $el, ?int $carry = null): int {
+        return $carry + $el;
+    })
+;
+
+```
+#### Ограничение модификации потока по условию
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+when($condition: bool): Stream;
+```
+Метод ограничивает модификацию при невыполнении условия ``$condition`` и все методы модификации и обхода не будут вызываться. Обратный метод - [``always``](#отмена-ограничений-модификации-потока). 
+
+Блокируемые методы: 
+
+ - each
+ - walk
+ - filter
+ - reorganize
+ - map
+ - sort
+ - sortBy
+ - sortDesc
+ - sortDescBy
+ - reverse
+ - limit
+
+```php
+
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+$randomElementSizeCollection = CollectionFactory::numbers(random_int(0, 20));
+
+$onlyTenElements = $randomElementSizeCollection
+    ->stream()
+    // get collection elements only 10 items
+    ->when($randomElementSizeCollection->size() > 10)
+    ->limit(10)
+    ->when($randomElementSizeCollection->size() < 10)
+    ->reorganize(static function (Collection $collection) {
+        for ($i = $collection->size(); $i < 10; $i++ ) {
+            $collection->add($i);
+        }
+        return $collection;
+    })
+;
+
+```
+#### Отмена ограничений модификации потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+always(): Stream;
+```
+В случае если поток был заблокирован ранее для модификаций через условие [``when``](#ограничение-модификации-потока-по-условию), метод ``always`` отменяет ограничения на дальнейший вызов модифицирующих методов.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::numbers(20);
+
+$onlyTenElements = $collection
+    ->stream()
+    // get collection elements only 10 items
+    ->when($collection->size() > 5)
+    ->limit(5)
+    ->always()
+    ->map(static function (int $el): int {
+        return $el * 10;
+    })
+    ->getCollection() // [0, 10, 20, 30, 40]
+;
+
+```
+#### Получение коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+getCollection(): Collection;
+```
+Метод возвращает коллекцию с учетом ранее выполненных преобразований. Даже если в потоке будут еще вызваны методы преобразования, полученная коллекция останется не измененной. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$stream = CollectionFactory::numbers(10)
+    ->stream();
+
+$collection1 = $stream
+    ->map(static function (int $el): int{
+        return $el * 10;
+    })
+    ->getCollection()
+;
+
+$collection2 = $stream
+    ->filter(static function (int $el): bool {
+        return $el > 50;
+    })
+    ->getCollection()
+;
+
+$collection1->size() === $collection2->size(); // false
+
+$collection2->toArray(); // [60, 70, 80, 90]
+
+```
+#### Полное совпадение всех элементов по предикату
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+allMatch($predicate: <fn($el: mixed): bool>): bool;
+```
+Метод вернет ``true``, если все вызовы ``$predicate`` над элементами коллекции будут истинными (``true``). Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->allMatch(static function (int $el): bool {
+        return $el >= 1;
+    }) // false, 0 is less than 1
+;
+
+```
+#### Частичное совпадение всех элементов по предикату
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+anyMatch(callable $predicate): bool;
+```
+Метод вернет ``true``, если хотя бы один вызов ``$predicate`` над элементами коллекции будет  истинным (``true``). Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->allMatch(static function (int $el): bool {
+        return $el > 0;
+    }) // true, [1, 2, 3, 4, 5, 6, 7, 8, 9] are grate than 0
+;
+
+```
+#### Получение произвольного элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findAny(): mixed;
+```
+
+Метод вернет произвольный элемент коллекции, либо ``null``, если коллекция пустая. Не гарантирует того что элемент выбирается в случайном порядке. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->findAny() // for example - 5
+;
+
+```
+#### Получение первого элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findFirst(): mixed;
+```
+
+Метод вернет первый элемент коллекции , либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->findFirst() // 0
+;
+
+```
+#### Получение последнего элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findLast(): mixed;
+```
+
+Метод вернет последний элемент коллекции , либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->findLast() // 9
+;
+
+```
+#### Получение минимального элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+min($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
+```
+
+Метод вернет наименьший элемент коллекции согласно сравнению функции компоратора, либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->min(static function (int $a, int $b): int {
+        return $a <=> $b;
+    }) // 0
+;
+
+```
+#### Получение максимального элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+max($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
+```
+
+Метод вернет наибольший элемент коллекции согласно сравнению функции компоратора, либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->max(static function (int $a, int $b): int {
+        return $a <=> $b;
+    }) // 9
+;
+
+```
+#### Расположить элементы коллекции в обратном порядке
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reverse(): Stream;
+```
+
+Метод преобразует порядок элементов в обратную последовательность.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reverse()
+    ->getCollection() // [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+;
+
+```
+#### Сократить коллекцию до указанного размера
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+limit(int $size): Stream;
+```
+
+Метод сокращает количество элементов до указанного размера. В случае, если количество элементов уже меньше чем указано в ограничении ``$size``, количество элементов останется прежним.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reverse()
+    ->getCollection() // [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+;
+
+```
 
 ## Набор функций обхода и преобразования
