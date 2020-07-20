@@ -300,12 +300,12 @@ class SerialStream implements Stream
         return $this;
     }
 
-    public function limit(int $count): Stream
+    public function limit(int $size): Stream
     {
         $newCollection = $this->emptyList();
         $this->walk(static function ($el) use ($newCollection) {
             $newCollection->add($el);
-        }, $count);
+        }, $size);
 
         $this->list = $newCollection;
         return $this;
