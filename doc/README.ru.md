@@ -1637,7 +1637,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### moreThan Проверка значения на условие "больше"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-moreThan($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+moreThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию сравнения элементов со значением `$value`.
@@ -1658,7 +1658,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### moreOrEqual Проверка значения на условие "больше либо равно"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-moreOrEqual($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+moreOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию сравнения элементов со значением `$value`.
@@ -1679,7 +1679,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### not Проверка значения на неравенство
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-not($value: mixed): Closure; \\ <Fn($el: scalar): bool>
+not($value: mixed): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки неравенства элементов коллекции со значением ```$value```.
@@ -1700,7 +1700,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### in Проверка значения на нахождение во множестве
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-in($values: array): Closure; \\ <Fn($el: scalar): bool>
+in($values: array): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки нахождения элементов во множестве ```$values```.
@@ -1721,7 +1721,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### notIn Проверка значения на отсутствие во множестве
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-notIn($values: array): Closure; \\ <Fn($el: scalar): bool>
+notIn($values: array): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки отсутствия элементов во множестве ```$values```.
@@ -1742,7 +1742,7 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 #### where Проверка свойства объекта на эквивалентность
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-where($property: string, $value: mixed): Closure; \\ <Fn($el: scalar): bool>
+where($property: string, $value: mixed): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки свойства объекта элемента на равенство значению ```$value```.
@@ -1777,7 +1777,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
 #### whereNot Проверка свойства объекта на неравенство
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-whereNot($property: string, $value: mixed): Closure; \\ <Fn($el: scalar): bool>
+whereNot($property: string, $value: mixed): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки свойства объекта элемента на неравенство значению ```$value```.
@@ -1812,7 +1812,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
 #### whereIn Проверка свойства объекта на нахождение во множестве
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-whereIn($property: string, $values: array): Closure; \\ <Fn($el: scalar): bool>
+whereIn($property: string, $values: array): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки нахождения значения свойства объекта во множестве ```$values```.
@@ -1847,7 +1847,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
 #### whereNotIn Проверка свойства объекта на отсутствие во множестве
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-whereNotIn($property: string, $values: array): Closure; \\ <Fn($el: scalar): bool>
+whereNotIn($property: string, $values: array): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию проверки отсутствия значения свойства объекта во множестве ```$values```.
