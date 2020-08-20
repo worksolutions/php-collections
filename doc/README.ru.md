@@ -1413,7 +1413,7 @@ $equal10Predicate(10); // true
 
 - [*Predicates* – Предикаты](#Predicates-предикаты)
 - [*Comparators* - Функции сравнения](#Comparators-функции-сравнения)
-- Преобразователи элементов (Converters)
+- [*Converters* - Преобразователи элементов](#Converters-преобразователи-элементов)
 - Преобразователи потоков (Reorganizes)
 - Потребители (Consumers)
 
@@ -2024,7 +2024,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
 ```
 
 ### Comparators функции сравнения
-
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
 Группа конструкторов функций сравнения. Функции сравнения элементов необходимы при использовании методов сортировки, для того чтобы в правильном порядке расположить элементы. Итоговые функции сортировки имеют интерфейс `<Fn($a: mixed, $b: mixed): int>`, с логикой работы идентичной [https://www.php.net/manual/ru/function.usort]. 
 
 - [*scalarComparator* – Сравнение скалярных значений](#scalarComparator–сравнение-скалярных-значений)
@@ -2121,6 +2121,93 @@ CollectionFactory::generate(5, static function () {
     }))
     ->getCollection()
     ->toArray() // sorted ValueObject objects, for example [#2, #3, #6, #7, #8]
+;
+
+```
+
+### Converters Преобразователи элементов
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Группа конструктор функций для преобразования элементов. Результатом функции конвертера является ``<Fn($obj: mixed): mixed>``.
+
+- [*toPropertyValue* – Преобразование каждого элемента коллекции в значение свойства](#toPropertyValue–преобразование-элемента-коллекции-в-значение-свойства)
+- [*toProperties* – Преобразование каждого элемента коллекции в ассоциативный массив](#toProperties–преобразование-элемента-коллекции-в-ассоциативный-массив)
+
+#### toPropertyValue Преобразование каждого элемента коллекции в значение свойства
+[[↑ В начало]](#converters-преобразователи-элементов)
+```
+toPropertyValue($property: string): Closure; \\ <Fn($obj: object): mixed>
+```
+
+Метод инициирует функцию, которая возвращает значение свойства объекта.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Converters;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function (int $index): ValueObject {
+        return new ValueObject($index);
+    })
+    ->stream()
+    ->map(Converters::toPropertyValue('value'))
+    ->getCollection()
+    ->toArray() // [0, 1, 2, 3, 4 ]
+;
+
+```
+
+#### toProperties Преобразование каждого элемента коллекции в ассоциативный массив
+[[↑ В начало]](#converters-преобразователи-элементов)
+```
+toProperties($names: array<string>): Closure; \\ <Fn($obj: object): array>
+```
+
+Метод инициирует функцию, возвращает ассоциативный массив свойств объекта, ключи которого являются именами свойств.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Converters;
+
+class Person {
+    private $name;
+    private $surname;
+    
+    public function __construct(string $name, string $surname) 
+    {
+        $this->name = $name;
+        $this->surname = $surname;
+    }
+    
+    public function getName(): string 
+    {
+        return $this->name;
+    }
+    
+    public function getSurname(): string
+    {
+        return $this->surname;
+    }
+}
+
+CollectionFactory::generate(1, static function (int $index): Person {
+        return new Person('Ivan', 'Ivanov');
+    })
+    ->stream()
+    ->map(Converters::toProperties(['name', 'surname']))
+    ->getCollection()
+    ->toArray() // [['name' => 'Ivan', 'surname' => 'Ivanov']]
 ;
 
 ```
