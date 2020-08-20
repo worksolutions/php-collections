@@ -1,7 +1,7 @@
 # PHP Коллекции
 Библиотека для удобной работы с массивами данных различных структур с использованием функционального подхода. В основе лежат структуры данных, такие как: Список, Карта, Множество, Стек, Очередь. 
 
-Для обхода и преобразования коллекций используется stream api (Stream), который обеспечивает более функциональный подход.
+Для обхода и преобразования коллекций используется stream api (Stream), который обеспечивает функциональный подход.
 
 Читать на других языках: [English](../README.md)
 
@@ -37,14 +37,14 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 ## Основные концепции
 
-В основе использования библиотеки лежит последовательный подход обработки и преобразования данных. Создание некого конвейера преобразования, где можно последовательно выполнять некие шаги. Каждый шаг отвечает только за свой небольшой кусочек работы. В этом случае шаги можно переиспользовать так как они являются более наглядными.
+В основе использования библиотеки лежит последовательный подход обработки и преобразования данных. Создание некого конвейера преобразования, где можно последовательно выполнять некие шаги. Каждый шаг отвечает только за свой небольшой кусочек работы. В этом случае шаги можно переиспользовать так как они являются атомарными.
 
 Фундаментально библиотека состоит из нескольких частей, это: 
 
 - [Структуры данных.](#Структуры-данных) Каждая имеет свою особенность, выраженную при помощи интерфейса и описания к нему, и реализацию. При этом реализации поведения структур данных могут быть разные.
 - [Фабрика создания коллекции.](#Фабрика-создания-коллекции) Имеет множество статических методов для удобного создания коллекций.
 - [Потоки обхода коллекций.](#Потоки-обхода-коллекций) Предназначен для обхода и преобразования коллекций, при этом каждое преобразование создает новый экземпляр коллекции.
-- [Набор функций обхода и преобразования.](#Набор-функций-обхода-и-преобразования) Состоит из заранее подготовленных конструкторов функций для удобного использования в момент обхода. Можно создать использовать собственные функции более специфичные для вашей предметной области.
+- [Набор функций обхода и преобразования.](#Набор-функций-обхода-и-преобразования) Состоит из заранее подготовленных конструкторов функций для удобного использования в момент обхода. На их примере можно создать и использовать собственные функции более специфичные для вашей предметной области.
 
 ## Структуры данных
 
@@ -1392,3 +1392,629 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
 ## Набор функций обхода и преобразования
+Библиотека содержит конструкторы наиболее популярных функций, которые инициируют функции для из работы через потоки обхода и преобразования с заранее подготовленными параметрами.
+Например: 
+```php
+
+use \WS\Utils\Collections\Functions\Predicates;
+
+$equal10Predicate = Predicates::equal(10);
+
+$equal10Predicate(11); // false
+$equal10Predicate(10); // true
+
+```
+Вызов конструктор функции ```Predicates::equal(10)``` вернет функцию сравнения входного параметра со значением 10. 
+
+Функции применяемые в библиотеке разделены на следующие типы:
+
+- [*Predicates* – Предикаты](#Predicates-предикаты)
+- Функции сравнения (Comparators)
+- Преобразователи элементов (Converters)
+- Преобразователи потоков (Reorganizes)
+- Потребители (Consumers)
+
+Каждый тип функции должен иметь соответствующий интерфейс для использования в определенных методах потоков. 
+
+### Predicates Предикаты
+Группа конструкторов функций которые используются для фильтрации коллекции потока. Все методы возвращают проинициализированные функции с интерфейсом: ```<Fn($el: mixed): bool>```. Предикаты также позволяют работать со свойствами объектов. К примеру под свойством объекта `myPropety` подразумевается наличие публичного свойства в объекте с названием `myProperty` либо наличие методе `геттера` - `getMyProperty`.
+- [*lock* – Блокировка](#lock-блокировка)
+- [*notResistance* – Пропуск всех значений](#notResistance-пропуск-всех-значений)
+- [*notNull* – Проверка значений на пустоту](#notNull-проверка-значений-на-пустоту)
+- [*eachEven* – Пропуск элементов чётных вызовов](#eachEven-пропуск-элементов-чётных-вызовов)
+- [*nth* – Пропуск элементов кратных вызовов](#nth-пропуск-элементов-кратных-вызовов)
+- [*equal* – Проверка на эквивалентность](#equal-проверка-на-эквивалентность)
+- [*lockDuplicated* – Блокировка значений дубликатов](#lockDuplicated-блокировка-значений-дубликатов)
+- [*lessThan* – Проверка значения на условие "меньше"](#lessThan-проверка-значения-на-условие-меньше)
+- [*lessOrEqual* – Проверка значения на условие "меньше либо равно"](#lessThan-проверка-значения-на-условие-меньше-либо-равно)
+- [*moreThan* – Проверка значения на условие "больше"](#lessThan-проверка-значения-на-условие-больше)
+- [*moreOrEqual* – Проверка значения на условие "больше либо равно"](#lessThan-проверка-значения-на-условие-больше-либо-равно)
+- [*not* – Проверка значения на неравенство](#lessThan-проверка-значения-на-неравенство)
+- [*in* – Проверка значения на нахождение во множестве](#in-проверка-значения-на-нахождение-во-множестве)
+- [*notIn* – Проверка значения на отсутствие во множестве](#notIn-проверка-значения-на-отсутствие-во-множестве)
+- [*where* – Проверка свойства объекта на эквивалентность](#where-проверка-свойства-объекта-на-эквивалентность)
+- [*whereNot* – Проверка свойства объекта на неравенство](#whereNot-проверка-свойства-объекта-на-неравенство)
+- [*whereIn* – Проверка свойства объекта на нахождение во множестве](#whereIn-проверка-свойства-объекта-на-нахождение-во-множестве)
+- [*whereNotIn* – Проверка свойства объекта на отсутствие во множестве](#whereNotIn-проверка-свойства-объекта-на-отсутствие-во-множестве)
+- [*whereMoreThan* – Проверка свойства объекта на на условие "больше"](#whereMoreThan-проверка-свойства-объекта-на-условие-больше)
+- [*whereLessThan* – Проверка свойства объекта на на условие "меньше"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше)
+- [*whereMoreOrEqual* – Проверка свойства объекта на на условие "больше либо равно"](#whereLessThan-проверка-свойства-объекта-на-условие-больше-либо-равно)
+- [*whereLessOrEqual* – Проверка свойства объекта на на условие "больше меньше равно"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше-либо-равно)
+
+#### lock блокировка
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lock(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать false. По сути метод порождает функцию блокирования потока.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$lockFunction = Predicates::lock();
+CollectionFactory::numbers(1, 10)
+    ->stream()
+    ->filter($lockFunction)
+    ->getCollection()
+    ->isEmpty() // true
+;
+```
+
+#### notResistance Пропуск всех значений
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notResistance(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать ```true```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$passFunction = Predicates::notResistance();
+CollectionFactory::numbers(1, 10)
+    ->stream()
+    ->filter($passFunction)
+    ->getCollection()
+    ->size() // 10
+;
+```
+
+#### notNull проверка значений на пустоту
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notNull(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать ```true```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$notNullPassFunction = Predicates::notNull();
+CollectionFactory::from([1, 10, null])
+    ->stream()
+    ->filter($notNullPassFunction)
+    ->getCollection()
+    ->size() // 2
+;
+```
+
+#### eachEven Пропуск значений чётных вызовов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+eachEven(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая каждый четный вызов - будет возвращать ```true``` и, соответственно, в остальных случаях - ```false```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$evenPassFunction = Predicates::eachEven();
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter($evenPassFunction)
+    ->getCollection()
+    ->toArray() // 2, 4, false
+;
+```
+
+#### nth Пропуск значений кратных вызовов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+nth($number: int): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая каждый `$number` вызов - будет возвращать ```true``` и, соответственно, в остальных случаях - ```false```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$thirdPassFunction = Predicates::nth(3);
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter($thirdPassFunction)
+    ->getCollection()
+    ->toArray() // 3, false
+;
+```
+
+#### equal Проверка на эквивалентность
+[[↑ К разделу]](#Predicates-предикаты)
+```
+equal($value: mixed): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая возвращает истинное значение при совпадении элемента коллекции со значением ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter(Predicates::equal(3))
+    ->findFirst() // 3
+;
+```
+
+#### lockDuplicated Блокировка значений дубликатов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lockDuplicated(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая возвращает истинное значение только для вызовов с уникальными элементами.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([3, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lockDuplicated())
+    ->getCollection()
+    ->toArray() // [3, 2, 4, null]
+;
+```
+
+#### lessThan Проверка значения на условие "меньше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lessThan($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lessThan(4))
+    ->getCollection()
+    ->toArray() // [1, 2, 3, null, 3]
+;
+```
+
+#### lessOrEqual Проверка значения на условие "меньше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lessOrEqual($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lessOrEqual(2))
+    ->getCollection()
+    ->toArray() // [1, 2, null]
+;
+```
+
+#### moreThan Проверка значения на условие "больше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+moreThan($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::moreThan(2))
+    ->getCollection()
+    ->toArray() // [3, 4, 3]
+;
+```
+
+#### moreOrEqual Проверка значения на условие "больше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+moreOrEqual($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::moreOrEqual(2))
+    ->getCollection()
+    ->toArray() // [2, 3, 4, 3]
+;
+```
+
+#### not Проверка значения на неравенство
+[[↑ К разделу]](#Predicates-предикаты)
+```
+not($value: mixed): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки неравенства элементов коллекции со значением ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::not(3))
+    ->getCollection()
+    ->toArray() // [1, 2, 4, null]
+;
+```
+
+#### in Проверка значения на нахождения во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+in($values: array): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки нахождения элементов во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::in([null, 3]))
+    ->getCollection()
+    ->toArray() // [3, null, 3]
+;
+```
+
+#### notIn Проверка значения на отсутствие во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notIn($values: array): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки отсутствия элементов во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::notIn([null, 3]))
+    ->getCollection()
+    ->toArray() // [1, 2, 4]
+;
+```
+
+#### where Проверка свойства объекта на эквивалентность
+[[↑ К разделу]](#Predicates-предикаты)
+```
+where($property: string, $value: mixed): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки свойства объекта элемента на равенство значению ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::where('value', 0))
+    ->getCollection()
+    ->isEmpty() // false
+;
+```
+
+#### whereNot Проверка свойства объекта на неравенство
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereNot($property: string, $value: mixed): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки свойства объекта элемента на неравенство значению ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereNot('value', 0))
+    ->getCollection()
+    ->toArray() // [#1, #2, #3, #4]
+;
+```
+
+#### whereIn Проверка свойства объекта на нахождение во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereIn($property: string, $values: array): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки нахождения значения свойства объекта во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereIn('value', [0, 4, 9]))
+    ->getCollection()
+    ->toArray() // [#0, #4]
+;
+```
+
+#### whereNotIn Проверка свойства объекта на отсутствие во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereNotIn($property: string, $values: array): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию проверки отсутствия значения свойства объекта во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereIn('value', [0, 4, 9]))
+    ->getCollection()
+    ->toArray() // [#0, #4]
+;
+```
+
+#### whereMoreThan Проверка свойства объекта на условие "больше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereMoreThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereMoreThan('value', 3))
+    ->getCollection()
+    ->toArray() // [#4]
+;
+```
+
+#### whereLessThan Проверка свойства объекта на условие "меньше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereLessThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereLessThan('value', 3))
+    ->getCollection()
+    ->toArray() // [#0, #1, #2]
+;
+```
+
+#### whereMoreOrEqual Проверка свойства объекта на условие "больше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereMoreOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereMoreOrEqual('value', 3))
+    ->getCollection()
+    ->toArray() // [#3, #4]
+;
+```
+
+#### whereLessOrEqual Проверка свойства объекта на условие "больше меньше равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereLessOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereLessOrEqual('value', 3))
+    ->getCollection()
+    ->toArray() // [#1, #2, #3]
+;
+```
