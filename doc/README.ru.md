@@ -1412,7 +1412,7 @@ $equal10Predicate(10); // true
 Функции применяемые в библиотеке разделены на следующие типы:
 
 - [*Predicates* – Предикаты](#Predicates-предикаты)
-- Функции сравнения (Comparators)
+- [*Comparators* - Функции сравнения](#Comparators-функции-сравнения)
 - Преобразователи элементов (Converters)
 - Преобразователи потоков (Reorganizes)
 - Потребители (Consumers)
@@ -1420,6 +1420,7 @@ $equal10Predicate(10); // true
 Каждый тип функции должен иметь соответствующий интерфейс для использования в определенных методах потоков. 
 
 ### Predicates Предикаты
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
 Группа конструкторов функций которые используются для фильтрации коллекции потока. Все методы возвращают проинициализированные функции с интерфейсом: ```<Fn($el: mixed): bool>```. Предикаты также позволяют работать со свойствами объектов. К примеру под свойством объекта `myPropety` подразумевается наличие публичного свойства в объекте с названием `myProperty` либо наличие методе `геттера` - `getMyProperty`.
 - [*lock* – Блокировка](#lock-блокировка)
 - [*notResistance* – Пропуск всех значений](#notResistance-пропуск-всех-значений)
@@ -2020,4 +2021,106 @@ CollectionFactory::generate(5, static function () use (& $c) {
     ->getCollection()
     ->toArray() // [#1, #2, #3]
 ;
+```
+
+### Comparators функции сравнения
+
+Группа конструкторов функций сравнения. Функции сравнения элементов необходимы при использовании методов сортировки, для того чтобы в правильном порядке расположить элементы. Итоговые функции сортировки имеют интерфейс `<Fn($a: mixed, $b: mixed): int>`, с логикой работы идентичной [https://www.php.net/manual/ru/function.usort]. 
+
+- [*scalarComparator* – Сравнение скалярных значений](#scalarComparator–сравнение-скалярных-значений)
+- [*objectPropertyComparator* – Сравнение свойств объектов](#objectPropertyComparator–сравнение-свойств-объектов)
+- [*callbackComparator* – Определение функции для сравнения значений](#callbackComparator-определение-функции-для-сравнения-значений)
+
+#### scalarComparator Сравнение скалярных значений
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+scalarComparator(): Closure; \\ <Fn($a: scalar, $b: scalar): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+CollectionFactory::generate(5, static function (): int {
+        return random_int(0, 10);
+    })
+    ->stream()
+    ->sort(Comparators::scalarComparator())
+    ->getCollection()
+    ->toArray() // sorted value, for example [2, 3, 6, 7, 8]
+;
+```
+
+#### objectPropertyComparator Сравнение свойств объектов
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+objectPropertyComparator($property: string): Closure; \\ <Fn($a: object, $b: object): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения свойства объектов. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function () {
+        return new ValueObject(random_int(0, 10));
+    })    
+    ->stream()
+    ->sort(Comparators::objectPropertyComparator('value'))
+    ->getCollection()
+    ->toArray() // sorted ValueObject objects, for example [#2, #3, #6, #7, #8]
+;
+```
+
+#### callbackComparator Определение функции для сравнения значений
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+callbackComparator($fun: <Fn($value: mixed): scalar>): Closure; \\ <Fn($a: mixed, $b: mixed): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения на основе их обработки функцией ``$fun``. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function () {
+        return new ValueObject(random_int(0, 10));
+    })    
+    ->stream()
+    ->sort(Comparators::callbackComparator(static function (ValueObject $valueObject) {
+        return $valueObject->getValue();
+    }))
+    ->getCollection()
+    ->toArray() // sorted ValueObject objects, for example [#2, #3, #6, #7, #8]
+;
+
 ```
