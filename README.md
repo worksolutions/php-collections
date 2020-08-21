@@ -10,6 +10,8 @@ Part of the library is a Stream API. It provides a more functional programming a
 
 Read this in other languages: [Русский](doc/README.ru.md)
 
+## Requirements 
+[```PHP 7.1+```](https://www.php.net/downloads)
 
 ## Install 
 ```bash
@@ -19,8 +21,8 @@ composer require worksolutions/php-collections
 ## Examples
 ```php
 <?php
-use WS\Utils\Collections;
-use WS\Utils\Collections\Functions;
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
 
 // Getting filtered elements
 CollectionFactory::from([1, 2, 3])

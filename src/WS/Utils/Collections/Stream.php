@@ -136,10 +136,10 @@ interface Stream
 
     /**
      * Limits amount of stream collection elements
-     * @param int $count
+     * @param int $size
      * @return Stream
      */
-    public function limit(int $count): Stream;
+    public function limit(int $size): Stream;
 
     /**
      * If condition is false stream became inert with stream functions and if next call will be true stream became operated again

@@ -1,15 +1,15 @@
 # PHP Коллекции
-
 Библиотека для удобной работы с массивами данных различных структур с использованием функционального подхода. В основе лежат структуры данных, такие как: Список, Карта, Множество, Стек, Очередь. 
 
-Для обхода и преобразования коллекций используется stream api (Stream), который обеспечивает более функциональный подход.
+Для обхода и преобразования коллекций используется stream api (Stream), который обеспечивает функциональный подход.
 
 Читать на других языках: [English](../README.md)
 
+## Системные требования
+[```PHP 7.1+```](https://www.php.net/downloads)
+
 ## Установка
-
 Установить и использовать библиотеку в собственном проекте можно использовав  менеджер зависимостей [Composer](https://getcomposer.org/)
-
 ```bash
 composer require worksolutions/php-collections
 ``` 
@@ -37,14 +37,14 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
 
 ## Основные концепции
 
-В основе использования библиотеки лежит последовательный подход обработки и преобразования данных. Создание некого конвейера преобразования, где можно последовательно выполнять некие шаги. Каждый шаг отвечает только за свой небольшой кусочек работы. В этом случае шаги можно переиспользовать так как они являются более наглядными.
+В основе использования библиотеки лежит последовательный подход обработки и преобразования данных. Создание некого конвейера преобразования, где можно последовательно выполнять некие шаги. Каждый шаг отвечает только за свой небольшой кусочек работы. В этом случае шаги можно переиспользовать так как они являются атомарными.
 
 Фундаментально библиотека состоит из нескольких частей, это: 
 
 - [Структуры данных.](#Структуры-данных) Каждая имеет свою особенность, выраженную при помощи интерфейса и описания к нему, и реализацию. При этом реализации поведения структур данных могут быть разные.
 - [Фабрика создания коллекции.](#Фабрика-создания-коллекции) Имеет множество статических методов для удобного создания коллекций.
 - [Потоки обхода коллекций.](#Потоки-обхода-коллекций) Предназначен для обхода и преобразования коллекций, при этом каждое преобразование создает новый экземпляр коллекции.
-- [Набор функций обхода и преобразования.](#Набор-функций-обхода-и-преобразования) Состоит из заранее подготовленных конструкторов функций для удобного использования в момент обхода. Можно создать использовать собственные функции более специфичные для вашей предметной области.
+- [Набор функций обхода и преобразования.](#Набор-функций-обхода-и-преобразования) Состоит из заранее подготовленных конструкторов функций для удобного использования в момент обхода. На их примере можно создать и использовать собственные функции более специфичные для вашей предметной области.
 
 ## Структуры данных
 
@@ -733,7 +733,1606 @@ $map->size(); // 0
 ```
 
 ## Фабрика создания коллекции
+[[↑ В начало]](#PHP-Коллекции)
+
+Фабрика ```CollectionFactory``` позволяет создавать объекты коллекций без использования конструктора конкретной реализации, а так же обладает другими удобными методами создания объектов коллекций. На данный момент, основной структурой библиотеки является ```ArrayList```, который и порождается фабрикой в статических методах.
+
+### Пример использования фабрики
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->each(Consumers::dump()); // dumps int(0), int(1), ...
+
+```
+#### Методы фабрики создания коллекции
+- [*from* – Генерирование коллекции из массива элементов](#генерирование-коллекции-из-массива-элементов)
+- [*fromIterable* – Генерирование коллекции при помощи любой итерируемой величины](#генерирование-коллекции-при-помощи-любой-итерируемой-величины)
+- [*numbers* – Генерирование коллекции состоящей из элементов последовательности целых чисел](#генерирование-коллекции-состоящей-из-элементов-последовательности-целых-чисел)
+- [*generate* – Генерирование коллекции при помощи генератора](#генерирование-коллекции-при-помощи-генератора)
+#### Генерирование коллекции из массива элементов
+[[↑ К разделу]](#Фабрика-создания-коллекции)
+```
+from($values: array): Collection
+```
+Метод создает коллекцию элементы которой состоят из элементов переданного массива. 
+
+На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```.
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::from([1 ,2, 3])
+    ->stream()
+    ->each(Consumers::dump()); // dumps int(1), int(2), int(3)
+
+```
+#### Генерирование коллекции при помощи любой итерируемой величины
+[[↑ К разделу]](#Фабрика-создания-коллекции)
+```
+fromIterable($iterable: iterable): Collection
+```
+Метод создает коллекцию элементы которой состоят из элементов переданного итератора. 
+
+На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```.
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+use WS\Utils\Collections\Functions\Converters;
+
+CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
+    ->stream()
+    ->map(Converters::toPropertyValue('filename'))
+    ->each(Consumers::dump()); // Dumps strings with filenames
+```
+#### Генерирование коллекции состоящей из элементов последовательности целых чисел
+[[↑ К разделу]](#Фабрика-создания-коллекции)
+```
+numbers($from: int, $to: ?int): Collection
+```
+Метод создает коллекцию, элементы которой состоят из последовательности целых чисел ```[$from .. $to]```. Если параметр ```$to``` не передан, вернется коллекция ```[0 .. $from]```.
+
+На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```.
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10, 15)
+    ->stream()
+    ->each(Consumers::dump()); // Dumps  [10, 11, 12, 13, 14, 15]
+```
+#### Генерирование коллекции при помощи генератора
+[[↑ К разделу]](#Фабрика-создания-коллекции)
+```
+generate($times: int, $generator: ?callable): Collection
+```
+Метод создает коллекцию размерности ```$times```, элементы которой состоят из значений результатов вызова генератора ```$generator```.
+
+На данный момент реализацией коллекции является ``ArrayList``, в будущем конкретная реализация может поменяться, при вызове данного метода стоит опираться только на интерфейс ```Collection```. Если нужно конкретный тип экземпляра коллекций - нужно использовать конструкторы реализаций или их статические методы.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::generate(3, static function () {
+        return random_int(0, 10);
+    })
+    ->stream()
+    ->each(Consumers::dump()); // Dumps for example [9, 7, 2]
+```
 
 ## Потоки обхода коллекций
+[[↑ В начало]](#PHP-Коллекции)
+
+Для более удобного обхода и преобразования коллекций необходимо использовать потоки обхода коллекций (Stream). В основном все вычисления должны производится через stream. Для получения потока нужно вызвать метод коллекции ``Collection::stream()``. 
+
+Обработка коллекции при помощи stream происходит через выполнения функций, интерфейсы которых должны соответствовать назначению обхода/преобразования. Всего их шесть:
+- *Предикат (Predicate)*. Используется для фильтра элементов ``filter``, элемент остается в коллекции потока (stream) в случае если предикат вызванный для данного элемента вернет булевое положительное значение. Библиотека уже содержит некоторые [подготовленные предикаты](#предикаты-predicates).
+- *Конвертер (Converter)*. Функции этого типа используются для преобразования коллекции потока ``map``. Конвертер должен вернуть значение которое по некоторому признаку соответствует переданному элементу коллекции. Библиотека уже содержит некоторые [подготовленные конвертеры](#конвертеры-converters).
+- *Потребитель (Consumer)*. Функции потребителей не изменяют коллекцию потока, а используются для ее обхода  ``each``. Переданная функция будет вызвана для каждого элемента коллекции, результат выполнения функции не учитывается. Библиотека уже содержит некоторые [подготовленные потребители](#потребители-consumers).
+- *Функции сравнения (Comparator)*. Компораторы участвуют в сортировке элементов для определения порядка сортировки двух значений. Должна возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php). Библиотека уже содержит некоторые [подготовленные функции сравнения](#функции-сравнения-comparators).
+- *Преобразователь (Reorganizer)*. Функции преобразователей преобразуют одну коллекцию в другую  ``reorganize`` не изменяя при этом объекта потока. Преобразования необходимы когда нужно получить итоговую коллекцию не просто преобразовывая один элемент в другой, а сформировать новую коллекцию основываясь на всей информации исходной коллекции. Примером могут служить методы перемешивания ```shuffle``` элементов или формирования порций ``chunk``. Библиотека уже содержит некоторые [подготовленные преобразователи](#преобразователи-reorganizers).
+- *Функции сбора данных (Collector)*. Функции сбора данных применяются к потоку при помощи метода ``collect``, по сути результат выполнения функций этой группы и будет являться результатом выполнения потока. Метод  ```collect``` является терминальным, то есть вызовом этого метода поток обрывается. Библиотека уже содержит некоторые [подготовленные функции сбора данных](#функции-сбора-данных-collectors).
+
+Все потоки принадлежат интерфейсу ```Stream```, это означает что описание интерфейса гарантирует его корректное исполнение вне зависимости от конкретной реализации, исключения лишь составляют частные случаи поведения потоков (```when```).
+
+
+Stream`s гарантируют, что после каждого метода модификации метод ``getCollection`` будет возвращать разные экземпляры объектов, что является надежным способом с точки зрения безопасности для поддержания иммутабельности при преобразовании.
+
+#### Методы интерфейса потока
+
+- [*each* – Обход элементов коллекции](#обход-элементов-коллекции)
+- [*walk* – Ограниченный обход элементов коллекции](#ограниченный-обход-элементов-коллекции)
+- [*filter* – Фильтрация элементов коллекции](#фильтрация-элементов-коллекции)
+- [*map* – Отражение элементов коллекции потока](#отражение-элементов-коллекции-потока)
+- [*reorganize* – Преобразование коллекции потока](#преобразование-коллекции-потока)
+- [*collect* – Сбор данных коллекции](#сбор-данных-коллекции)
+- [*sort* – Сортировка элементов коллекции](#сортировка-элементов-коллекции)
+- [*sortBy* – Сортировка элементов коллекции по значению](#сортировка-элементов-коллекции-по-значению)
+- [*sortDesc* – Сортировка элементов коллекции в обратном порядке](#сортировка-элементов-коллекции-в-обратном-порядке)
+- [*sortByDesc* – Сортировка элементов коллекции по значению в обратном порядке](#сортировка-элементов-коллекции-по-значению)
+- [*reduce* – Сокращение коллекции в единое значение](#сокращение-коллекции-в-единое-значение)
+- [*when* – Ограничение модификации потока по условию](#ограничение-модификации-потока-по-условию)
+- [*always* – Отмена ограничений модификации потока](#отмена-ограничений-модификации-потока)
+- [*getCollection* – Получение коллекции потока](#получение-коллекции-потока)
+- [*allMatch* – Полное совпадение всех элементов по предикату](#полное-совпадение-всех-элементов-по-предикату)
+- [*anyMatch* – Частичное совпадение всех элементов по предикату](#частичное-совпадение-всех-элементов-по-предикату)
+- [*findAny* – Получение произвольного элемента коллекции](#получение-произвольного-элемента-коллекции)
+- [*findFirst* – Получение первого элемента коллекции](#получение-первого-элемента-коллекции)
+- [*findLast* – Получение последнего элемента коллекции](#получение-последнего-элемента-коллекции)
+- [*min* – Получение минимального элемента коллекции](#получение-минимального-элемента-коллекции)
+- [*max* – Получение максимального элемента коллекции](#получение-максимального-элемента-коллекции)
+- [*reverse* – Расположить элементы коллекции в обратном порядке](#расположить-элементы-коллекции-в-обратном-порядке)
+- [*limit* – Сократить коллекцию до указанного размера](#сократить-коллекцию-до-указанного-размера)
+
+#### Обход элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+each($consumer: <fn($element: mixed, $index: int): void>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию $consumer. Результат выполнения функции не учитывается. Вызов метода ```each``` не изменяет коллекцию потока, но в то же время получает доступ к каждому элементу в коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->each(Consumers::dump()) // dumps each element
+    ->each(static function ($el) { // prints strings 0, 1, 2, 3
+        echo $el."\n"; 
+    })
+;
+
+```
+#### Ограниченный обход элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+walk($consumer: <fn($element: mixed, $index: int): false|void>, $limit: ?int): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию ``$consumer``, так же как и в методе ``each``. Результат выполнения функции не учитывается. Вызов метода ```each``` не изменяет коллекцию потока, но в то же время получает доступ к каждому элементу в коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->walk(Consumers::dump(), 5) // dumps only first 5 elements: 0, 1, 2, 3, 4
+    ->walk(static function ($el) { // prints strings 0, 1, 2, 3. Method will be called only 5 times
+        if ($el === 4) {
+            return false;
+        }
+        echo $el."\n";
+    })
+;
+
+```
+#### Фильтрация элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+filter($predicate: <fn($element: mixed): bool>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, функцию ``$predicate``. В случае если вызов предиката с элементов вернет отрицательный результат - ```false, 0, '', []```, элемент исключается из коллекции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->filter(static function (int $el): bool {
+        return $el % 2 === 0;
+    })
+    ->getCollection() // returns only first 5 elements: 0, 2, 4, 6, 8
+;
+
+```
+#### Отражение элементов коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+map($converter: <fn($element: mixed): mixed>): Stream;
+```
+Метод применяет к каждому элементу коллекции потока, подменяет переданные элементы коллекции на результаты выполнения функции.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->map(static function (int $el): int {
+        return $el * 10;
+    })
+    ->getCollection() // returns 0, 10, 20, 30, 40, 50, 60, 70, 80, 90
+;
+
+```
+#### Преобразование коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reorganize($reorganizer: <fn($collection: Collection): Collection>): Stream;
+```
+Метод применяет ``$reorganizer`` к внутренней коллекции, затем заменяет внутреннюю коллекцию на результат вызова метода. Необходим когда следует выполнить преобразования основываясь на данных полной коллекции.
+
+```php
+
+use WS\Utils\Collections\ArrayStack;
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    // reverse collection 
+    ->reorganize(static function (Collection $collection): Collection {
+        $stack = new ArrayStack();
+        foreach ($collection as $item) {
+            $stack->push($item);
+        }
+        $reversed = CollectionFactory::empty();
+        while (!$stack->isEmpty()) {
+            $reversed->add($stack->pop());
+        }
+        return $reversed;
+    })
+    ->getCollection()
+;
+
+```
+#### Сбор данных коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+collect($collector: <fn ($collection: Collection): mixed>): mixed;
+```
+Метод применяет ``$collector`` к внутренней коллекции и возвращает результат. Необходим, когда необходимо выполнить финальное действие над коллекцией с использованием потока. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+$sumOfElements = CollectionFactory::numbers(10)
+    ->stream()
+    // get sum of collection elements
+    ->collect(static function (Collection $collection): int {
+        $res = 0;
+        foreach ($collection as $item) {
+            $res += $item;
+        }
+        return $res;
+    })
+;
+
+```
+#### Сортировка элементов коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sort($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
+```
+Метод сортирует элементы согласно работе ``$comparator`` (компаратора). Компоратор определяет порядок сортировки двух значений. Должен возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php)
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sortedCollection = CollectionFactory::generate(10, static function (): int {
+        return random_int(0, 100);
+    })
+    ->stream()
+    // get sorted collection
+    ->sort(static function (int $a, int $b): int {
+        return $a <=> $b;
+    })
+    ->getCollection()
+;
+
+```
+#### Сортировка элементов коллекции в обратном порядке
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sort($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
+```
+Метод сортирует элементы согласно работе ``$comparator`` (компаратора), но в отличии от обычной функции сортировки элемнты будут выстроены по убыванию. Компоратор определяет порядок сортировки двух значений. Должен возвращать целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй. [php.net usort](https://www.php.net/manual/en/function.usort.php)
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sortedDescendentCollection = CollectionFactory::generate(10, static function (): int {
+        return random_int(0, 100);
+    })
+    ->stream()
+    // get sorted collection in the reverse order
+    ->sortDesc(static function (int $a, int $b): int {
+        return $a <=> $b;
+    })
+    ->getCollection()
+;
+
+```
+#### Сортировка элементов коллекции по значению
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+sortBy($extractor: <fn($el: mixed): scalar>): Stream;
+```
+Метод сортирует элементы согласно полученному значению функции ``$extractor`` для каждого элемента. Функция должна вернуть скалярное значение для возможности независимой оптимизированной сортировки. Аналогично работает метод сортировки по значению в обратном порядке ``sortByDesc``.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+class Container {
+    private $value;
+
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$sortedCollection = CollectionFactory::generate(10, static function (): Container {
+        return new Container(random_int(0, 100));
+    })
+    ->stream()
+    // get sorted collection
+    ->sortBy(static function (Container $container): int {
+        return $container->getValue();
+    })
+    ->getCollection()
+;
+
+```
+#### Сокращение коллекции в единое значение
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reduce($accumulator: <fn($el: mixed, $carry: mixed): mixed>): mixed;
+```
+Метод приводит коллекцию к единому значению. Функции передаются значения ``$el`` итерируемого элемента и результат вызова этой же функции на предыдущем элементе ``$carry``. В первой итерации ``$carry === null``. Терминальный метод. 
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$sumOfCollection = CollectionFactory::numbers(10)
+    ->stream()
+    // get sum of collection elements
+    ->reduce(static function (int $el, ?int $carry = null): int {
+        return $carry + $el;
+    })
+;
+
+```
+#### Ограничение модификации потока по условию
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+when($condition: bool): Stream;
+```
+Метод ограничивает модификацию при невыполнении условия ``$condition`` и все методы модификации и обхода не будут вызываться. Обратный метод - [``always``](#отмена-ограничений-модификации-потока). 
+
+Блокируемые методы: 
+
+ - each
+ - walk
+ - filter
+ - reorganize
+ - map
+ - sort
+ - sortBy
+ - sortDesc
+ - sortDescBy
+ - reverse
+ - limit
+
+```php
+
+use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
+
+$randomElementSizeCollection = CollectionFactory::numbers(random_int(0, 20));
+
+$onlyTenElements = $randomElementSizeCollection
+    ->stream()
+    // get collection elements only 10 items
+    ->when($randomElementSizeCollection->size() > 10)
+    ->limit(10)
+    ->when($randomElementSizeCollection->size() < 10)
+    ->reorganize(static function (Collection $collection) {
+        for ($i = $collection->size(); $i < 10; $i++ ) {
+            $collection->add($i);
+        }
+        return $collection;
+    })
+;
+
+```
+#### Отмена ограничений модификации потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+always(): Stream;
+```
+В случае если поток был заблокирован ранее для модификаций через условие [``when``](#ограничение-модификации-потока-по-условию), метод ``always`` отменяет ограничения на дальнейший вызов модифицирующих методов.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$collection = CollectionFactory::numbers(20);
+
+$onlyTenElements = $collection
+    ->stream()
+    // get collection elements only 10 items
+    ->when($collection->size() > 5)
+    ->limit(5)
+    ->always()
+    ->map(static function (int $el): int {
+        return $el * 10;
+    })
+    ->getCollection() // [0, 10, 20, 30, 40]
+;
+
+```
+#### Получение коллекции потока
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+getCollection(): Collection;
+```
+Метод возвращает коллекцию с учетом ранее выполненных преобразований. Даже если в потоке будут еще вызваны методы преобразования, полученная коллекция останется не измененной. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+$stream = CollectionFactory::numbers(10)
+    ->stream();
+
+$collection1 = $stream
+    ->map(static function (int $el): int{
+        return $el * 10;
+    })
+    ->getCollection()
+;
+
+$collection2 = $stream
+    ->filter(static function (int $el): bool {
+        return $el > 50;
+    })
+    ->getCollection()
+;
+
+$collection1->size() === $collection2->size(); // false
+
+$collection2->toArray(); // [60, 70, 80, 90]
+
+```
+#### Полное совпадение всех элементов по предикату
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+allMatch($predicate: <fn($el: mixed): bool>): bool;
+```
+Метод вернет ``true``, если все вызовы ``$predicate`` над элементами коллекции будут истинными (``true``). Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->allMatch(static function (int $el): bool {
+        return $el >= 1;
+    }) // false, 0 is less than 1
+;
+
+```
+#### Частичное совпадение всех элементов по предикату
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+anyMatch(callable $predicate): bool;
+```
+Метод вернет ``true``, если хотя бы один вызов ``$predicate`` над элементами коллекции будет  истинным (``true``). Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->allMatch(static function (int $el): bool {
+        return $el > 0;
+    }) // true, [1, 2, 3, 4, 5, 6, 7, 8, 9] are grate than 0
+;
+
+```
+#### Получение произвольного элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findAny(): mixed;
+```
+
+Метод вернет произвольный элемент коллекции, либо ``null``, если коллекция пустая. Не гарантирует того что элемент выбирается в случайном порядке. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->findAny() // for example - 5
+;
+
+```
+#### Получение первого элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findFirst(): mixed;
+```
+
+Метод вернет первый элемент коллекции , либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->findFirst() // 0
+;
+
+```
+#### Получение последнего элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+findLast(): mixed;
+```
+
+Метод вернет последний элемент коллекции , либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->findLast() // 9
+;
+
+```
+#### Получение минимального элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+min($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
+```
+
+Метод вернет наименьший элемент коллекции согласно сравнению функции компоратора, либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->min(static function (int $a, int $b): int {
+        return $a <=> $b;
+    }) // 0
+;
+
+```
+#### Получение максимального элемента коллекции
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+max($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
+```
+
+Метод вернет наибольший элемент коллекции согласно сравнению функции компоратора, либо ``null``, если коллекция пустая. Терминальный метод.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->max(static function (int $a, int $b): int {
+        return $a <=> $b;
+    }) // 9
+;
+
+```
+#### Расположить элементы коллекции в обратном порядке
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+reverse(): Stream;
+```
+
+Метод преобразует порядок элементов в обратную последовательность.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reverse()
+    ->getCollection() // [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+;
+
+```
+#### Сократить коллекцию до указанного размера
+[[↑ К разделу]](#Методы-интерфейса-потока)
+```
+limit(int $size): Stream;
+```
+
+Метод сокращает количество элементов до указанного размера. В случае, если количество элементов уже меньше чем указано в ограничении ``$size``, количество элементов останется прежним.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+
+CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] 
+    ->stream()
+    ->reverse()
+    ->getCollection() // [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+;
+
+```
 
 ## Набор функций обхода и преобразования
+[[↑ В начало]](#PHP-Коллекции)
+
+Библиотека содержит конструкторы наиболее популярных функций, которые инициируют функции для из работы через потоки обхода и преобразования с заранее подготовленными параметрами.
+Например: 
+```php
+
+use \WS\Utils\Collections\Functions\Predicates;
+
+$equal10Predicate = Predicates::equal(10);
+
+$equal10Predicate(11); // false
+$equal10Predicate(10); // true
+
+```
+Вызов конструктор функции ```Predicates::equal(10)``` вернет функцию сравнения входного параметра со значением 10. 
+
+Функции применяемые в библиотеке разделены на следующие типы:
+
+- [*Predicates* – Предикаты](#Predicates-предикаты)
+- [*Comparators* - Функции сравнения](#Comparators-функции-сравнения)
+- [*Converters* - Преобразователи элементов](#Converters-преобразователи-элементов)
+- [*Reorganizers* - Преобразователи потоков](#Reorgonizers-преобразователи-потоков)
+- [*Consumers* - Потребители](#Consumers-потребители)
+
+Каждый тип функции должен иметь соответствующий интерфейс для использования в определенных методах потоков. 
+
+### Predicates Предикаты
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Группа конструкторов функций которые используются для фильтрации коллекции потока. Все методы возвращают проинициализированные функции с интерфейсом: ```<Fn($el: mixed): bool>```. Предикаты также позволяют работать со свойствами объектов. К примеру под свойством объекта `myPropety` подразумевается наличие публичного свойства в объекте с названием `myProperty` либо наличие методе `геттера` - `getMyProperty`.
+- [*lock* – Блокировка](#lock-блокировка)
+- [*notResistance* – Пропуск всех значений](#notResistance-пропуск-всех-значений)
+- [*notNull* – Проверка значений на пустоту](#notNull-проверка-значений-на-пустоту)
+- [*eachEven* – Пропуск элементов чётных вызовов](#eachEven-пропуск-элементов-чётных-вызовов)
+- [*nth* – Пропуск элементов кратных вызовов](#nth-пропуск-элементов-кратных-вызовов)
+- [*equal* – Проверка на эквивалентность](#equal-проверка-на-эквивалентность)
+- [*lockDuplicated* – Блокировка значений дубликатов](#lockDuplicated-блокировка-значений-дубликатов)
+- [*lessThan* – Проверка значения на условие "меньше"](#lessThan-проверка-значения-на-условие-меньше)
+- [*lessOrEqual* – Проверка значения на условие "меньше либо равно"](#lessThan-проверка-значения-на-условие-меньше-либо-равно)
+- [*moreThan* – Проверка значения на условие "больше"](#lessThan-проверка-значения-на-условие-больше)
+- [*moreOrEqual* – Проверка значения на условие "больше либо равно"](#lessThan-проверка-значения-на-условие-больше-либо-равно)
+- [*not* – Проверка значения на неравенство](#lessThan-проверка-значения-на-неравенство)
+- [*in* – Проверка значения на нахождение во множестве](#in-проверка-значения-на-нахождение-во-множестве)
+- [*notIn* – Проверка значения на отсутствие во множестве](#notIn-проверка-значения-на-отсутствие-во-множестве)
+- [*where* – Проверка свойства объекта на эквивалентность](#where-проверка-свойства-объекта-на-эквивалентность)
+- [*whereNot* – Проверка свойства объекта на неравенство](#whereNot-проверка-свойства-объекта-на-неравенство)
+- [*whereIn* – Проверка свойства объекта на нахождение во множестве](#whereIn-проверка-свойства-объекта-на-нахождение-во-множестве)
+- [*whereNotIn* – Проверка свойства объекта на отсутствие во множестве](#whereNotIn-проверка-свойства-объекта-на-отсутствие-во-множестве)
+- [*whereMoreThan* – Проверка свойства объекта на условие "больше"](#whereMoreThan-проверка-свойства-объекта-на-условие-больше)
+- [*whereLessThan* – Проверка свойства объекта на условие "меньше"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше)
+- [*whereMoreOrEqual* – Проверка свойства объекта на условие "больше либо равно"](#whereLessThan-проверка-свойства-объекта-на-условие-больше-либо-равно)
+- [*whereLessOrEqual* – Проверка свойства объекта на условие "больше меньше равно"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше-либо-равно)
+
+#### lock блокировка
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lock(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать false. По сути метод порождает функцию блокирования потока.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$lockFunction = Predicates::lock();
+CollectionFactory::numbers(1, 10)
+    ->stream()
+    ->filter($lockFunction)
+    ->getCollection()
+    ->isEmpty() // true
+;
+```
+
+#### notResistance Пропуск всех значений
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notResistance(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать ```true```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$passFunction = Predicates::notResistance();
+CollectionFactory::numbers(1, 10)
+    ->stream()
+    ->filter($passFunction)
+    ->getCollection()
+    ->size() // 10
+;
+```
+
+#### notNull проверка значений на пустоту
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notNull(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая на любой набор входных данных - будет возвращать ```true```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$notNullPassFunction = Predicates::notNull();
+CollectionFactory::from([1, 10, null])
+    ->stream()
+    ->filter($notNullPassFunction)
+    ->getCollection()
+    ->size() // 2
+;
+```
+
+#### eachEven Пропуск значений чётных вызовов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+eachEven(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая каждый четный вызов - будет возвращать ```true``` и, соответственно, в остальных случаях - ```false```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$evenPassFunction = Predicates::eachEven();
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter($evenPassFunction)
+    ->getCollection()
+    ->toArray() // 2, 4, false
+;
+```
+
+#### nth Пропуск значений кратных вызовов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+nth($number: int): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая каждый `$number` вызов - будет возвращать ```true``` и, соответственно, в остальных случаях - ```false```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+$thirdPassFunction = Predicates::nth(3);
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter($thirdPassFunction)
+    ->getCollection()
+    ->toArray() // 3, false
+;
+```
+
+#### equal Проверка на эквивалентность
+[[↑ К разделу]](#Predicates-предикаты)
+```
+equal($value: mixed): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая возвращает истинное значение при совпадении элемента коллекции со значением ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, false])
+    ->stream()
+    ->filter(Predicates::equal(3))
+    ->findFirst() // 3
+;
+```
+
+#### lockDuplicated Блокировка значений дубликатов
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lockDuplicated(): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию, которая возвращает истинное значение только для вызовов с уникальными элементами.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([3, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lockDuplicated())
+    ->getCollection()
+    ->toArray() // [3, 2, 4, null]
+;
+```
+
+#### lessThan Проверка значения на условие "меньше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lessThan($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lessThan(4))
+    ->getCollection()
+    ->toArray() // [1, 2, 3, null, 3]
+;
+```
+
+#### lessOrEqual Проверка значения на условие "меньше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+lessOrEqual($value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::lessOrEqual(2))
+    ->getCollection()
+    ->toArray() // [1, 2, null]
+;
+```
+
+#### moreThan Проверка значения на условие "больше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+moreThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::moreThan(2))
+    ->getCollection()
+    ->toArray() // [3, 4, 3]
+;
+```
+
+#### moreOrEqual Проверка значения на условие "больше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+moreOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию сравнения элементов со значением `$value`.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::moreOrEqual(2))
+    ->getCollection()
+    ->toArray() // [2, 3, 4, 3]
+;
+```
+
+#### not Проверка значения на неравенство
+[[↑ К разделу]](#Predicates-предикаты)
+```
+not($value: mixed): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки неравенства элементов коллекции со значением ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::not(3))
+    ->getCollection()
+    ->toArray() // [1, 2, 4, null]
+;
+```
+
+#### in Проверка значения на нахождение во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+in($values: array): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки нахождения элементов во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::in([null, 3]))
+    ->getCollection()
+    ->toArray() // [3, null, 3]
+;
+```
+
+#### notIn Проверка значения на отсутствие во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+notIn($values: array): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки отсутствия элементов во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+CollectionFactory::from([1, 2, 3, 4, null, 3])
+    ->stream()
+    ->filter(Predicates::notIn([null, 3]))
+    ->getCollection()
+    ->toArray() // [1, 2, 4]
+;
+```
+
+#### where Проверка свойства объекта на эквивалентность
+[[↑ К разделу]](#Predicates-предикаты)
+```
+where($property: string, $value: mixed): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки свойства объекта элемента на равенство значению ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::where('value', 0))
+    ->getCollection()
+    ->isEmpty() // false
+;
+```
+
+#### whereNot Проверка свойства объекта на неравенство
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereNot($property: string, $value: mixed): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки свойства объекта элемента на неравенство значению ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereNot('value', 0))
+    ->getCollection()
+    ->toArray() // [#1, #2, #3, #4]
+;
+```
+
+#### whereIn Проверка свойства объекта на нахождение во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereIn($property: string, $values: array): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки нахождения значения свойства объекта во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereIn('value', [0, 4, 9]))
+    ->getCollection()
+    ->toArray() // [#0, #4]
+;
+```
+
+#### whereNotIn Проверка свойства объекта на отсутствие во множестве
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereNotIn($property: string, $values: array): Closure; \\ <Fn($el: mixed): bool>
+```
+
+Метод инициирует функцию проверки отсутствия значения свойства объекта во множестве ```$values```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereIn('value', [0, 4, 9]))
+    ->getCollection()
+    ->toArray() // [#0, #4]
+;
+```
+
+#### whereMoreThan Проверка свойства объекта на условие "больше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereMoreThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereMoreThan('value', 3))
+    ->getCollection()
+    ->toArray() // [#4]
+;
+```
+
+#### whereLessThan Проверка свойства объекта на условие "меньше"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereLessThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereLessThan('value', 3))
+    ->getCollection()
+    ->toArray() // [#0, #1, #2]
+;
+```
+
+#### whereMoreOrEqual Проверка свойства объекта на условие "больше либо равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereMoreOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereMoreOrEqual('value', 3))
+    ->getCollection()
+    ->toArray() // [#3, #4]
+;
+```
+
+#### whereLessOrEqual Проверка свойства объекта на условие "больше меньше равно"
+[[↑ К разделу]](#Predicates-предикаты)
+```
+whereLessOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+```
+
+Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Predicates;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+$c = 0;
+CollectionFactory::generate(5, static function () use (& $c) {
+        return new ValueObject($c++);
+    })
+    ->stream()
+    ->filter(Predicates::whereLessOrEqual('value', 3))
+    ->getCollection()
+    ->toArray() // [#1, #2, #3]
+;
+```
+
+### Comparators функции сравнения
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Группа конструкторов функций сравнения. Функции сравнения элементов необходимы при использовании методов сортировки, для того чтобы в правильном порядке расположить элементы. Итоговые функции сортировки имеют интерфейс `<Fn($a: mixed, $b: mixed): int>`, с логикой работы идентичной [https://www.php.net/manual/ru/function.usort]. 
+
+- [*scalarComparator* – Сравнение скалярных значений](#scalarComparator–сравнение-скалярных-значений)
+- [*objectPropertyComparator* – Сравнение свойств объектов](#objectPropertyComparator–сравнение-свойств-объектов)
+- [*callbackComparator* – Определение функции для сравнения значений](#callbackComparator-определение-функции-для-сравнения-значений)
+
+#### scalarComparator Сравнение скалярных значений
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+scalarComparator(): Closure; \\ <Fn($a: scalar, $b: scalar): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+CollectionFactory::generate(5, static function (): int {
+        return random_int(0, 10);
+    })
+    ->stream()
+    ->sort(Comparators::scalarComparator())
+    ->getCollection()
+    ->toArray() // sorted value, for example [2, 3, 6, 7, 8]
+;
+```
+
+#### objectPropertyComparator Сравнение свойств объектов
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+objectPropertyComparator($property: string): Closure; \\ <Fn($a: object, $b: object): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения свойства объектов. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function () {
+        return new ValueObject(random_int(0, 10));
+    })    
+    ->stream()
+    ->sort(Comparators::objectPropertyComparator('value'))
+    ->getCollection()
+    ->toArray() // sorted ValueObject objects, for example [#2, #3, #6, #7, #8]
+;
+```
+
+#### callbackComparator Определение функции для сравнения значений
+[[↑ К разделу]](#Comparators-функции-сравнения)
+```
+callbackComparator($fun: <Fn($value: mixed): scalar>): Closure; \\ <Fn($a: mixed, $b: mixed): int>
+```
+
+Метод инициирует функцию, которая сравнивает два значения на основе их обработки функцией ``$fun``. Функция сравнения возвращает целое, которое меньше, равно или больше нуля, если первый аргумент является соответственно меньшим, равным или большим, чем второй.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Comparators;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function () {
+        return new ValueObject(random_int(0, 10));
+    })    
+    ->stream()
+    ->sort(Comparators::callbackComparator(static function (ValueObject $valueObject) {
+        return $valueObject->getValue();
+    }))
+    ->getCollection()
+    ->toArray() // sorted ValueObject objects, for example [#2, #3, #6, #7, #8]
+;
+
+```
+
+### Converters Преобразователи элементов
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Группа конструктор функций для преобразования элементов. Результатом функции конвертера является ``<Fn($obj: mixed): mixed>``.
+
+- [*toPropertyValue* – Преобразование каждого элемента коллекции в значение свойства](#toPropertyValue–преобразование-элемента-коллекции-в-значение-свойства)
+- [*toProperties* – Преобразование каждого элемента коллекции в ассоциативный массив](#toProperties–преобразование-элемента-коллекции-в-ассоциативный-массив)
+
+#### toPropertyValue Преобразование каждого элемента коллекции в значение свойства
+[[↑ В начало]](#converters-преобразователи-элементов)
+```
+toPropertyValue($property: string): Closure; \\ <Fn($obj: object): mixed>
+```
+
+Метод инициирует функцию, которая возвращает значение свойства объекта.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Converters;
+
+class ValueObject {
+    private $value;
+    public function __construct($value) {
+        $this->value = $value;
+    }
+    
+    public function getValue() {
+        return $this->value;
+    }
+}
+
+CollectionFactory::generate(5, static function (int $index): ValueObject {
+        return new ValueObject($index);
+    })
+    ->stream()
+    ->map(Converters::toPropertyValue('value'))
+    ->getCollection()
+    ->toArray() // [0, 1, 2, 3, 4 ]
+;
+
+```
+
+#### toProperties Преобразование каждого элемента коллекции в ассоциативный массив
+[[↑ В начало]](#converters-преобразователи-элементов)
+```
+toProperties($names: array<string>): Closure; \\ <Fn($obj: object): array>
+```
+
+Метод инициирует функцию, которая возвращает ассоциативный массив свойств объекта, ключи которого являются именами свойств.
+
+```php
+
+use WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Converters;
+
+class Person {
+    private $name;
+    private $surname;
+    
+    public function __construct(string $name, string $surname) 
+    {
+        $this->name = $name;
+        $this->surname = $surname;
+    }
+    
+    public function getName(): string 
+    {
+        return $this->name;
+    }
+    
+    public function getSurname(): string
+    {
+        return $this->surname;
+    }
+}
+
+CollectionFactory::generate(1, static function (int $index): Person {
+        return new Person('Ivan', 'Ivanov');
+    })
+    ->stream()
+    ->map(Converters::toProperties(['name', 'surname']))
+    ->getCollection()
+    ->toArray() // [['name' => 'Ivan', 'surname' => 'Ivanov']]
+;
+
+```
+
+### Reorganizers Преобразователи потоков
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Конструкторы методов преобразования потоков. В отличие от функций преобразования элементов, где каждому элементу исходной коллекции соответствует элемент новой коллекции с учетом позиции первого, методы преобразования потоков создают производную новую коллекцию с произвольным количеством элементов.
+- [*shuffle* – Смена порядка следования элемента коллекций](#shuffle-cмена-порядка-следования-элемента-коллекций)
+- [*random* – Получение случайных элементов коллекции](#random-получение-случайных-элементов-коллекции)
+- [*chunk* – Разбиение на множество коллекций указанного размера](#chunk–разбиение-на-множество-коллекций-указанного-размера)
+- [*collapse* – Получение коллекции без дополнительных уровней вложенности](#collapse-получение-коллекции-без-дополнительных-уровней-вложенности)
+
+#### shuffle Смена порядка следования элемента коллекций
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+shuffle(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, которая возвращает новую коллекцию с измененным порядком следования элементов. Элементы будут следовать в случайном порядке.
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->getCollection()
+    ->toArray() // for example [0, 3, 1, 2, 4]
+;
+
+```
+
+#### random Получение случайных элементов коллекции
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+random($count = 1: int): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает новую коллекцию которая содержит случайное ограниченное множество элементов исходной коллекции. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->reorganize(Reorganizers::random(2))
+    ->getCollection()
+    ->toArray() // for example [0, 3]
+;
+
+```
+
+#### chunk Разбиение на множество коллекций указанного размера
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+chunk($size: int): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает коллекцию коллекций количество элементов которых меньше либо равно ``$size``. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->reorganize(Reorganizers::chunk(2))
+    ->getCollection()
+    ->toArray() // for example [[0, 1], [2, 3], ...]
+;
+
+```
+
+#### collapse Получение коллекции без дополнительных уровней вложенности
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+collapse(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает коллекцию без вложенных контейнеров. Под контейнерами в данном контексте понимаются итерируемые структуры данных. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::generate(3, static function (int $i): array {
+        return [$i*2, $i*2 + 1];
+    }) // [[0, 1], [2, 3], [4, 5]]
+    ->stream()
+    ->reorganize(Reorganizers::chunk(2))
+    ->getCollection()
+    ->toArray() // for example [0, 1, 2, 3, 4, 5]
+;
+
+```
+
+### Consumers - Потребители
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+
+Конструкторы функций потребителей. Содержит одну функцию распечатки значений элементов. В основном каждая функция потребитель разрабатывается индивидуально в исходном коде проекта. 
+
+- [*dump* – Распечатка значений элементов коллекции](#dump–распечатка-значений-элементов-коллекции)
+
+#### dump Распечатка значений элементов коллекции
+[[↑ В начало]](#Consumers-потребители)
+```
+dump(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, которая распечатывает в поток вывода переданное значение.
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->each(Consumers::dump()) // dumps each element of collection
+;
+
+```

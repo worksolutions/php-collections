@@ -72,4 +72,9 @@ class CollectionFactory
 
         return $list;
     }
+
+    public static function empty(): Collection
+    {
+        return ArrayList::of();
+    }
 }
