@@ -1414,8 +1414,8 @@ $equal10Predicate(10); // true
 - [*Predicates* – Предикаты](#Predicates-предикаты)
 - [*Comparators* - Функции сравнения](#Comparators-функции-сравнения)
 - [*Converters* - Преобразователи элементов](#Converters-преобразователи-элементов)
-- Преобразователи потоков (Reorganizes)
-- Потребители (Consumers)
+- [*Reorganizers* - Преобразователи потоков](#Reorgonizers-преобразователи-потоков)
+- [*Consumers* - Потребители](#Consumers-потребители)
 
 Каждый тип функции должен иметь соответствующий интерфейс для использования в определенных методах потоков. 
 
@@ -2173,7 +2173,7 @@ CollectionFactory::generate(5, static function (int $index): ValueObject {
 toProperties($names: array<string>): Closure; \\ <Fn($obj: object): array>
 ```
 
-Метод инициирует функцию, возвращает ассоциативный массив свойств объекта, ключи которого являются именами свойств.
+Метод инициирует функцию, которая возвращает ассоциативный массив свойств объекта, ключи которого являются именами свойств.
 
 ```php
 
@@ -2208,6 +2208,131 @@ CollectionFactory::generate(1, static function (int $index): Person {
     ->map(Converters::toProperties(['name', 'surname']))
     ->getCollection()
     ->toArray() // [['name' => 'Ivan', 'surname' => 'Ivanov']]
+;
+
+```
+
+### Reorganizers Преобразователи потоков
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+Конструкторы методов преобразования потоков. В отличие от функций преобразования элементов, где каждому элементу исходной коллекции соответствует элемент новой коллекции с учетом позиции первого, методы преобразования потоков создают производную новую коллекцию с произвольным количеством элементов.
+- [*shuffle* – Смена порядка следования элемента коллекций](#shuffle-cмена-порядка-следования-элемента-коллекций)
+- [*random* – Получение случайных элементов коллекции](#random-получение-случайных-элементов-коллекции)
+- [*chunk* – Разбиение на множество коллекций указанного размера](#chunk–разбиение-на-множество-коллекций-указанного-размера)
+- [*collapse* – Получение коллекции без дополнительных уровней вложенности](#collapse-получение-коллекции-без-дополнительных-уровней-вложенности)
+
+#### shuffle Смена порядка следования элемента коллекций
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+shuffle(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, которая возвращает новую коллекцию с измененным порядком следования элементов. Элементы будут следовать в случайном порядке.
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->reorganize(Reorganizers::shuffle())
+    ->getCollection()
+    ->toArray() // for example [0, 3, 1, 2, 4]
+;
+
+```
+
+#### random Получение случайных элементов коллекции
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+random($count = 1: int): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает новую коллекцию которая содержит случайное ограниченное множество элементов исходной коллекции. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->reorganize(Reorganizers::random(2))
+    ->getCollection()
+    ->toArray() // for example [0, 3]
+;
+
+```
+
+#### chunk Разбиение на множество коллекций указанного размера
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+chunk($size: int): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает коллекцию коллекций количество элементов которых меньше либо равно ``$size``. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::numbers(10)
+    ->stream()
+    ->reorganize(Reorganizers::chunk(2))
+    ->getCollection()
+    ->toArray() // for example [[0, 1], [2, 3], ...]
+;
+
+```
+
+#### collapse Получение коллекции без дополнительных уровней вложенности
+[[↑ В начало]](#Reorgonizers-преобразователи-потоков)
+```
+collapse(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, функция возвращает коллекцию без вложенных контейнеров. Под контейнерами в данном контексте понимаются итерируемые структуры данных. 
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Reorganizers;
+
+CollectionFactory::generate(3, static function (int $i): array {
+        return [$i*2, $i*2 + 1];
+    }) // [[0, 1], [2, 3], [4, 5]]
+    ->stream()
+    ->reorganize(Reorganizers::chunk(2))
+    ->getCollection()
+    ->toArray() // for example [0, 1, 2, 3, 4, 5]
+;
+
+```
+
+### Consumers - Потребители
+[[↑ В начало]](#набор-функций-обхода-и-преобразования)
+
+Конструкторы функций потребителей. Содержит одну функцию распечатки значений элементов. В основном каждая функция потребитель разрабатывается индивидуально в исходном коде проекта. 
+
+- [*dump* – Распечатка значений элементов коллекции](#dump–распечатка-значений-элементов-коллекции)
+
+#### dump Распечатка значений элементов коллекции
+[[↑ В начало]](#Consumers-потребители)
+```
+dump(): Closure; \\ <Fn(): Collection>
+```
+
+Метод инициирует функцию, которая распечатывает в поток вывода переданное значение.
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Functions\Consumers;
+
+CollectionFactory::numbers(5)
+    ->stream()
+    ->each(Consumers::dump()) // dumps each element of collection
 ;
 
 ```
