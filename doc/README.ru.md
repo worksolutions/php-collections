@@ -23,7 +23,7 @@ use WS\Utils\Collections\Functions\Predicates;
 // Отобрать элементы по фильтру
 CollectionFactory::from([1, 2, 3])
     ->stream()
-    ->filter(Predicates::moreThan(1))
+    ->filter(Predicates::greaterThan(1))
     ->getCollection(); // Collection [2, 3]
 
 // Распечатать все файлы в директории
@@ -1443,8 +1443,8 @@ $equal10Predicate(10); // true
 - [*lockDuplicated* – Блокировка значений дубликатов](#lockDuplicated-блокировка-значений-дубликатов)
 - [*lessThan* – Проверка значения на условие "меньше"](#lessThan-проверка-значения-на-условие-меньше)
 - [*lessOrEqual* – Проверка значения на условие "меньше либо равно"](#lessThan-проверка-значения-на-условие-меньше-либо-равно)
-- [*moreThan* – Проверка значения на условие "больше"](#lessThan-проверка-значения-на-условие-больше)
-- [*moreOrEqual* – Проверка значения на условие "больше либо равно"](#lessThan-проверка-значения-на-условие-больше-либо-равно)
+- [*greaterThan* – Проверка значения на условие "больше"](#greaterThan-проверка-значения-на-условие-больше)
+- [*greaterOrEqual* – Проверка значения на условие "больше либо равно"](#greaterOrEqual-проверка-значения-на-условие-больше-либо-равно)
 - [*not* – Проверка значения на неравенство](#lessThan-проверка-значения-на-неравенство)
 - [*in* – Проверка значения на нахождение во множестве](#in-проверка-значения-на-нахождение-во-множестве)
 - [*notIn* – Проверка значения на отсутствие во множестве](#notIn-проверка-значения-на-отсутствие-во-множестве)
@@ -1452,9 +1452,9 @@ $equal10Predicate(10); // true
 - [*whereNot* – Проверка свойства объекта на неравенство](#whereNot-проверка-свойства-объекта-на-неравенство)
 - [*whereIn* – Проверка свойства объекта на нахождение во множестве](#whereIn-проверка-свойства-объекта-на-нахождение-во-множестве)
 - [*whereNotIn* – Проверка свойства объекта на отсутствие во множестве](#whereNotIn-проверка-свойства-объекта-на-отсутствие-во-множестве)
-- [*whereMoreThan* – Проверка свойства объекта на условие "больше"](#whereMoreThan-проверка-свойства-объекта-на-условие-больше)
+- [*whereGreaterThan* – Проверка свойства объекта на условие "больше"](#whereGreaterThan-проверка-свойства-объекта-на-условие-больше)
 - [*whereLessThan* – Проверка свойства объекта на условие "меньше"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше)
-- [*whereMoreOrEqual* – Проверка свойства объекта на условие "больше либо равно"](#whereLessThan-проверка-свойства-объекта-на-условие-больше-либо-равно)
+- [*whereGreaterOrEqual* – Проверка свойства объекта на условие "больше либо равно"](#whereGreaterOrEqual-проверка-свойства-объекта-на-условие-больше-либо-равно)
 - [*whereLessOrEqual* – Проверка свойства объекта на условие "больше меньше равно"](#whereLessThan-проверка-свойства-объекта-на-условие-меньше-либо-равно)
 
 #### lock блокировка
@@ -1650,10 +1650,10 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 ;
 ```
 
-#### moreThan Проверка значения на условие "больше"
+#### greaterThan Проверка значения на условие "больше"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-moreThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+greaterThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию сравнения элементов со значением `$value`.
@@ -1665,16 +1665,16 @@ use WS\Utils\Collections\Functions\Predicates;
 
 CollectionFactory::from([1, 2, 3, 4, null, 3])
     ->stream()
-    ->filter(Predicates::moreThan(2))
+    ->filter(Predicates::greaterThan(2))
     ->getCollection()
     ->toArray() // [3, 4, 3]
 ;
 ```
 
-#### moreOrEqual Проверка значения на условие "больше либо равно"
+#### greaterOrEqual Проверка значения на условие "больше либо равно"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-moreOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+greaterOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 Метод инициирует функцию сравнения элементов со значением `$value`.
@@ -1686,7 +1686,7 @@ use WS\Utils\Collections\Functions\Predicates;
 
 CollectionFactory::from([1, 2, 3, 4, null, 3])
     ->stream()
-    ->filter(Predicates::moreOrEqual(2))
+    ->filter(Predicates::greaterOrEqual(2))
     ->getCollection()
     ->toArray() // [2, 3, 4, 3]
 ;
@@ -1895,10 +1895,10 @@ CollectionFactory::generate(5, static function () use (& $c) {
 ;
 ```
 
-#### whereMoreThan Проверка свойства объекта на условие "больше"
+#### whereGreaterThan Проверка свойства объекта на условие "больше"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-whereMoreThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+whereGreaterThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
 ```
 
 Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
@@ -1924,7 +1924,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
         return new ValueObject($c++);
     })
     ->stream()
-    ->filter(Predicates::whereMoreThan('value', 3))
+    ->filter(Predicates::whereGreaterThan('value', 3))
     ->getCollection()
     ->toArray() // [#4]
 ;
@@ -1965,10 +1965,10 @@ CollectionFactory::generate(5, static function () use (& $c) {
 ;
 ```
 
-#### whereMoreOrEqual Проверка свойства объекта на условие "больше либо равно"
+#### whereGreaterOrEqual Проверка свойства объекта на условие "больше либо равно"
 [[↑ К разделу]](#Predicates-предикаты)
 ```
-whereMoreOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+whereGreaterOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
 ```
 
 Метод инициирует функцию сравнения значения свойства объекта с ```$value```.
@@ -1994,7 +1994,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
         return new ValueObject($c++);
     })
     ->stream()
-    ->filter(Predicates::whereMoreOrEqual('value', 3))
+    ->filter(Predicates::whereGreaterOrEqual('value', 3))
     ->getCollection()
     ->toArray() // [#3, #4]
 ;

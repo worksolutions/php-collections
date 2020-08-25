@@ -143,7 +143,7 @@ class PredicatesFunctionsTest extends TestCase
 
         $filtered = $collection
             ->stream()
-            ->filter(Predicates::whereMoreThan('field', 2))
+            ->filter(Predicates::whereGreaterThan('field', 2))
             ->getCollection()
         ;
         $this->assertThat($filtered, CollectionIsEqual::to([$o3, $o4]));
@@ -157,7 +157,7 @@ class PredicatesFunctionsTest extends TestCase
 
         $filtered = $collection
             ->stream()
-            ->filter(Predicates::whereMoreOrEqual('field', 2))
+            ->filter(Predicates::whereGreaterOrEqual('field', 2))
             ->getCollection()
         ;
         $this->assertThat($filtered, CollectionIsEqual::to([$o2, $o3, $o4]));
@@ -193,14 +193,14 @@ class PredicatesFunctionsTest extends TestCase
 
         $filtered = $collection
             ->stream()
-            ->filter(Predicates::moreThan(3))
+            ->filter(Predicates::greaterThan(3))
             ->getCollection()
         ;
         $this->assertThat($filtered, CollectionIsEqual::to([4, 5]));
 
         $filtered = $collection
             ->stream()
-            ->filter(Predicates::moreOrEqual(3))
+            ->filter(Predicates::greaterOrEqual(3))
             ->getCollection()
         ;
         $this->assertThat($filtered, CollectionIsEqual::to([3, 4, 5]));

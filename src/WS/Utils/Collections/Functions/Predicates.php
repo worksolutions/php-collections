@@ -130,7 +130,7 @@ class Predicates
      * @param $value
      * @return Closure
      */
-    public static function moreThan($value): Closure
+    public static function greaterThan($value): Closure
     {
         return static function ($el) use ($value): bool {
             return $el > $value;
@@ -142,7 +142,7 @@ class Predicates
      * @param $value
      * @return Closure
      */
-    public static function moreOrEqual($value): Closure
+    public static function greaterOrEqual($value): Closure
     {
         return static function ($el) use ($value): bool {
             return $el >= $value;
@@ -243,7 +243,7 @@ class Predicates
      * @param $value
      * @return Closure
      */
-    public static function whereMoreThan(string $property, $value): Closure
+    public static function whereGreaterThan(string $property, $value): Closure
     {
         return static function ($ob) use ($property, $value) {
             return ObjectFunctions::getPropertyValue($ob, $property) > $value;
@@ -269,7 +269,7 @@ class Predicates
      * @param $value
      * @return Closure
      */
-    public static function whereMoreOrEqual(string $property, $value): Closure
+    public static function whereGreaterOrEqual(string $property, $value): Closure
     {
         return static function ($ob) use ($property, $value) {
             return ObjectFunctions::getPropertyValue($ob, $property) >= $value;

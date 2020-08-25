@@ -54,7 +54,7 @@ class ConditionsStreamTest extends TestCase
             ->when(false)
             ->filter(Predicates::lessOrEqual(5))
             ->when(true)
-            ->filter(Predicates::moreOrEqual(5))
+            ->filter(Predicates::greaterOrEqual(5))
             ->getCollection()
         ;
 
@@ -71,7 +71,7 @@ class ConditionsStreamTest extends TestCase
             ->when(false)
             ->filter(Predicates::lessOrEqual(5))
             ->always()
-            ->filter(Predicates::moreOrEqual(5))
+            ->filter(Predicates::greaterOrEqual(5))
             ->getCollection()
         ;
 
@@ -89,7 +89,7 @@ class ConditionsStreamTest extends TestCase
             ->when(false)
             ->filter(Predicates::lessOrEqual(5))
             ->when(false)
-            ->filter(Predicates::moreOrEqual(5))
+            ->filter(Predicates::greaterOrEqual(5))
             ->getCollection()
         ;
 
@@ -106,7 +106,7 @@ class ConditionsStreamTest extends TestCase
             ->when(true)
             ->filter(Predicates::lessOrEqual(6))
             ->when(true)
-            ->filter(Predicates::moreOrEqual(4))
+            ->filter(Predicates::greaterOrEqual(4))
             ->getCollection()
         ;
 

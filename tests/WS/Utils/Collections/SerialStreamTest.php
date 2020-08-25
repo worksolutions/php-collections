@@ -38,7 +38,7 @@ class SerialStreamTest extends TestCase
         return new ArrayList($els);
     }
 
-    public static function fMoreThanTen(): callable
+    public static function fGreaterThanTen(): callable
     {
         return static function (int $number):bool {
             return $number > 10;
@@ -74,12 +74,12 @@ class SerialStreamTest extends TestCase
     public function filteringCases(): array
     {
         return [
-            [[], self::fMoreThanTen(), []],
-            [[1], self::fMoreThanTen(), []],
-            [[1, 2, 3, 4], self::fMoreThanTen(), []],
-            [[1, 2, 3, 4, 10, 11, 2], self::fMoreThanTen(), [11]],
-            [[11, 2, -19], self::fMoreThanTen(), [11]],
-            [[11, 12, 13], self::fMoreThanTen(), [11, 12, 13]],
+            [[], self::fGreaterThanTen(), []],
+            [[1], self::fGreaterThanTen(), []],
+            [[1, 2, 3, 4], self::fGreaterThanTen(), []],
+            [[1, 2, 3, 4, 10, 11, 2], self::fGreaterThanTen(), [11]],
+            [[11, 2, -19], self::fGreaterThanTen(), [11]],
+            [[11, 12, 13], self::fGreaterThanTen(), [11, 12, 13]],
         ];
     }
 
@@ -127,9 +127,9 @@ class SerialStreamTest extends TestCase
     public function allMatchingCases(): array
     {
         return [
-            [[1, 2], self::fMoreThanTen(), false],
-            [[11, 12], self::fMoreThanTen(), true],
-            [[], self::fMoreThanTen(), true],
+            [[1, 2], self::fGreaterThanTen(), false],
+            [[11, 12], self::fGreaterThanTen(), true],
+            [[], self::fGreaterThanTen(), true],
         ];
     }
 
@@ -153,11 +153,11 @@ class SerialStreamTest extends TestCase
     public function anyMatchingCases(): array
     {
         return [
-            [[1,2,3], self::fMoreThanTen(), false],
-            [[1,12,3], self::fMoreThanTen(), true],
-            [[], self::fMoreThanTen(), false],
-            [[11, 12], self::fMoreThanTen(), true],
-            [[-11, -12], self::fMoreThanTen(), false],
+            [[1,2,3], self::fGreaterThanTen(), false],
+            [[1,12,3], self::fGreaterThanTen(), true],
+            [[], self::fGreaterThanTen(), false],
+            [[11, 12], self::fGreaterThanTen(), true],
+            [[-11, -12], self::fGreaterThanTen(), false],
         ];
     }
 

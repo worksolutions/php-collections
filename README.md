@@ -27,7 +27,7 @@ use WS\Utils\Collections\Functions\Predicates;
 // Getting filtered elements
 CollectionFactory::from([1, 2, 3])
     ->stream()
-    ->filter(Predicates::moreThan(1))
+    ->filter(Predicates::greaterThan(1))
     ->getCollection(); // Collection [2, 3]
 
 // Print directory files
@@ -1489,8 +1489,8 @@ A group of function constructors that are used to filter the stream collection. 
 - [*lockDuplicated* – Locking duplicate values](#lockduplicated--locking-duplicate-values)
 - [*lessThan* – Checking a value for the "less" condition](#lessthan--checking-a-value-for-the-less-condition)
 - [*lessOrEqual* – Checking a value for a "less than or equal" condition](#lessorequal--checking-a-value-for-a-less-than-or-equal-condition)
-- [*moreThan* – Checking a value for the "greater than" condition](#morethan--checking-a-value-for-the-greater-than-condition)
-- [*moreOrEqual* – Checking a value for a "greater than or equal" condition](#moreorequal--checking-a-value-for-a-greater-than-or-equal-condition)
+- [*greaterThan* – Checking a value for the "greater than" condition](#greaterthan--checking-a-value-for-the-greater-than-condition)
+- [*greaterOrEqual* – Checking a value for a "greater than or equal" condition](#greaterorequal--checking-a-value-for-a-greater-than-or-equal-condition)
 - [*not* – Checking a value for inequality](#not--checking-a-value-for-inequality)
 - [*in* – Checking a value for being in group of values](#in--checking-a-value-for-being-in-group-of-values)
 - [*notIn* – Checking a value for absence in group of values](#notin--checking-a-value-for-absence-in-group-of-values)
@@ -1498,10 +1498,10 @@ A group of function constructors that are used to filter the stream collection. 
 - [*whereNot* – Checking object properties for inequality](#wherenot--checking-object-properties-for-inequality)
 - [*whereIn* – Checking a property of an object for being in group of values](#wherein--checking-a-property-of-an-object-for-being-in-group-of-values)
 - [*whereNotIn* – Checking an object property for absence in group of values](#wherenotin--checking-an-object-property-for-absence-in-group-of-values)
-- [*whereMoreThan* – Checking an object property for the "greater than" condition](#wheremorethan--checking-an-object-property-for-the-greater-than-condition)
+- [*whereGreaterThan* – Checking an object property for the "greater than" condition](#wheregrearerthan--checking-an-object-property-for-the-greater-than-condition)
 - [*whereLessThan* – Checking an object property for the "less" condition](#wherelessthan--checking-an-object-property-for-the-less-condition)
-- [*whereMoreOrEqual* – Checking an object property for a "greater than or equal" condition](#wheremorethan--checking-an-object-property-for-the-greater-than-condition)
-- [*whereLessOrEqual* – Checking an object property for a "less than or equal" condition](#wheremoreorequal--checking-an-object-property-for-a-greater-than-or-equal-condition)
+- [*wheregGreaterOrEqual* – Checking an object property for a "greater than or equal" condition](#wheregreaterorequal--checking-an-object-property-for-a-greater-than-or-equal-condition)
+- [*whereLessOrEqual* – Checking an object property for a "less than or equal" condition](#wherelessorequal--checking-an-object-property-for-a-less-than-or-equal-condition)
 
 #### lock – Locking
 [[↑ Predicates]](#predicates)
@@ -1696,10 +1696,10 @@ CollectionFactory::from([1, 2, 3, 4, null, 3])
 ;
 ```
 
-#### moreThan – Checking a value for the "greater than" condition
+#### greaterThan – Checking a value for the "greater than" condition
 [[↑ Predicates]](#predicates)
 ```
-moreThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+greaterThan($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 The method initiates a function for comparing elements with the value `$value`.
@@ -1711,16 +1711,16 @@ use WS\Utils\Collections\Functions\Predicates;
 
 CollectionFactory::from([1, 2, 3, 4, null, 3])
     ->stream()
-    ->filter(Predicates::moreThan(2))
+    ->filter(Predicates::greaterThan(2))
     ->getCollection()
     ->toArray() // [3, 4, 3]
 ;
 ```
 
-#### moreOrEqual – Checking a value for a "greater than or equal" condition
+#### greaterOrEqual – Checking a value for a "greater than or equal" condition
 [[↑ Predicates]](#predicates)
 ```
-moreOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
+greaterOrEqual($value: scalar): Closure; \\ <Fn($el: mixed): bool>
 ```
 
 The method initiates a function for comparing elements with the value `$value`.
@@ -1732,7 +1732,7 @@ use WS\Utils\Collections\Functions\Predicates;
 
 CollectionFactory::from([1, 2, 3, 4, null, 3])
     ->stream()
-    ->filter(Predicates::moreOrEqual(2))
+    ->filter(Predicates::greaterOrEqual(2))
     ->getCollection()
     ->toArray() // [2, 3, 4, 3]
 ;
@@ -1941,10 +1941,10 @@ CollectionFactory::generate(5, static function () use (& $c) {
 ;
 ```
 
-#### whereMoreThan – Checking an object property for the "greater than" condition
+#### whereGreaterThan – Checking an object property for the "greater than" condition
 [[↑ Predicates]](#predicates)
 ```
-whereMoreThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+whereGreaterThan($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
 ```
 
 The method initiates a function for comparing the value of an object's property with `$value`.
@@ -1970,7 +1970,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
         return new ValueObject($c++);
     })
     ->stream()
-    ->filter(Predicates::whereMoreThan('value', 3))
+    ->filter(Predicates::whereGreaterThan('value', 3))
     ->getCollection()
     ->toArray() // [#4]
 ;
@@ -2011,10 +2011,10 @@ CollectionFactory::generate(5, static function () use (& $c) {
 ;
 ```
 
-#### whereMoreOrEqual – Checking an object property for a "greater than or equal" condition
+#### whereGreaterOrEqual – Checking an object property for a "greater than or equal" condition
 [[↑ Predicates]](#predicates)
 ```
-whereMoreOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
+whereGreaterOrEqual($property: string, $value: scalar): Closure; \\ <Fn($el: scalar): bool>
 ```
 
 The method initiates a function for comparing the value of an object's property with `$value`.
@@ -2040,7 +2040,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
         return new ValueObject($c++);
     })
     ->stream()
-    ->filter(Predicates::whereMoreOrEqual('value', 3))
+    ->filter(Predicates::whereGreaterOrEqual('value', 3))
     ->getCollection()
     ->toArray() // [#3, #4]
 ;
