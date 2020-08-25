@@ -55,7 +55,7 @@ Fundamentally, the library consists of several parts, these are:
 The library is based on the most popular data structures that are self-sufficient for use without any extraneous libraries and classes. All other parts of the library rely on these structures, in particular the `Collection` interface. All collection data structures contain many elements with which you can perform basic procedures, such as: traversal, transformation, aggregation, etc.
 
 - [Collection](#collection)
-- [List (ListSequence)](#list-(ListSequence))
+- [List (ListSequence)](#list-listsequence)
 - [Set](#set)
 - [Queue](#queue)
 - [Stack](#stack)
@@ -115,7 +115,7 @@ $collection->toArray(); // [1, 2] -> [1, 2, 10, 11, 12];
 
 ```
 
-#### merge- Merging collections
+#### merge - Merging collections
 [[↑ Collection]](#collection)
 ```
 merge($collection: Collection): bool;
@@ -167,7 +167,7 @@ $collection->toArray(); // [1, 3];
 
 ```
 
-#### contains- Checking for the existence of an element in a collection
+#### contains - Checking for the existence of an element in a collection
 [[↑ Collection]](#collection)
 ```
 contains($element: mixed): bool;
@@ -185,7 +185,7 @@ $collection->contains(4); // false
 
 ```
 
-#### equals- Comparing two collections for equivalence
+#### equals - Comparing two collections for equivalence
 [[↑ Collection]](#collection)
 ```
 equals($collection: Collection): bool;
@@ -207,7 +207,7 @@ $set1->equals($set3); // false
 
 ```
 
-#### size- Getting the number of items in a collection
+#### size - Getting the number of items in a collection
 [[↑ Collection]](#collection)
 ```
 size(): int;
@@ -227,7 +227,7 @@ $emptyCollection->size(); // false
 
 ```
 
-#### isEmpty- Checking a collection for emptiness
+#### isEmpty - Checking a collection for emptiness
 [[↑ Collection]](#collection)
 ```
 isEmpty(): bool;
@@ -282,7 +282,7 @@ $copyOfCollection === $collection; // false
 
 ```
 
-#### stream- Getting a collection traversal stream (Stream)
+#### stream - Getting a collection traversal stream (Stream)
 [[↑ Collection]](#collection)
 ```
 stream(): Stream;
@@ -334,7 +334,7 @@ Classes implement `ListSequence` interface: ```ArrayList, ImmutableList```
 - [*removeAt* – Removing an element by index](#removeat---removing-an-element-by-index)
 
 #### get - Getting an item by ordinal
-[[↑ List (ListSequence)]](#list-(ListSequence))
+[[↑ List (ListSequence)]](#list-listsequence)
 ```
 get($index: int): mixed;
 ```
@@ -352,7 +352,7 @@ $list->get(2); // null
 ```
 
 #### set - Replacing a list item
-[[↑ List (ListSequence)]](#list-(ListSequence))
+[[↑ List (ListSequence)]](#list-listsequence)
 ```
 set($element: mixed, $index: int): mixed;
 ```
@@ -370,7 +370,7 @@ $list->set(4, 2); // OutOfRangeException
 ```
 
 #### indexOf - Getting the ordinal index of an element
-[[↑ List (ListSequence)]](#list-(ListSequence))
+[[↑ List (ListSequence)]](#list-listsequence)
 ```
 indexOf($element: mixed): ?int;
 ```
@@ -388,7 +388,7 @@ $list->indexOf(4); // null
 ```
 
 #### lastIndexOf - Getting the ordinal index of the last matched item
-[[↑ List (ListSequence)]](#list-(ListSequence))
+[[↑ List (ListSequence)]](#list-listsequence)
 ```
 lastIndexOf($element: mixed): ?int;
 ```
@@ -406,7 +406,7 @@ $list->indexOf(3); // null
 ```
 
 #### removeAt - Removing an element by index
-[[↑ List (ListSequence)]](#list-(ListSequence))
+[[↑ List (ListSequence)]](#list-listsequence)
 ```
 removeAt(int $index): mixed;
 ```
