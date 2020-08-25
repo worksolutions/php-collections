@@ -45,9 +45,9 @@ The library is based on a consistent approach to data processing and transformat
 
 Fundamentally, the library consists of several parts, these are: 
 
-- [Data structures.](#Data structures) Each structure has its own peculiarity, expressed through the interface and descriptions to it, and implementation. In this case, the implementation of the behavior of data structures can be different.
-- [Collection factory.](#Collection factory) The collection factory has many static methods for conveniently creating collections.
-- [Collection streams.](#Collection streams) Streams traverse and transform collections, with each transformation creating a new instance of the collection.
+- [Data structures.](#data-structures) Each structure has its own peculiarity, expressed through the interface and descriptions to it, and implementation. In this case, the implementation of the behavior of data structures can be different.
+- [Collection factory.](#collection-factory) The collection factory has many static methods for conveniently creating collections.
+- [Collection streams.](#collection-streams) Streams traverse and transform collections, with each transformation creating a new instance of the collection.
 - [Traversal and transformation functions.](#traversal-and-transformation-functions) The function set consists of pre-prepared function constructors for easy use during the traversal. By their example, you can create and use your own functions that are more specific to your subject area.
 
 ## Data structures
@@ -62,29 +62,29 @@ The library is based on the most popular data structures that are self-sufficien
 - [Map](#map)
 
 ### Collection
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 Collection - the main base interface for collections. All data structures except for `maps (Map)` implement this interface, all additional functionality (Factories, Traversal threads) use this interface. To maintain universality in your applications, it is recommended to use the `Collection` interface, but only if it does not contradict the purpose of using the structure. 
 
-Collections are traversable using a [```foreach```](#Traversing a collection with a foreach loop) loop.
+Collections are traversable using a [```foreach```](#traversing-a-collection-with-a-foreach-loop) loop.
 
 #### Interface methods
 
-- [*add* – Adding an item to a collection](#Adding an item to a collection)
-- [*addAll* – Adding multiple items to a collection](#Adding multiple items to a collection)
-- [*merge* – Merging collections](#Merging collections)
-- [*clear* – Removing all elements of the collection](#Removing all elements of the collection)
-- [*remove* – Removing a collection item](#Removing a collection item)
-- [*contains* – Checking for the existence of an element in a collection](#Checking for the existence of an element in a collection)
-- [*equals* – Comparing two collections for equivalence](#Comparing two collections for equivalence)
-- [*size* – Getting the number of items in a collection](#Getting the number of items in a collection)
-- [*isEmpty* – Checking a collection for emptiness](#Checking a collection for emptiness)
-- [*toArray* – Getting the elements of a collection as an array](#Getting the elements of a collection as an array)
-- [*copy* – Getting a copy of a collection](#Getting a copy of a collection)
-- [*stream* – Getting a collection traversal stream (Stream)](#getting-a-collection-traversal-stream-stream)
-- [Traversing a collection with a *foreach* loop](#Traversing a collection with a foreach loop)
+- [*add* – Adding an item to a collection](#add---adding-an-item-to-a-collection)
+- [*addAll* – Adding multiple items to a collection](#addall---adding-multiple-items-to-a-collection)
+- [*merge* – Merging collections](#merge--merging-collections)
+- [*clear* – Removing all elements of the collection](#clear---removing-all-elements-of-the-collection)
+- [*remove* – Removing a collection item](#remove---removing-a-collection-item)
+- [*contains* – Checking for the existence of an element in a collection](#contains--checking-for-the-existence-of-an-element-in-a-collection)
+- [*equals* – Comparing two collections for equivalence](#equals--comparing-two-collections-for-equivalence)
+- [*size* – Getting the number of items in a collection](#size--getting-the-number-of-items-in-a-collection)
+- [*isEmpty* – Checking a collection for emptiness](#isempty--checking-a-collection-for-emptiness)
+- [*toArray* – Getting the elements of a collection as an array](#toarray---getting-the-elements-of-a-collection-as-an-array)
+- [*copy* – Getting a copy of a collection](#copy---getting-a-copy-of-a-collection)
+- [*stream* – Getting a collection traversal stream (Stream)](#stream--getting-a-collection-traversal-stream-stream)
+- [Traversing a collection with a *foreach* loop](#traversing-a-collection-with-a-foreach-loop)
 
-#### Adding an item to a collection
+#### add - Adding an item to a collection
 [[↑ Collection]](#collection)
 ```
 add($element: mixed): bool;
@@ -99,7 +99,7 @@ $collection->add(10); // [1, 2] -> [1, 2, 10];
 
 ```
 
-#### Adding multiple items to a collection
+#### addAll - Adding multiple items to a collection
 [[↑ Collection]](#collection)
 ```
 addAll($elements: iterable): bool;
@@ -115,7 +115,7 @@ $collection->toArray(); // [1, 2] -> [1, 2, 10, 11, 12];
 
 ```
 
-#### Merging collections
+#### merge- Merging collections
 [[↑ Collection]](#collection)
 ```
 merge($collection: Collection): bool;
@@ -132,7 +132,7 @@ $collection->toArray(); // [1, 2, 10, 11, 12];
 
 ```
 
-#### Removing all elements of the collection
+#### clear - Removing all elements of the collection
 [[↑ Collection]](#collection)
 ```
 clear(): void;
@@ -148,7 +148,7 @@ $collection->toArray(); // [];
 
 ```
 
-#### Removing a collection item
+#### remove - Removing a collection item
 [[↑ Collection]](#collection)
 ```
 remove($element: mixed): bool;
@@ -167,7 +167,7 @@ $collection->toArray(); // [1, 3];
 
 ```
 
-#### Checking for the existence of an element in a collection
+#### contains- Checking for the existence of an element in a collection
 [[↑ Collection]](#collection)
 ```
 contains($element: mixed): bool;
@@ -185,7 +185,7 @@ $collection->contains(4); // false
 
 ```
 
-#### Comparing two collections for equivalence
+#### equals- Comparing two collections for equivalence
 [[↑ Collection]](#collection)
 ```
 equals($collection: Collection): bool;
@@ -207,7 +207,7 @@ $set1->equals($set3); // false
 
 ```
 
-#### Getting the number of items in a collection
+#### size- Getting the number of items in a collection
 [[↑ Collection]](#collection)
 ```
 size(): int;
@@ -227,7 +227,7 @@ $emptyCollection->size(); // false
 
 ```
 
-#### Checking a collection for emptiness
+#### isEmpty- Checking a collection for emptiness
 [[↑ Collection]](#collection)
 ```
 isEmpty(): bool;
@@ -245,7 +245,7 @@ $emptyCollection->isEmpty(); // true
 
 ```
 
-#### Getting the elements of a collection as an array
+#### toArray - Getting the elements of a collection as an array
 [[↑ Collection]](#collection)
 ```
 toArray(): array;
@@ -265,7 +265,7 @@ $emptyCollection->toArray(); // []
 
 ```
 
-#### Getting a copy of a collection
+#### copy - Getting a copy of a collection
 [[↑ Collection]](#collection)
 ```
 copy(): Collection;
@@ -282,7 +282,7 @@ $copyOfCollection === $collection; // false
 
 ```
 
-#### Getting a collection traversal stream (Stream)
+#### stream- Getting a collection traversal stream (Stream)
 [[↑ Collection]](#collection)
 ```
 stream(): Stream;
@@ -317,7 +317,7 @@ foreach($collection as $item) {
 ```
 
 ### List (ListSequence)
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 A list is a data structure in which the order of elements is strictly defined. Lists with the same set of items and different ordering are not equal. The ListSequence interface extends the Collection interface.
 
@@ -327,13 +327,13 @@ Classes implement `ListSequence` interface: ```ArrayList, ImmutableList```
 
 #### Interface methods
 
-- [*get* – Getting an item by ordinal](#Getting an item by ordinal)
-- [*set* – Replacing a list item](#Replacing a list item)
-- [*indexOf* – Getting the ordinal index of an element](#Getting the ordinal index of an element)
-- [*lastIndexOf* – Getting the ordinal index of the last matched item](#Getting the ordinal index of the last matched item)
-- [*removeAt* – Removing an element by index](#Removing an element by index)
+- [*get* – Getting an item by ordinal](#get---getting-an-item-by-ordinal)
+- [*set* – Replacing a list item](#set---replacing-a-list-item)
+- [*indexOf* – Getting the ordinal index of an element](#indexof---getting-the-ordinal-index-of-an-element)
+- [*lastIndexOf* – Getting the ordinal index of the last matched item](#lastindexof---getting-the-ordinal-index-of-the-last-matched-item)
+- [*removeAt* – Removing an element by index](#removeat---removing-an-element-by-index)
 
-#### Getting an item by ordinal
+#### get - Getting an item by ordinal
 [[↑ List (ListSequence)]](#list-(ListSequence))
 ```
 get($index: int): mixed;
@@ -351,7 +351,7 @@ $list->get(2); // null
 
 ```
 
-#### Replacing a list item
+#### set - Replacing a list item
 [[↑ List (ListSequence)]](#list-(ListSequence))
 ```
 set($element: mixed, $index: int): mixed;
@@ -369,7 +369,7 @@ $list->set(4, 2); // OutOfRangeException
 
 ```
 
-#### Getting the ordinal index of an element
+#### indexOf - Getting the ordinal index of an element
 [[↑ List (ListSequence)]](#list-(ListSequence))
 ```
 indexOf($element: mixed): ?int;
@@ -387,7 +387,7 @@ $list->indexOf(4); // null
 
 ```
 
-#### Getting the ordinal index of the last matched item
+#### lastIndexOf - Getting the ordinal index of the last matched item
 [[↑ List (ListSequence)]](#list-(ListSequence))
 ```
 lastIndexOf($element: mixed): ?int;
@@ -405,7 +405,7 @@ $list->indexOf(3); // null
 
 ```
 
-#### Removing an element by index
+#### removeAt - Removing an element by index
 [[↑ List (ListSequence)]](#list-(ListSequence))
 ```
 removeAt(int $index): mixed;
@@ -423,7 +423,7 @@ $list->toArray(); // [1, 1, 3]
 ```
 
 ### Set
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 The set contains only unique elements, the order of the elements can be arbitrary. That is, adding an element using the `add` method does not guarantee its last place among other elements during iteration, and if there is an element with the same value, the latter will not be added to the set. 
 
@@ -434,7 +434,7 @@ Uniqueness is determined by the value, and for objects either by the uniqueness 
 Classes implement `Set` interface: ```HashSet```
 
 ### Queue
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 A data structure such as a queue is convenient for sequential processing of data in the order of arrival. It has convenient methods for adding and consuming items. The first element that got into the queue is the first and will leave it.
 
@@ -444,11 +444,11 @@ Classes implements `Queue` interface: ```ArrayQueue```
 
 #### Interface methods
 
-- [*offer* – Inserting an item into the queue](#Inserting an item into the queue)
-- [*poll* – Getting an item and removing it from the queue](#Getting an item and removing it from the queue)
-- [*peek* – Getting an item without removing it from the queue](#Getting an item without removing it from the queue)
+- [*offer* – Inserting an item into the queue](#offer---inserting-an-item-into-the-queue)
+- [*poll* – Getting an item and removing it from the queue](#poll---getting-an-item-and-removing-it-from-the-queue)
+- [*peek* – Getting an item without removing it from the queue](#peek---getting-an-item-without-removing-it-from-the-queue)
 
-#### Inserting an item into the queue
+#### offer - Inserting an item into the queue
 [[↑ Queue]](#queue)
 ```
 offer($element): bool;
@@ -465,7 +465,7 @@ $queue->peek(); // 3
 
 ```
 
-#### Getting an item and removing it from the queue
+#### poll - Getting an item and removing it from the queue
 [[↑ Queue]](#queue)
 ```
 poll(): mixed;
@@ -483,7 +483,7 @@ $queue->peek(); // 1
 
 ```
 
-#### Getting an item without removing it from the queue
+#### peek - Getting an item without removing it from the queue
 [[↑ Queue]](#queue)
 ```
 poll(): mixed;
@@ -501,7 +501,7 @@ $queue->size(); // 3
 ```
 
 ### Stack
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 The stack is a data structure, the logic of which is the opposite of the logic of the queue. The first item on the stack will be the first and popped from it.
 
@@ -511,11 +511,11 @@ Classes implement `Stack` interface: ```ArrayStack```
 
 #### Interface methods
 
-- [*push* – Pushing an item](#Pushing an item)
-- [*pop* – Getting the last added item](#Getting the last added item)
-- [*peek* – Getting the last added item without modifying the stack](#Getting the last added item without modifying the stack)
+- [*push* – Pushing an item](#push---pushing-an-item)
+- [*pop* – Taking the last added item](#pop---taking-the-last-added-item)
+- [*peek* – Getting the last added item without modifying the stack](#peek---getting-the-last-added-item-without-modifying-the-stack)
 
-#### Pushing an item
+#### push - Pushing an item
 [[↑ Stack]](#stack)
 ```
 push($element: mixed): bool;
@@ -532,7 +532,7 @@ $queue->peek(); // 3
 
 ```
 
-#### Getting the last added item
+#### pop - Taking the last added item
 [[↑ Stack]](#stack)
 ```
 pop(): mixed;
@@ -552,7 +552,7 @@ $queue->peek(); // 1
 
 ```
 
-#### Getting the last added item without modifying the stack
+#### peek - Getting the last added item without modifying the stack
 [[↑ Stack]](#stack)
 ```
 peek(): mixed;
@@ -575,7 +575,7 @@ $queue->peek(); // RuntimeException
 ```
 
 ### Map
-[[↑ Data structures]](#Data structures)
+[[↑ Data structures]](#data-structures)
 
 Map interface represents a mapping, or in other words a dictionary, where each element represents a key-value pair. Map keys are unique in value, if they are objects, then uniqueness is achieved either by the uniqueness of the reference to the object, or if the object implements the `HashCodeAware` interface by the uniqueness of the result of calling the method` getHashCode (): string; `.
 
@@ -585,16 +585,16 @@ Classes implement `Stack` interface: ```HashMap```
 
 #### Interface methods
 
-- [*put* – Adding *key/value* pair](#Adding key/value pair)
-- [*get* – Getting the value of a pair by key](#Getting the value of a pair by key)
-- [*keys* – Getting a collection of map keys](#Getting a collection of map keys)
-- [*values* – Getting a collection of map values](#Getting a collection of map values)
-- [*remove* – Deleting a pair by key](#Deleting a pair by key)
-- [*containsKey* – Sign of the presence of a key pair](#Sign of the presence of a key pair)
-- [*containsValue* – Sign of the presence of a pair by value](#Sign of the presence of a pair by value)
-- [*size* – Number of pairs in the card](#Number of pairs in the card)
+- [*put* – Adding *key/value* pair](#put---adding-keyvalue-pair)
+- [*get* – Getting the value of a pair by key](#get---getting-the-value-of-a-pair-by-key)
+- [*keys* – Getting a collection of map keys](#keys---getting-a-collection-of-map-keys)
+- [*values* – Getting a collection of map values](#values---getting-a-collection-of-map-values)
+- [*remove* – Deleting a pair by key](#remove---deleting-a-pair-by-key)
+- [*containsKey* – Sign of the presence of a key pair](#containskey---sign-of-the-presence-of-a-key-pair)
+- [*containsValue* – Sign of the presence of a pair by value](#containsvalue---sign-of-the-presence-of-a-pair-by-value)
+- [*size* – Number of pairs in the card](#size---number-of-pairs-in-the-card)
 
-#### Adding key/value pair
+#### put - Adding key/value pair
 [[↑ Map]](#map)
 ```
 put($key: mixed, $value: mixed): bool;
@@ -616,7 +616,7 @@ foreach ($map as $k => $v) {
 
 ```
 
-#### Getting the value of a pair by key
+#### get - Getting the value of a pair by key
 [[↑ Map]](#map)
 ```
 get($key): mixed;
@@ -636,7 +636,7 @@ $map->get('three'); // null
 
 ```
 
-#### Getting a collection of map keys
+#### keys - Getting a collection of map keys
 [[↑ Map]](#map)
 ```
 keys(): Collection<mixed>;
@@ -657,7 +657,7 @@ foreach ($map->keys() as $k) {
 
 ```
 
-#### Getting a collection of map values
+#### values - Getting a collection of map values
 [[↑ Map]](#map)
 ```
 values(): Collection<mixed>;
@@ -678,7 +678,7 @@ foreach ($map->keys() as $v) {
 
 ```
 
-#### Deleting a pair by key
+#### remove - Deleting a pair by key
 [[↑ Map]](#map)
 ```
 remove($key: mixed): bool;
@@ -700,7 +700,7 @@ foreach ($map->keys() as $v) {
 
 ```
 
-#### Sign of the presence of a key pair
+#### containsKey - Sign of the presence of a key pair
 [[↑ Map]](#map)
 ```
 containsKey($key: mixed): bool;
@@ -719,7 +719,7 @@ $map->containsKey('one'); // true
 
 ```
 
-#### Sign of the presence of a pair by value
+#### containsValue - Sign of the presence of a pair by value
 [[↑ Map]](#map)
 ```
 containsValue($value: mixed): bool;
@@ -739,7 +739,7 @@ $map->containsValue(3); // false
 
 ```
 
-#### Number of pairs in the card
+#### size - Number of pairs in the card
 [[↑ Map]](#map)
 ```
 size(): int;
@@ -780,12 +780,12 @@ CollectionFactory::numbers(10)
 ```
 
 #### Collection creation factory methods
-- [*from* – Generating a collection from an array of elements](#Generating a collection from an array of elements)
-- [*fromIterable* – Generating a collection using any iterable](#Generating a collection using any iterable)
-- [*numbers* – Generating a collection of a sequence of integers](#Generating a collection of a sequence of integers)
-- [*generate* – Generating a collection using a generator](#Generating a collection using a generator)
+- [*from* – Generating a collection from an array of elements](#from---generating-a-collection-from-an-array-of-elements)
+- [*fromIterable* – Generating a collection using any iterable](#fromiterable---generating-a-collection-using-any-iterable)
+- [*numbers* – Generating a collection of a sequence of integers](#numbers---generating-a-collection-of-a-sequence-of-integers)
+- [*generate* – Generating a collection using a generator](#generate---generating-a-collection-using-a-generator)
 
-#### Generating a collection from an array of elements
+#### from - Generating a collection from an array of elements
 [[↑ Collection factory]](#collection-factory)
 ```
 from($values: array): Collection
@@ -804,7 +804,7 @@ CollectionFactory::from([1 ,2, 3])
 
 ```
 
-#### Generating a collection using any iterable
+#### fromIterable - Generating a collection using any iterable
 [[↑ Collection factory]](#collection-factory)
 ```
 fromIterable($iterable: iterable): Collection
@@ -824,7 +824,7 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
     ->each(Consumers::dump()); // Dumps strings with filenames
 ```
 
-#### Generating a collection of a sequence of integers
+#### numbers - Generating a collection of a sequence of integers
 [[↑ Collection factory]](#collection-factory)
 ```
 numbers($from: int, $to: ?int): Collection
@@ -843,7 +843,7 @@ CollectionFactory::numbers(10, 15)
     ->each(Consumers::dump()); // Dumps  [10, 11, 12, 13, 14, 15]
 ```
 
-#### Generating a collection using a generator
+#### generate - Generating a collection using a generator
 [[↑ Collection factory]](#collection-factory) 
 ```
 generate($times: int, $generator: ?callable): Collection
@@ -884,31 +884,31 @@ Stream\`s guarantee that after each modification method the `getCollection` meth
 
 #### Stream interface methods
 
-- [*each* – Traversing collection items](#traversing-collection-items)
-- [*walk* – Limited traversal of collection items](#a-limited-traversal-of-collection-items)
-- [*filter* – Filtering collection items](#filtering-collection-items)
-- [*map* – Converting stream collection items](#converting-stream-collection-items)
-- [*reorganize* – Stream collection conversion](#stream-collection-conversion)
-- [*collect* – Collecting data](#collecting-data)
-- [*sort* – Sorting items in a collection](#sorting-items-in-a-collection)
-- [*sortBy* – Sorting collection items by value](#sorting-collection-items-by-value)
-- [*sortDesc* – Sorting elements of a collection in reverse order](#sorting-elements-of-a-collection-in-reverse-order)
-- [*sortByDesc* – Sorting elements of a collection by value in reverse order](#sorting-elements-of-a-collection-in-reverse-order)
-- [*reduce* – Reducing a collection into a single value](#reducing-a-collection-into-a-single-value)
-- [*when* – Constraining stream modification by condition](#constraining-stream-modification-by-condition)
-- [*always* – Removing stream modification constrains](#removing-stream-modification-constrains)
-- [*getCollection* – Getting a stream collection](#getting-a-stream-collection)
-- [*allMatch* – Full match of all elements by predicate](#full-match-of-all-elements-by-predicate)
-- [*anyMatch* – Partial match of all elements by predicate](#partial-match-of-all-elements-by-predicate)
-- [*findAny* – Getting an arbitrary collection item](#getting-an-arbitrary-collection-item)
-- [*findFirst* – Getting the first item in a collection](#getting-the-first-item-in-a-collection)
-- [*findLast* – Getting the last item in a collection](#getting-the-last-item-in-a-collection)
-- [*min* – Getting the minimum element of a collection](#getting-the-minimum-element-of-a-collection)
-- [*max* – Getting the maximum item in a collection](#getting-the-maximum-item-in-a-collection)
-- [*reverse* – Reverse the elements of the collection](#reverse-the-elements-of-the-collection)
-- [*limit* – Shrink the collection to the specified size](#shrink-the-collection-to-the-specified-size)
+- [*each* – Traversing collection items](#each---traversing-collection-items)
+- [*walk* – Limited traversal of collection items](#walk---a-limited-traversal-of-collection-items)
+- [*filter* – Filtering collection items](#filter---filtering-collection-items)
+- [*map* – Converting stream collection items](#map---converting-stream-collection-items)
+- [*reorganize* – Stream collection conversion](#reorganize---stream-collection-conversion)
+- [*collect* – Collecting data](#collect---collecting-data)
+- [*sort* – Sorting items in a collection](#sort---sorting-items-in-a-collection)
+- [*sortBy* – Sorting collection items by value](#sortby-sorting-collection-items-by-value)
+- [*sortDesc* – Sorting elements of a collection in reverse order](#sortdesc---sorting-elements-of-a-collection-in-reverse-order)
+- [*sortByDesc* – Sorting elements of a collection by value in reverse order](#sortdesc---sorting-elements-of-a-collection-in-reverse-order)
+- [*reduce* – Reducing a collection into a single value](#reduce---reducing-a-collection-into-a-single-value)
+- [*when* – Constraining stream modification by condition](#when---constraining-stream-modification-by-condition)
+- [*always* – Removing stream modification constrains](#always---removing-stream-modification-constrains)
+- [*getCollection* – Getting a stream collection](#getcollection---getting-a-stream-collection)
+- [*allMatch* – Full match of all elements by predicate](#allmatch---full-match-of-all-elements-by-predicate)
+- [*anyMatch* – Partial match of all elements by predicate](#anymatch--partial-match-of-all-elements-by-predicate)
+- [*findAny* – Getting an arbitrary collection item](#findany---getting-an-arbitrary-collection-item)
+- [*findFirst* – Getting the first item in a collection](#findfirst--getting-the-first-item-in-a-collection)
+- [*findLast* – Getting the last item in a collection](#findlast--getting-the-last-item-in-a-collection)
+- [*min* – Getting the minimum element of a collection](#min---getting-the-minimum-element-of-a-collection)
+- [*max* – Getting the maximum item in a collection](#max---getting-the-maximum-item-in-a-collection)
+- [*reverse* – Reverse the elements of the collection](#reverse---reverse-the-elements-of-the-collection)
+- [*limit* – Shrink the collection to the specified size](#limit---shrink-the-collection-to-the-specified-size)
 
-#### Traversing collection items
+#### each - Traversing collection items
 [[↑ Streams]](#collection-streams)
 ```
 each($consumer: <fn($element: mixed, $index: int): void>): Stream;
@@ -930,7 +930,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### A limited traversal of collection items
+#### walk - A limited traversal of collection items
 [[↑ Streams]](#collection-streams)
 ```
 walk($consumer: <fn($element: mixed, $index: int): false|void>, $limit: ?int): Stream;
@@ -955,7 +955,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Filtering collection items
+#### filter - Filtering collection items
 [[↑ Streams]](#collection-streams)
 ```
 filter($predicate: <fn($element: mixed): bool>): Stream;
@@ -976,7 +976,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Converting stream collection items
+#### map - Converting stream collection items
 [[↑ Streams]](#collection-streams)
 ```
 map($converter: <fn($element: mixed): mixed>): Stream;
@@ -997,7 +997,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Stream collection conversion
+#### reorganize - Stream collection conversion
 [[↑ Streams]](#collection-streams)
 ```
 reorganize($reorganizer: <fn($collection: Collection): Collection>): Stream;
@@ -1030,7 +1030,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Collecting data
+#### collect - Collecting data
 [[↑ Streams]](#collection-streams)
 ```
 collect($collector: <fn ($collection: Collection): mixed>): mixed;
@@ -1056,7 +1056,7 @@ $sumOfElements = CollectionFactory::numbers(10)
 
 ```
 
-#### Sorting items in a collection
+#### sort - Sorting items in a collection
 [[↑ Streams]](#collection-streams)
 ```
 sort($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
@@ -1080,7 +1080,7 @@ $sortedCollection = CollectionFactory::generate(10, static function (): int {
 
 ```
 
-#### Sorting elements of a collection in reverse order
+#### sortDesc - Sorting elements of a collection in reverse order
 [[↑ Streams]](#collection-streams)
 ```
 sortDesc($comparator: <fn($a: mixed, $b: mixed): int>): Stream;
@@ -1104,7 +1104,7 @@ $sortedDescendentCollection = CollectionFactory::generate(10, static function ()
 
 ```
 
-#### Sorting collection items by value
+#### sortBy Sorting collection items by value
 [[↑ Streams]](#collection-streams)
 ```
 sortBy($extractor: <fn($el: mixed): scalar>): Stream;
@@ -1140,7 +1140,7 @@ $sortedCollection = CollectionFactory::generate(10, static function (): Containe
 
 ```
 
-#### Reducing a collection into a single value
+#### reduce - Reducing a collection into a single value
 [[↑ Streams]](#collection-streams)
 ```
 reduce($accumulator: <fn($el: mixed, $carry: mixed): mixed>): mixed;
@@ -1161,7 +1161,7 @@ $sumOfCollection = CollectionFactory::numbers(10)
 
 ```
 
-#### Constraining stream modification by condition
+#### when - Constraining stream modification by condition
 [[↑ Streams]](#collection-streams)
 ```
 when($condition: bool): Stream;
@@ -1169,18 +1169,17 @@ when($condition: bool): Stream;
 The method restricts modification if `$condition` is not met and all modification and bypass methods will not be called. The opposite method is [`always`](#Removing stream modification constrains).
 
 Locked methods: 
-
- - each
- - walk
- - filter
- - reorganize
- - map
- - sort
- - sortBy
- - sortDesc
- - sortDescBy
- - reverse
- - limit
+- [each](#each---traversing-collection-items)
+- [walk](#walk---a-limited-traversal-of-collection-items)
+- [filter](#filter---filtering-collection-items)
+- [reorganize](#reorganize---stream-collection-conversion)
+- [map](#map---converting-stream-collection-items)
+- [sort](#sort---sorting-items-in-a-collection)
+- [sortBy](#sortby-sorting-collection-items-by-value)
+- [sortDesc](#sortdesc---sorting-elements-of-a-collection-in-reverse-order)
+- [sortDescBy](#sortby-sorting-collection-items-by-value)
+- [reverse](#reverse---reverse-the-elements-of-the-collection)
+- [limit](#limit---shrink-the-collection-to-the-specified-size)
 
 ```php
 
@@ -1205,7 +1204,7 @@ $onlyTenElements = $randomElementSizeCollection
 
 ```
 
-#### Removing stream modification constrains
+#### always - Removing stream modification constrains
 [[↑ Streams]](#collection-streams)
 ```
 always(): Stream;
@@ -1232,7 +1231,7 @@ $onlyTenElements = $collection
 
 ```
 
-#### Getting a stream collection
+#### getCollection - Getting a stream collection
 [[↑ Streams]](#collection-streams)
 ```
 getCollection(): Collection;
@@ -1266,7 +1265,7 @@ $collection2->toArray(); // [60, 70, 80, 90]
 
 ```
 
-#### Full match of all elements by predicate
+#### allMatch - Full match of all elements by predicate
 [[↑ Streams]](#collection-streams)
 ```
 allMatch($predicate: <fn($el: mixed): bool>): bool;
@@ -1286,7 +1285,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Partial match of all elements by predicate
+#### anyMatch- Partial match of all elements by predicate
 [[↑ Streams]](#collection-streams)
 ```
 anyMatch(callable $predicate): bool;
@@ -1306,7 +1305,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Getting an arbitrary collection item
+#### findAny - Getting an arbitrary collection item
 [[↑ Streams]](#collection-streams)
 ```
 findAny(): mixed;
@@ -1325,7 +1324,7 @@ CollectionFactory::numbers(10)
 
 ```
 
-#### Getting the first item in a collection
+#### findFirst- Getting the first item in a collection
 [[↑ Streams]](#collection-streams)
 ```
 findFirst(): mixed;
@@ -1344,7 +1343,7 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ```
 
-#### Getting the last item in a collection
+#### findLast- Getting the last item in a collection
 [[↑ Streams]](#collection-streams)
 ```
 findLast(): mixed;
@@ -1363,7 +1362,7 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ```
 
-#### Getting the minimum element of a collection
+#### min - Getting the minimum element of a collection
 [[↑ Streams]](#collection-streams)
 ```
 min($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
@@ -1386,7 +1385,7 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ```
 
-#### Getting the maximum item in a collection
+#### max - Getting the maximum item in a collection
 [[↑ Streams]](#collection-streams)
 ```
 max($comparator: <fn($a: mixed, $b: mixed): int>): mixed;
@@ -1409,7 +1408,7 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ```
 
-#### Reverse the elements of the collection
+#### reverse - Reverse the elements of the collection
 [[↑ Streams]](#collection-streams)
 ```
 reverse(): Stream;
@@ -1429,7 +1428,7 @@ CollectionFactory::numbers(10) // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 ```
 
-#### Shrink the collection to the specified size
+#### limit - Shrink the collection to the specified size
 [[↑ Streams]](#collection-streams)
 ```
 limit(int $size): Stream;
