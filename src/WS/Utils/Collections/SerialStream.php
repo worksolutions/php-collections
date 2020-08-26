@@ -52,7 +52,7 @@ class SerialStream implements Stream
 
     public function reorganize(callable $reorganizer): Stream
     {
-        $reorganizedCollection = $reorganizer($this->list);
+        $reorganizedCollection = $reorganizer($this->list->copy());
         if (! $reorganizedCollection instanceof Collection) {
             throw new RuntimeException('Result set of reorganizer call must be instance of Collection interface');
         }

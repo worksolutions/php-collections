@@ -16,6 +16,7 @@ abstract class CollectionComparingConstraint extends Constraint implements Stati
 
     public function __construct($expectedCollection)
     {
+        parent::__construct();
         $this->expectedCollection = $this->normalize($expectedCollection);
     }
 
@@ -42,7 +43,7 @@ abstract class CollectionComparingConstraint extends Constraint implements Stati
     {
         return sprintf(
             'is accepted by %s',
-            $this->exporter()->export($this->expectedCollection)
+            $this->exporter->export($this->expectedCollection)
         );
     }
 
