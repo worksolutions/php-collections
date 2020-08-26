@@ -274,7 +274,7 @@ class SerialStream implements Stream
 
     public function getCollection(): Collection
     {
-        return $this->list;
+        return $this->list->copy();
     }
 
     private function emptyList(): Collection
