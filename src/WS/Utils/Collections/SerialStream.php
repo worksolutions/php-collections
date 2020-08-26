@@ -190,8 +190,20 @@ class SerialStream implements Stream
      */
     public function findAny()
     {
-        return $this->reorganize(Reorganizers::random(1))
-            ->findFirst();
+        $size =  $this->list->size();
+        if ($size === 0) {
+            return null;
+        }
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $rIndex = random_int(0, $size - 1);
+        $pointer = 0;
+        $item = null;
+        foreach ($this->list as $item) {
+            if ($rIndex === $pointer++) {
+                break;
+            }
+        }
+        return $item;
     }
 
     /**
