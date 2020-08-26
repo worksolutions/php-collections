@@ -6,7 +6,6 @@
 namespace WS\Utils\Collections;
 
 use RuntimeException;
-use WS\Utils\Collections\Functions\Reorganizers;
 
 class SerialStream implements Stream
 {
@@ -17,7 +16,7 @@ class SerialStream implements Stream
 
     public function __construct(Collection $collection)
     {
-        $this->list = new ArrayList();
+        $this->list = $this->emptyList();
         $this->list->addAll($collection);
     }
 
@@ -163,17 +162,10 @@ class SerialStream implements Stream
 
     public function reverse(): Stream
     {
-        $size = $this->list->size();
-        /** @var ListSequence $list */
-        $list = $this->list->copy();
-        $this->walk(static function ($head, $index) use ($list, $size) {
-            $tailIndex = $size - $index - 1;
-            $tail = $list->get($tailIndex);
-            $list->set($tail, $index);
-            $list->set($head, $tailIndex);
-        }, (int)($size/2));
-        $this->list = $list;
-
+        $array = $this->list->toArray();
+        $reversedArray = array_reverse($array);
+        $this->list = $this->emptyList();
+        $this->list->addAll($reversedArray);
         return $this;
     }
 
@@ -190,8 +182,20 @@ class SerialStream implements Stream
      */
     public function findAny()
     {
-        return $this->reorganize(Reorganizers::random(1))
-            ->findFirst();
+        $size =  $this->list->size();
+        if ($size === 0) {
+            return null;
+        }
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $rIndex = random_int(0, $size - 1);
+        $pointer = 0;
+        $item = null;
+        foreach ($this->list as $item) {
+            if ($rIndex === $pointer++) {
+                break;
+            }
+        }
+        return $item;
     }
 
     /**
@@ -270,7 +274,7 @@ class SerialStream implements Stream
 
     public function getCollection(): Collection
     {
-        return $this->list;
+        return $this->list->copy();
     }
 
     private function emptyList(): Collection
