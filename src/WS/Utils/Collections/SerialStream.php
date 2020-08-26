@@ -220,13 +220,11 @@ class SerialStream implements Stream
             return null;
         }
 
-        $el = $this->findFirst();
+        $array = $collection->toArray();
 
-        if ($collection->size() === 1) {
-            return $el;
-        }
+        $el = array_shift($array);
 
-        foreach ($collection as $item) {
+        foreach ($array as $item) {
             if ($comparator($item, $el) < 0) {
                 $el = $item;
             }
@@ -245,13 +243,10 @@ class SerialStream implements Stream
             return null;
         }
 
-        $el = $this->findFirst();
+        $array = $collection->toArray();
+        $el = array_unshift($array);
 
-        if ($collection->size() === 1) {
-            return $el;
-        }
-
-        foreach ($collection as $item) {
+        foreach ($array as $item) {
             if ($comparator($item, $el) > 0) {
                 $el = $item;
             }
