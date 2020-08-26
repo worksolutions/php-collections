@@ -6,7 +6,6 @@
 namespace WS\Utils\Collections;
 
 use RuntimeException;
-use WS\Utils\Collections\Functions\Reorganizers;
 
 class SerialStream implements Stream
 {
