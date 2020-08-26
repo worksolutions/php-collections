@@ -182,7 +182,7 @@ class SerialStream implements Stream
      */
     public function collect(callable $collector)
     {
-        return $collector($this->getCollection());
+        return $collector($this->getCollection()->copy());
     }
 
     /**

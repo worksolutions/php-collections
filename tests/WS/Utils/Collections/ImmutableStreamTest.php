@@ -16,7 +16,8 @@ class ImmutableStreamTest extends TestCase
     /**
      * @test
      */
-    public function shouldBeImmutableInReorganizeWithCollection(): void {
+    public function shouldBeImmutableInReorganizeWithCollection(): void
+    {
         $stream = self::toCollection(1, 2, 3)
             ->stream();
 
@@ -26,6 +27,24 @@ class ImmutableStreamTest extends TestCase
             ->reorganize(function (Collection $c) {
                 $c->clear();
                 return $this->toCollection();
+            });
+
+        self::assertThat($collection, CollectionIsEqual::to([1, 2, 3]));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBeImmutableInCollectWithCollection(): void
+    {
+        $stream = self::toCollection(1, 2, 3)
+            ->stream();
+
+        $collection = $stream->getCollection();
+        $stream
+            ->collect(static function (Collection $c) {
+                $c->clear();
+                return 1;
             });
 
         self::assertThat($collection, CollectionIsEqual::to([1, 2, 3]));
