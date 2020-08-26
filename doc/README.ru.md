@@ -2083,7 +2083,7 @@ CollectionFactory::generate(5, static function () use (& $c) {
 Группа конструкторов функций сравнения. Функции сравнения элементов необходимы при использовании методов сортировки, для того чтобы в правильном порядке расположить элементы. Итоговые функции сортировки имеют интерфейс `<Fn($a: mixed, $b: mixed): int>`, с логикой работы идентичной [https://www.php.net/manual/ru/function.usort]. 
 
 - [*scalarComparator* – Сравнение скалярных значений](#scalarcomparator---сравнение-скалярных-значений)
-- [*objectPropertyComparator* – Сравнение свойств объектов](#objectpropertycomparator--–сравнение-свойств-объектов)
+- [*objectPropertyComparator* – Сравнение свойств объектов](#objectpropertycomparator---сравнение-свойств-объектов)
 - [*callbackComparator* – Определение функции для сравнения значений](#callbackcomparator---определение-функции-для-сравнения-значений)
 
 #### _scalarComparator_ - Сравнение скалярных значений
