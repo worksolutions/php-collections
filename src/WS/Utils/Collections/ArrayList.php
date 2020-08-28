@@ -73,7 +73,7 @@ class ArrayList extends AbstractCollection implements ListSequence
         $el = $this->elements[$index];
         unset($this->elements[$index]);
         $this->elements = array_values($this->elements);
-
+        $this->pointer--;
         return $el;
     }
 
