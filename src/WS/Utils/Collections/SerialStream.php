@@ -16,8 +16,12 @@ class SerialStream implements Stream
 
     public function __construct(Collection $collection)
     {
-        $this->list = $this->emptyList();
-        $this->list->addAll($collection);
+        if ($collection instanceof ListSequence) {
+            $this->list = $collection->copy();
+        } else {
+            $this->list = $this->emptyList();
+            $this->list->addAll($collection->toArray());
+        }
     }
 
     /**
