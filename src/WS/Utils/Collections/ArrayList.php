@@ -38,12 +38,8 @@ class ArrayList extends AbstractCollection implements ListSequence
 
     public function remove($element): bool
     {
-        $hashCodeRemoved = false;
-        if ($element instanceof HashCodeAware) {
-            $hashCodeRemoved = $this->removeThroughHashCode($element);
-        }
-        if ($hashCodeRemoved) {
-            return true;
+        if (is_object($element) && $element instanceof HashCodeAware) {
+            return $this->removeThroughHashCode($element);
         }
         $key = array_search($element, $this->elements, true);
         if (false === $key) {
@@ -66,14 +62,20 @@ class ArrayList extends AbstractCollection implements ListSequence
     public function removeAt(int $index)
     {
         $size = $this->size();
-        if (!isset($this->elements[$index]) || $size < $index + 1) {
+        if ($index >= $size) {
             return null;
         }
 
         $el = $this->elements[$index];
         unset($this->elements[$index]);
-        $this->elements = array_values($this->elements);
         $this->pointer--;
+        if ($this->pointer === -1) {
+            return $el;
+        }
+        $this->elements = array_merge(
+            array_slice($this->elements, 0, $index),
+            array_slice($this->elements, $index)
+        );
         return $el;
     }
 

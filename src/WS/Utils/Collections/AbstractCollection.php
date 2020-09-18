@@ -49,7 +49,7 @@ abstract class AbstractCollection implements Collection
 
     public function merge(Collection $collection): bool
     {
-        return $this->addAll($collection);
+        return $this->addAll($collection->toArray());
     }
 
     public function clear(): void
