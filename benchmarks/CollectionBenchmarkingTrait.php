@@ -6,6 +6,7 @@
 
 namespace Benchmarks;
 
+use PhpBench\Benchmark\Metadata\Annotations\Assert;
 use PhpBench\Benchmark\Metadata\Annotations\Subject;
 use WS\Utils\Collections\Collection;
 
@@ -33,6 +34,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("10")
      */
     public function emptyConstructing(): void
     {
@@ -49,6 +51,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("10")
      */
     public function collectionWithValuesConstructing(): void
     {
@@ -65,6 +68,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject()
+     * @Assert("5")
      */
     public function adding(): void
     {
@@ -79,9 +83,9 @@ trait CollectionBenchmarkingTrait
         $this->getBigArray()[] = 10;
     }
 
-
     /**
      * @Subject
+     * @Assert("10")
      */
     public function clearing(): void
     {
@@ -90,6 +94,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("5")
      */
     public function copying(): void
     {
@@ -98,6 +103,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("10")
      */
     public function addingAll(): void
     {
@@ -114,6 +120,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("10")
      */
     public function merging(): void
     {
@@ -122,6 +129,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("50")
      */
     public function containsChecking(): void
     {
@@ -130,6 +138,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("20")
      */
     public function equalsChecking(): void
     {
@@ -139,6 +148,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("5")
      */
     public function sizeChecking(): void
     {
@@ -147,6 +157,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("5")
      */
     public function emptinessChecking(): void
     {
@@ -155,6 +166,7 @@ trait CollectionBenchmarkingTrait
 
     /**
      * @Subject
+     * @Assert("60")
      */
     public function removing(): void
     {
@@ -167,5 +179,23 @@ trait CollectionBenchmarkingTrait
     public function removingFromArray(): void
     {
         array_diff($this->getBigArray(), [100]);
+    }
+
+    /**
+     * @Subject
+     * @Assert("20")
+     */
+    public function streamGetting(): void
+    {
+        $this->getBigCollection()->stream();
+    }
+
+    /**
+     * @Subject
+     * @Assert("10")
+     */
+    public function arrayConverting(): void
+    {
+        $this->getBigCollection()->toArray();
     }
 }
