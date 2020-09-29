@@ -33,6 +33,11 @@ class SerialStreamTest extends TestCase
         };
     }
 
+    private static function fEmptyFunction(): callable
+    {
+        return static function () {};
+    }
+
     public function createCollection(array $els): Collection
     {
         return new ArrayList($els);
@@ -207,9 +212,10 @@ class SerialStreamTest extends TestCase
     public function reduceCases(): array
     {
         return [
-            [[1,2,3], self::fSumAggregator(), 6],
-            [[1, 2, 4], self::fCountAggregator(), 3],
-            [[], self::fSumAggregator(), 0]
+            [[1,2,3], self::fSumAggregator(), 4, 10],
+            [[1, 2, 4], self::fCountAggregator(), 0, 3],
+            [[], self::fSumAggregator(), null, null],
+            [[], self::fEmptyFunction(), [], []]
         ];
     }
 
@@ -218,15 +224,16 @@ class SerialStreamTest extends TestCase
      * @test
      * @param $input
      * @param $accumulator
+     * @param $initialValue
      * @param $expected
      */
-    public function reduceChecking($input, $accumulator, $expected): void
+    public function reduceChecking($input, $accumulator, $initialValue, $expected): void
     {
         $actual = $this->createCollection($input)
             ->stream()
-            ->reduce($accumulator);
+            ->reduce($accumulator, $initialValue);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function aggregateCases(): array
