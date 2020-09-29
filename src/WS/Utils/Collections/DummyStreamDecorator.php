@@ -108,9 +108,9 @@ class DummyStreamDecorator implements Stream
         return $this;
     }
 
-    public function reduce(callable $accumulator)
+    public function reduce(callable $accumulator, $initialValue = null)
     {
-        return $this->decoratedStream->reduce($accumulator);
+        return $this->decoratedStream->reduce($accumulator, $initialValue);
     }
 
     public function limit(int $size): Stream

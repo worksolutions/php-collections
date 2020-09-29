@@ -262,9 +262,9 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
-    public function reduce(callable $accumulator)
+    public function reduce(callable $accumulator, $initialValue = null)
     {
-        $accumulate = null;
+        $accumulate = $initialValue;
         foreach ($this->list as $item) {
             $accumulate = $accumulator($item, $accumulate);
         }

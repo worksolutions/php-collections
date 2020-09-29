@@ -126,13 +126,14 @@ interface Stream
      * @return Stream
      */
     public function reverse(): Stream;
-    
+
     /**
      * Reduce collection to single value with accumulator
-     * @param callable $accumulator
+     * @param  callable  $accumulator
+     * @param  null  $initialValue
      * @return mixed
      */
-    public function reduce(callable $accumulator);
+    public function reduce(callable $accumulator, $initialValue = null);
 
     /**
      * Limits amount of stream collection elements
