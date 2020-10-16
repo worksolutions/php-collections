@@ -26,6 +26,9 @@
     "phpunit/phpunit": "^7.5",
     "phpbench/phpbench": "^0.17"
   },
+  "suggest": {
+    "phpbench/phpbench": "Uses only for benchmark purposes"
+  },
   "autoload": {
     "psr-4": {"WS\\Utils\\Collections\\": "src/WS/Utils/Collections"}
   },
