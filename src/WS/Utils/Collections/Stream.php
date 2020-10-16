@@ -130,7 +130,7 @@ interface Stream
     /**
      * Reduce collection to single value with accumulator
      * @param  callable  $accumulator
-     * @param  null  $initialValue
+     * @param  mixed|null  $initialValue
      * @return mixed
      */
     public function reduce(callable $accumulator, $initialValue = null);
