@@ -248,7 +248,7 @@ class SerialStream implements Stream
         }
 
         $array = $collection->toArray();
-        $el = array_unshift($array);
+        $el = null;
 
         foreach ($array as $item) {
             if ($comparator($item, $el) > 0) {

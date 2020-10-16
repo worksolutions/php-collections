@@ -293,11 +293,11 @@ class SerialStreamTest extends TestCase
     public function sortDataSet(): array
     {
         return [
-            // input   | comparator             | min| max | sorted
-            [[1, 2, 3, 4], self::fIntComparator(), 1, 4, [1, 2, 3, 4]],
-            [[3, 12, 1, 4], self::fIntComparator(), 1, 12, [1, 3, 4, 12]],
-            [[], self::fIntComparator(), null, null, []],
-            [[1], self::fIntComparator(), 1, 1, [1]],
+            // input       | comparator           | min  | max | sorted
+            [[1, 2, 3, 4],  self::fIntComparator(), 1,    4,    [1, 2, 3, 4]],
+            [[3, 12, 1, 4], self::fIntComparator(), 1,    12,   [1, 3, 4, 12]],
+            [[],            self::fIntComparator(), null, null, []],
+            [[1],           self::fIntComparator(), 1,    1,    [1]],
         ];
     }
 
