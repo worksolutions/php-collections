@@ -23,8 +23,7 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5",
-    "phpbench/phpbench": "^0.17"
+    "phpunit/phpunit": "^7.5"
   },
   "suggest": {
     "phpbench/phpbench": "Uses only for benchmark purposes"
