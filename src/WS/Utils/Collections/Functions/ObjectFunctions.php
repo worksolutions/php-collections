@@ -23,6 +23,10 @@ class ObjectFunctions
             return $object->{$fieldName};
         }
 
+        if (isset($object->{$fieldName})) {
+            return $object->{$fieldName};
+        }
+
         if (method_exists($object, $fieldName)) {
             return $object->{$fieldName}();
         }

@@ -2360,7 +2360,7 @@ CollectionFactory::generate(3, static function (int $i): array {
         return [$i*2, $i*2 + 1];
     }) // [[0, 1], [2, 3], [4, 5]]
     ->stream()
-    ->reorganize(Reorganizers::chunk(2))
+    ->reorganize(Reorganizers::collapse())
     ->getCollection()
     ->toArray() // for example [0, 1, 2, 3, 4, 5]
 ;
