@@ -8,15 +8,14 @@ namespace WS\Utils\Collections;
 abstract class AbstractCollection implements Collection
 {
     protected $elements = [];
+    protected $pointer = -1;
 
     public function __construct(?array $elements = null)
     {
         if ($elements === null) {
             return;
         }
-        foreach ($elements as $element) {
-            $this->add($element);
-        }
+        $this->setElements($elements);
     }
 
     public static function of(...$elements): self
@@ -26,29 +25,36 @@ abstract class AbstractCollection implements Collection
 
     public function add($element): bool
     {
-        $beforeSize = count($this->elements);
+        if ($this->pointer === PHP_INT_MAX) {
+            return false;
+        }
+        $this->pointer++;
         $this->elements[] = $element;
-        return $beforeSize < count($this->elements);
+        return true;
     }
 
     public function addAll(iterable $elements): bool
     {
-        $res = true;
         foreach ($elements as $element) {
-            !$this->add($element) && $res = false;
+            $this->elements[] = $element;
         }
-        return $res;
+        $newPointer = count($this->elements) - 1;
+        if ($newPointer > PHP_INT_MAX) {
+            $this->elements = array_slice($this->elements, 0, $this->pointer);
+        } else {
+            $this->pointer = $newPointer;
+        }
+        return true;
     }
 
     public function merge(Collection $collection): bool
     {
-        $this->elements = array_merge($this->toArray(), $collection->toArray());
-        return true;
+        return $this->addAll($collection->toArray());
     }
 
     public function clear(): void
     {
-        $this->elements = [];
+        $this->setElements([]);
     }
 
     public function contains($element): bool
@@ -63,17 +69,17 @@ abstract class AbstractCollection implements Collection
 
     public function size(): int
     {
-        return count($this->elements);
+        return $this->pointer + 1;
     }
 
     public function isEmpty(): bool
     {
-        return !$this->size();
+        return $this->pointer === -1;
     }
 
     public function toArray(): array
     {
-        return array_values($this->elements);
+        return $this->elements;
     }
 
     public function getIterator()
@@ -88,7 +94,8 @@ abstract class AbstractCollection implements Collection
 
     protected function setElements(array $elements): void
     {
-        $this->elements = $elements;
+        $this->elements = array_values($elements);
+        $this->pointer = count($elements) - 1;
     }
 
     protected function getElements(): array

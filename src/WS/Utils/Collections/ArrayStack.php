@@ -55,13 +55,6 @@ class ArrayStack extends AbstractCollection implements Stack, IndexIterable
         return $this->elements[count($this->elements) - 1];
     }
 
-    public function merge(Collection $collection): bool
-    {
-        $this->elements = array_merge($this->elements, array_values($collection->toArray()));
-
-        return true;
-    }
-
     public function stream(): Stream
     {
         return new SerialStream($this);

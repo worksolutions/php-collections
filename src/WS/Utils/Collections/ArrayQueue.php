@@ -25,6 +25,7 @@ class ArrayQueue extends AbstractCollection implements Queue, IndexIterable
             throw new RuntimeException('Queue is empty');
         }
 
+        $this->pointer--;
         return array_shift($this->elements);
     }
 

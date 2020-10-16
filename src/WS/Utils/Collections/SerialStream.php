@@ -16,8 +16,12 @@ class SerialStream implements Stream
 
     public function __construct(Collection $collection)
     {
-        $this->list = $this->emptyList();
-        $this->list->addAll($collection);
+        if ($collection instanceof ListSequence) {
+            $this->list = $collection->copy();
+        } else {
+            $this->list = $this->emptyList();
+            $this->list->addAll($collection->toArray());
+        }
     }
 
     /**
@@ -220,13 +224,11 @@ class SerialStream implements Stream
             return null;
         }
 
-        $el = $this->findFirst();
+        $array = $collection->toArray();
 
-        if ($collection->size() === 1) {
-            return $el;
-        }
+        $el = array_shift($array);
 
-        foreach ($collection as $item) {
+        foreach ($array as $item) {
             if ($comparator($item, $el) < 0) {
                 $el = $item;
             }
@@ -245,13 +247,10 @@ class SerialStream implements Stream
             return null;
         }
 
-        $el = $this->findFirst();
+        $array = $collection->toArray();
+        $el = null;
 
-        if ($collection->size() === 1) {
-            return $el;
-        }
-
-        foreach ($collection as $item) {
+        foreach ($array as $item) {
             if ($comparator($item, $el) > 0) {
                 $el = $item;
             }
@@ -263,9 +262,9 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
-    public function reduce(callable $accumulator)
+    public function reduce(callable $accumulator, $initialValue = null)
     {
-        $accumulate = null;
+        $accumulate = $initialValue;
         foreach ($this->list as $item) {
             $accumulate = $accumulator($item, $accumulate);
         }
