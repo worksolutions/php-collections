@@ -593,6 +593,7 @@ $queue->peek(); // RuntimeException
 - [*containsKey* – Признак наличия пары по ключу](#containskey---признак-наличия-пары-по-ключу)
 - [*containsValue* – Признак наличия пары по значению](#containsvalue---признак-наличия-пары-по-значению)
 - [*size* – Количество пар в карте](#size---количество-пар-в-карте)
+- [Обход объекта map при помощи цикла _foreach_](#обход-объекта-map-при-помощи-цикла-_foreach_)
 
 #### _put_ - Добавление пары *ключ/значение*
 [[↑ Карта (Map)]](#карта-map)
@@ -758,6 +759,30 @@ $map->size(); // 2
 
 $emptyMap = new HashMap();
 $map->size(); // 0
+
+```
+
+#### Обход объекта map при помощи цикла _foreach_
+[[↑ Карта (Map)]](#карта-map)
+
+Объект типа Map можно итерировать в цикле *foreach*. В этом случае ключи и значения будут оригинальные. Таким образом ключом может быть любой тип кроме массива.
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+
+$map = new HashMap();
+
+$map->put(new SplObjectStorage(), 1);
+$map->put(null, 2);
+$map->put(false, 3);
+$map->put(true, 4);
+$map->put(0, 5);
+
+foreach($map as $key => $value) {
+    var_export($key);   // object of SplObjectStorage class| null| false| true| 0 
+    var_export($value); // 1                               | 2   | 3    | 4   | 5
+}
 
 ```
 

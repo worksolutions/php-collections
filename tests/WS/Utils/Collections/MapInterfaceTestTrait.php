@@ -15,18 +15,19 @@ use WS\Utils\Collections\Utils\TestInteger;
  */
 trait MapInterfaceTestTrait
 {
+    abstract protected function createInstance(): Map;
+
     /**
      * @test
      */
     public function checkSameObjectAsKey(): void
     {
         $obj1 = $obj2 = new SplObjectStorage();
-        /** @var $instance Map */
         $instance = $this->createInstance();
         $instance->put($obj1, null);
-        $this->assertTrue($instance->containsKey($obj2));
+        self::assertTrue($instance->containsKey($obj2));
 
-        $this->assertNull($instance->get($obj2));
+        self::assertNull($instance->get($obj2));
     }
 
     /**
@@ -44,7 +45,7 @@ trait MapInterfaceTestTrait
 
         $instance->remove(4);
 
-        $this->assertEquals(4, $instance->size());
+        self::assertEquals(4, $instance->size());
     }
 
     /**
@@ -59,8 +60,8 @@ trait MapInterfaceTestTrait
 
         $i = 10;
         foreach ($instance as $k => $v) {
-            $this->assertSame($k, $v - 1);
-            $this->assertSame($i, $k);
+            self::assertSame($k, $v - 1);
+            self::assertSame($i, $k);
             $i++;
         }
     }
@@ -70,7 +71,6 @@ trait MapInterfaceTestTrait
      */
     public function keySetGetting(): void
     {
-        /** @var Map $instance */
         $instance = $this->createInstance();
         $instance->put(1,1);
         $instance->put(2,1);
@@ -83,7 +83,7 @@ trait MapInterfaceTestTrait
 
         $set = $instance->keys();
 
-        $this->assertEquals(4, $set->size());
+        self::assertEquals(4, $set->size());
     }
 
     /**
@@ -91,7 +91,6 @@ trait MapInterfaceTestTrait
      */
     public function valuesGetting(): void
     {
-        /** @var Map $instance */
         $instance = $this->createInstance();
         $instance->put(1,1);
         $instance->put(2,1);
@@ -104,7 +103,7 @@ trait MapInterfaceTestTrait
 
         $values = $instance->values();
 
-        $this->assertEquals(4, $values->size());
+        self::assertEquals(4, $values->size());
     }
 
     /**
@@ -121,9 +120,9 @@ trait MapInterfaceTestTrait
         $instance->put($o2, null);
         $instance->put($o3, null);
 
-        $this->assertTrue($instance->containsKey(new TestInteger(1)));
-        $this->assertTrue($instance->containsKey(new TestInteger(2)));
-        $this->assertTrue($instance->containsKey(new TestInteger(3)));
+        self::assertTrue($instance->containsKey(new TestInteger(1)));
+        self::assertTrue($instance->containsKey(new TestInteger(2)));
+        self::assertTrue($instance->containsKey(new TestInteger(3)));
     }
 
     /**
@@ -136,8 +135,8 @@ trait MapInterfaceTestTrait
         $instance->put(2, 2);
         $instance->put(3, 3);
 
-        $this->assertTrue($instance->containsValue(1));
-        $this->assertFalse($instance->containsValue(4));
+        self::assertTrue($instance->containsValue(1));
+        self::assertFalse($instance->containsValue(4));
     }
 
     /**
@@ -150,8 +149,8 @@ trait MapInterfaceTestTrait
         $instance->put(2, 2);
         $instance->put(3, 3);
 
-        $this->assertNotNull($instance->get(1));
-        $this->assertNull($instance->get(4));
+        self::assertNotNull($instance->get(1));
+        self::assertNull($instance->get(4));
     }
 
     /**
@@ -164,9 +163,9 @@ trait MapInterfaceTestTrait
         $instance->put([1, 2, 3], 2);
         $instance->put([1, 3, 3], 3);
 
-        $this->assertEquals(2, $instance->size());
-        $this->assertTrue($instance->containsKey([1, 2, 3]));
-        $this->assertTrue($instance->containsKey([1, 3, 3]));
+        self::assertEquals(2, $instance->size());
+        self::assertTrue($instance->containsKey([1, 2, 3]));
+        self::assertTrue($instance->containsKey([1, 3, 3]));
     }
 
     /**
@@ -179,7 +178,7 @@ trait MapInterfaceTestTrait
         $instance->put(2, 2);
         $instance->put(3, 3);
 
-        $this->assertFalse($instance->remove(4));
+        self::assertFalse($instance->remove(4));
     }
 
     /**
@@ -189,7 +188,7 @@ trait MapInterfaceTestTrait
     {
         $instance = $this->createInstance();
         $instance->put(static function () {}, null);
-        $this->assertFalse($instance->containsKey(static function () {}));
+        self::assertFalse($instance->containsKey(static function () {}));
     }
 
     /**
@@ -198,7 +197,6 @@ trait MapInterfaceTestTrait
     public function unsupportedKeyType(): void
     {
         $this->expectException(Exception::class);
-        /** @var Map $map */
         $map = $this->createInstance();
         $f = null;
         try {
@@ -208,6 +206,48 @@ trait MapInterfaceTestTrait
             fclose($f);
             /** @noinspection PhpUnhandledExceptionInspection */
             throw $exception;
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function foreachObjectKeyValueChecking(): void
+    {
+        $map = $this->createInstance();
+
+        $map->put(new SplObjectStorage(), 1);
+        $map->put(new SplObjectStorage(), 2);
+        $map->put(new SplObjectStorage(), 3);
+
+        foreach ($map as $splObjectStorage => $intValue) {
+            self::assertThat($splObjectStorage, self::isInstanceOf(SplObjectStorage::class));
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function foreachAnyKeyValueChecking(): void
+    {
+        $map = $this->createInstance();
+
+        $map->put(null, 1);
+        $map->put(false, 2);
+        $map->put(true, 3);
+
+        foreach ($map as $k => $int) {
+            switch ($int) {
+                case 1:
+                    self::assertThat($k, self::isNull());
+                    break;
+                case 2:
+                    self::assertThat($k, self::isFalse());
+                    break;
+                case 3:
+                    self::assertThat($k, self::isTrue());
+                    break;
+            }
         }
     }
 }

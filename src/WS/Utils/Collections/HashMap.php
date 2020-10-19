@@ -22,9 +22,25 @@ class HashMap implements Map
 
     public function getIterator()
     {
-        return new ArrayIterator(array_map(static function (MapEntry $entry) {
-            return $entry->getValue();
-        }, $this->entries));
+        return new class($this->entries) extends ArrayIterator {
+            private $entries;
+            public function __construct(array $entries)
+            {
+                $hashToValueArray = array_map(static function (MapEntry $entry) {
+                    return $entry->getValue();
+                }, $entries);
+                parent::__construct($hashToValueArray);
+                $this->entries = $entries;
+            }
+
+            public function key()
+            {
+                $arrayKey = parent::key();
+                /** @var MapEntry $entry */
+                $entry = $this->entries[$arrayKey];
+                return $entry->getKey();
+            }
+        };
     }
 
     public function values(): Collection
