@@ -593,6 +593,8 @@ Classes implement `Stack` interface: ```HashMap```
 - [*containsKey* – Sign of the presence of a key pair](#containskey---sign-of-the-presence-of-a-key-pair)
 - [*containsValue* – Sign of the presence of a pair by value](#containsvalue---sign-of-the-presence-of-a-pair-by-value)
 - [*size* – Number of pairs in the card](#size---number-of-pairs-in-the-card)
+- [*stream* - Getting traverse stream with collection of key/value pair (Stream)](#stream---getting-traverse-streamw-with-collection-of-key-value-pair-stream)
+- [Traverse map in _foreach_ loop](#Traverse-map-in-_foreach_-loop)
 
 #### put - Adding key/value pair
 [[↑ Map]](#map)
@@ -758,6 +760,56 @@ $map->size(); // 2
 
 $emptyMap = new HashMap();
 $map->size(); // 0
+
+```
+
+#### _stream_ - Getting traverse stream with collection of pair key/value (Stream)
+[[↑ Map]](#map)
+```
+stream(): Stream;
+```
+
+Method returns object of Stream interface. Internal collection elements are pair of key/value. 
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+use \WS\Utils\Collections\MapEntry;
+
+$map = new HashMap();
+
+$map->put('one', 1);
+$map->put('two', 2);
+$map->put('tree', 3);
+
+$map->stream()->each(static function (MapEntry $mapEntry) {
+    var_export($mapEntry->getKey()); // 'one', 'two', 'three'
+    var_export($mapEntry->getKey()); // 1    , 2    , 3
+});
+
+```
+
+#### Traverse map in _foreach_ loop
+[[↑ Map]](#map)
+
+Object of Map interface can iterated in *foreach* loop. In this case keys and values will be passed before ones. Key can be of any type except an array.
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+
+$map = new HashMap();
+
+$map->put(new SplObjectStorage(), 1);
+$map->put(null, 2);
+$map->put(false, 3);
+$map->put(true, 4);
+$map->put(0, 5);
+
+foreach($map as $key => $value) {
+    var_export($key);   // object of SplObjectStorage class| null| false| true| 0 
+    var_export($value); // 1                               | 2   | 3    | 4   | 5
+}
 
 ```
 
