@@ -47,4 +47,10 @@ interface Map extends IteratorAggregate
      * @return mixed|null
      */
     public function get($key);
+
+    /**
+     * Creates a stream with internal collection MapEntry objects
+     * @return Stream Stream<MapEntry>
+     */
+    public function stream(): Stream;
 }

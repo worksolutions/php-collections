@@ -250,4 +250,26 @@ trait MapInterfaceTestTrait
             }
         }
     }
+
+    /**
+     * @test
+     */
+    public function streamGetting(): void
+    {
+        $map = $this->createInstance();
+
+        $map->put('1', 1);
+        $map->put('2', 2);
+        $map->put('3', 3);
+
+        $stream = $map->stream();
+        self::assertThat($stream, self::isInstanceOf(Stream::class));
+
+        self::assertGreaterThan(0, $stream->getCollection()->size());
+
+        $stream
+            ->each(static function (MapEntry $mapEntry) {
+                self::assertThat($mapEntry->getKey() === ''.$mapEntry->getValue(), self::isTrue());
+            });
+    }
 }

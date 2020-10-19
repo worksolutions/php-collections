@@ -136,4 +136,9 @@ class HashMap implements Map
         }
         return false;
     }
+
+    public function stream(): Stream
+    {
+        return new SerialStream(CollectionFactory::from(array_values($this->entries)));
+    }
 }

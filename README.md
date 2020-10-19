@@ -593,6 +593,8 @@ Classes implement `Stack` interface: ```HashMap```
 - [*containsKey* – Sign of the presence of a key pair](#containskey---sign-of-the-presence-of-a-key-pair)
 - [*containsValue* – Sign of the presence of a pair by value](#containsvalue---sign-of-the-presence-of-a-pair-by-value)
 - [*size* – Number of pairs in the card](#size---number-of-pairs-in-the-card)
+- [*stream* - Getting traverse stream with collection of key/value pair (Stream)](#stream---getting-traverse-streamw-with-collection-of-key-value-pair-stream)
+- [Traverse map in _foreach_ loop](#Traverse-map-in-_foreach_-loop)
 
 #### put - Adding key/value pair
 [[↑ Map]](#map)
@@ -761,6 +763,31 @@ $map->size(); // 0
 
 ```
 
+#### _stream_ - Getting traverse stream with collection of pair key/value (Stream)
+[[↑ Map]](#map)
+```
+stream(): Stream;
+```
+
+Method returns object of Stream interface. Internal collection elements are pair of key/value. 
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+use \WS\Utils\Collections\MapEntry;
+
+$map = new HashMap();
+
+$map->put('one', 1);
+$map->put('two', 2);
+$map->put('tree', 3);
+
+$map->stream()->each(static function (MapEntry $mapEntry) {
+    var_export($mapEntry->getKey()); // 'one', 'two', 'three'
+    var_export($mapEntry->getKey()); // 1    , 2    , 3
+});
+
+```
 
 #### Traverse map in _foreach_ loop
 [[↑ Map]](#map)
