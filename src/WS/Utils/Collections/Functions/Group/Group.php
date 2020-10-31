@@ -31,7 +31,7 @@ class Group
         $aggregatedResult = [];
         foreach ($groupedResult as $groupKey => $items) {
             foreach ($this->aggregators as $item) {
-                list($destKey, $aggregator) = $item;
+                [$destKey, $aggregator] = $item;
                 $aggregatedResult[$groupKey][$destKey] = $aggregator($items);
             }
         }
