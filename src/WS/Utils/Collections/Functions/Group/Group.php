@@ -72,7 +72,7 @@ class Group
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\First($sourceKey));
     }
 
-    private function addAggregator(string $destKey, callable $aggregator): self
+    public function addAggregator(string $destKey, callable $aggregator): self
     {
         $this->aggregators[] = [$destKey, $aggregator];
         return $this;
