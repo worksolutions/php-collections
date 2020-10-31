@@ -14,6 +14,15 @@ class Avg
 
     public function __invoke(iterable $collection)
     {
-        return 0;
+        $acc = null;
+        $cnt = 0;
+        foreach ($collection as $element) {
+            $acc += $element[$this->sourceKey];
+            $cnt++;
+        }
+        if (!$cnt) {
+            return null;
+        }
+        return $acc / $cnt;
     }
 }
