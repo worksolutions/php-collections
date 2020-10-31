@@ -2,24 +2,25 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Collection;
 use WS\Utils\Collections\Functions\ObjectFunctions;
 
 class Avg
 {
 
-    private $sourceKey;
+    private $fieldName;
 
-    public function __construct($sourceKey)
+    public function __construct($fieldName)
     {
-        $this->sourceKey = $sourceKey;
+        $this->fieldName = $fieldName;
     }
 
-    public function __invoke(iterable $collection)
+    public function __invoke(Collection $collection)
     {
         $acc = null;
         $cnt = 0;
         foreach ($collection as $element) {
-            $acc += ObjectFunctions::getPropertyValue($element, $this->sourceKey);
+            $acc += ObjectFunctions::getPropertyValue($element, $this->fieldName);
             $cnt++;
         }
         if (!$cnt) {

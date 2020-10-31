@@ -2,24 +2,25 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Collection;
 use WS\Utils\Collections\Functions\ObjectFunctions;
 use WS\Utils\Collections\HashSet;
 
 class AddToSet
 {
 
-    private $sourceKey;
+    private $fieldName;
 
-    public function __construct($sourceKey)
+    public function __construct($fieldName)
     {
-        $this->sourceKey = $sourceKey;
+        $this->fieldName = $fieldName;
     }
 
-    public function __invoke(iterable $collection)
+    public function __invoke(Collection $collection)
     {
         $set = new HashSet();
         foreach ($collection as $element) {
-            $set->add(ObjectFunctions::getPropertyValue($element, $this->sourceKey));
+            $set->add(ObjectFunctions::getPropertyValue($element, $this->fieldName));
         }
         return $set->toArray();
     }

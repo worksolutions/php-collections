@@ -3,6 +3,7 @@
 namespace WS\Utils\Collections\Functions\Group;
 
 use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\CollectionFactory;
 use WS\Utils\Collections\Functions\ObjectFunctions;
 
 class Group
@@ -23,7 +24,10 @@ class Group
             if (!$groupKey = ObjectFunctions::getPropertyValue($element, $this->key)) {
                 continue;
             }
-            $groupedResult[$groupKey][] = $element;
+            if (!isset($groupedResult[$groupKey])) {
+                $groupedResult[$groupKey] = CollectionFactory::empty();
+            }
+            $groupedResult[$groupKey]->add($element);
         }
         if (!$this->aggregators) {
             return $groupedResult;

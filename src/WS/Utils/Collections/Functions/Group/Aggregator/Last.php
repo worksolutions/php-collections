@@ -2,22 +2,24 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
-use WS\Utils\Collections\CollectionFactory;
+use WS\Utils\Collections\Collection;
 use WS\Utils\Collections\Functions\ObjectFunctions;
 
 class Last
 {
 
-    private $sourceKey;
+    private $fieldName;
 
-    public function __construct($sourceKey)
+    public function __construct($fieldName)
     {
-        $this->sourceKey = $sourceKey;
+        $this->fieldName = $fieldName;
     }
 
-    public function __invoke(iterable $collection)
+    public function __invoke(Collection $collection)
     {
-        $last = CollectionFactory::fromIterable($collection)->stream()->findLast();
-        return ObjectFunctions::getPropertyValue($last, $this->sourceKey);
+        if (!$last = $collection->stream()->findLast()) {
+            return null;
+        }
+        return ObjectFunctions::getPropertyValue($last, $this->fieldName);
     }
 }

@@ -23,14 +23,16 @@ class GroupTest extends TestCase
                     ],
                 ],
                 [
-                    'test' => [
+                    'test' => CollectionFactory::from(
                         [
-                            'one' => 1,
-                            'groupKey' => 'test',
-                            'two' => 2,
-                            'other' => 11,
+                            [
+                                'one' => 1,
+                                'groupKey' => 'test',
+                                'two' => 2,
+                                'other' => 11,
+                            ]
                         ]
-                    ],
+                    ),
                 ]
             ],
             [
@@ -55,27 +57,31 @@ class GroupTest extends TestCase
                     ],
                 ],
                 [
-                    'test' => [
+                    'test' => CollectionFactory::from(
                         [
-                            'one' => 1,
-                            'groupKey' => 'test',
-                            'two' => 2,
-                            'other' => 11,
-                        ],
+                            [
+                                'one' => 1,
+                                'groupKey' => 'test',
+                                'two' => 2,
+                                'other' => 11,
+                            ],
+                            [
+                                'five' => 5,
+                                'groupKey' => 'test',
+                                'six' => 6,
+                                'other' => 15,
+                            ],
+                        ]
+                    ),
+                    'test1' => CollectionFactory::from(
                         [
-                            'five' => 5,
-                            'groupKey' => 'test',
-                            'six' => 6,
-                            'other' => 15,
-                        ],
-                    ],
-                    'test1' => [
-                        [
-                            'three' => 3,
-                            'groupKey' => 'test1',
-                            'four' => 4,
-                        ],
-                    ],
+                            [
+                                'three' => 3,
+                                'groupKey' => 'test1',
+                                'four' => 4,
+                            ],
+                        ]
+                    ),
                 ]
             ],
             [
@@ -120,43 +126,49 @@ class GroupTest extends TestCase
                     ]
                 ],
                 [
-                    'test' => [
+                    'test' => CollectionFactory::from(
                         [
-                            'groupKey' => 'test',
-                            'one' => 1,
-                            'two' => 2,
-                            'other' => 11,
-                        ],
-                        [
-                            'five' => 5,
-                            'groupKey' => 'test',
-                            'six' => 6,
-                            'other' => 15,
-                        ],
-                        [
-                            'seven' => 7,
-                            'eight' => 8,
-                            'groupKey' => 'test',
-                        ]
+                            [
+                                'groupKey' => 'test',
+                                'one' => 1,
+                                'two' => 2,
+                                'other' => 11,
+                            ],
+                            [
+                                'five' => 5,
+                                'groupKey' => 'test',
+                                'six' => 6,
+                                'other' => 15,
+                            ],
+                            [
+                                'seven' => 7,
+                                'eight' => 8,
+                                'groupKey' => 'test',
+                            ]
 
-                    ],
-                    'test1' => [
+                        ]
+                    ),
+                    'test1' => CollectionFactory::from(
                         [
-                            'three' => 3,
-                            'groupKey' => 'test1',
-                            'four' => 4,
-                        ],
+                            [
+                                'three' => 3,
+                                'groupKey' => 'test1',
+                                'four' => 4,
+                            ],
+                            [
+                                'eleven' => '11',
+                                'groupKey' => 'test1',
+                                'twelve' => 12,
+                            ],
+                        ]
+                    ),
+                    67 => CollectionFactory::from(
                         [
-                            'eleven' => '11',
-                            'groupKey' => 'test1',
-                            'twelve' => 12,
-                        ],
-                    ],
-                    67 => [
-                        [
-                            'groupKey' => 67,
-                        ],
-                    ],
+                            [
+                                'groupKey' => 67,
+                            ],
+                        ]
+                    ),
                 ]
             ],
         ];
@@ -175,9 +187,11 @@ class GroupTest extends TestCase
                     },
                 ],
                 [
-                    10 => [
-                        $object1
-                    ],
+                    10 => CollectionFactory::from(
+                        [
+                            $object1
+                        ]
+                    ),
                 ]
             ],
             [
@@ -212,17 +226,23 @@ class GroupTest extends TestCase
                     }
                 ],
                 [
-                    11 => [
-                        $object1,
-                        $object2,
-                    ],
-                    77 => [
-                        $object3,
-                        $object4,
-                    ],
-                    'testKey' => [
-                        $object5
-                    ],
+                    11 => CollectionFactory::from(
+                        [
+                            $object1,
+                            $object2,
+                        ]
+                    ),
+                    77 => CollectionFactory::from(
+                        [
+                            $object3,
+                            $object4,
+                        ]
+                    ),
+                    'testKey' => CollectionFactory::from(
+                        [
+                            $object5
+                        ]
+                    ),
                 ]
             ],
         ];

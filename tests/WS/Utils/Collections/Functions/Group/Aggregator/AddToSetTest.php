@@ -3,9 +3,12 @@
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
 use PHPUnit\Framework\TestCase;
+use WS\Utils\Collections\Utils\CollectionAwareTrait;
 
 class AddToSetTest extends TestCase
 {
+
+    use CollectionAwareTrait;
 
     public function cases(): array
     {
@@ -86,7 +89,7 @@ class AddToSetTest extends TestCase
     public function callSuccess($column, $collection, $expected)
     {
         $aggregator = new AddToSet($column);
-        $this->assertEquals($expected, $aggregator($collection));
+        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
 }

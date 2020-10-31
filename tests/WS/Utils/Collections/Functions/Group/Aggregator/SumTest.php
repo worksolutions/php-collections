@@ -3,9 +3,11 @@
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
 use PHPUnit\Framework\TestCase;
+use WS\Utils\Collections\Utils\CollectionAwareTrait;
 
 class SumTest extends TestCase
 {
+    use CollectionAwareTrait;
 
     public function cases(): array
     {
@@ -94,7 +96,7 @@ class SumTest extends TestCase
     public function callSuccess($column, $collection, $expected)
     {
         $aggregator = new Sum($column);
-        $this->assertEquals($expected, $aggregator($collection));
+        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
 }

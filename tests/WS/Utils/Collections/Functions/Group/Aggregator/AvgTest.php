@@ -5,9 +5,12 @@ namespace WS\Utils\Collections\Functions\Group\Aggregator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
+use WS\Utils\Collections\Utils\CollectionAwareTrait;
 
 class AvgTest extends TestCase
 {
+
+    use CollectionAwareTrait;
 
     public function cases(): array
     {
@@ -86,7 +89,7 @@ class AvgTest extends TestCase
     public function avg($column, $collection, $expected)
     {
         $aggregator = new Avg($column);
-        $this->assertEquals($expected, $aggregator($collection));
+        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
     /**
@@ -96,6 +99,6 @@ class AvgTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $aggregator = new Avg('test');
-        $aggregator([new stdClass(), new stdClass(), new stdClass()]);
+        $aggregator($this->toCollection([new stdClass(), new stdClass(), new stdClass()]));
     }
 }
