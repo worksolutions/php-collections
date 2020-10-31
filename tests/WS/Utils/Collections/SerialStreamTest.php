@@ -391,6 +391,15 @@ class SerialStreamTest extends TestCase
         ];
     }
 
+    public function firstFirstElementWithFilterCases(): array
+    {
+        return [
+            [ [1, 2, 3], 2, 2],
+            [ [1], 2, null],
+            [[], 2, null]
+        ];
+    }
+
     /**
      * @dataProvider firstLastElementCases
      * @test
@@ -403,6 +412,23 @@ class SerialStreamTest extends TestCase
             ->stream()
             ->findFirst();
         $this->assertEquals($first, $actual);
+    }
+
+    /**
+     * @dataProvider firstFirstElementWithFilterCases
+     * @test
+     * @param array $input
+     * @param mixed $first
+     * @param mixed $expected
+     */
+    public function findFirstElementWithFilter(array $input, $first, $expected): void
+    {
+        $actual = $this->createCollection($input)
+            ->stream()
+            ->findFirst(function ($item) use ($first) {
+                return $item === $first;
+            });
+        $this->assertEquals($expected, $actual);
     }
 
     /** @noinspection PhpUnusedParameterInspection */
