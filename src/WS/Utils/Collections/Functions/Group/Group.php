@@ -65,7 +65,7 @@ class Group
 
     public function addToSet(string $sourceKey, string $destKey = null): self
     {
-        return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Avg($sourceKey));
+        return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\AddToSet($sourceKey));
     }
 
     public function first(string $sourceKey, string $destKey = null): self
