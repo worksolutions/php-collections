@@ -2,6 +2,8 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Functions\ObjectFunctions;
+
 class Avg
 {
 
@@ -17,7 +19,7 @@ class Avg
         $acc = null;
         $cnt = 0;
         foreach ($collection as $element) {
-            $acc += $element[$this->sourceKey];
+            $acc += ObjectFunctions::getPropertyValue($element, $this->sourceKey);
             $cnt++;
         }
         if (!$cnt) {
