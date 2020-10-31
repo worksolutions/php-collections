@@ -16,7 +16,10 @@ class Sum
     {
         $sum = null;
         foreach ($collection as $element) {
-            $sum += $element[$this->sourceKey];
+            if (!$var = $element[$this->sourceKey]) {
+                continue;
+            }
+            $sum += $var;
         }
         return $sum;
     }
