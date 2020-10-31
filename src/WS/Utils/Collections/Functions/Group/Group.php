@@ -78,6 +78,11 @@ class Group
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Last($sourceKey));
     }
 
+    public function count(string $destKey): self
+    {
+        return $this->addAggregator($destKey, new Aggregator\Count());
+    }
+
     public function addAggregator(string $destKey, callable $aggregator): self
     {
         $this->aggregators[] = [$destKey, $aggregator];
