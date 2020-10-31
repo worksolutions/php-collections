@@ -27,15 +27,15 @@ class BoolExpression
 
     public function __invoke($item): bool
     {
-        $value = null;
+        $operand = null;
         foreach ($this->operators as $operator) {
-            if ($value === null) {
-                if (!$value = $operator->getChecker()($item)) {
+            if ($operand === null) {
+                if (!$operand = $operator->getChecker()($item)) {
                     return false;
                 }
                 continue;
             }
-            if (!$value = $operator($value, $item)) {
+            if (!$operand = $operator($operand, $item)) {
                 return false;
             }
         }
