@@ -2,10 +2,45 @@
 
 namespace WS\Utils\Collections\Functions\Group;
 
+use WS\Utils\Collections\Collection;
+
 class Group
 {
 
+    private $key;
     private $aggregators;
+
+    public function __construct(string $key)
+    {
+        $this->key = $key;
+    }
+
+    public function __invoke(Collection $collection)
+    {
+        $groupedResult = [];
+        foreach ($collection as $element) {
+            if (!$groupKey = $element[$this->key]) {
+                continue;
+            }
+            $groupedResult[$groupKey][] = $element;
+        }
+        if (!$this->aggregators) {
+            return $groupedResult;
+        }
+        $aggregatedResult = [];
+        foreach ($groupedResult as $groupKey => $items) {
+            foreach ($this->aggregators as $item) {
+                list($destKey, $aggregator) = $item;
+                $aggregatedResult[$groupKey][$destKey] = $aggregator($items);
+            }
+        }
+        return $aggregatedResult;
+    }
+
+    public static function by(string $key): self
+    {
+        return new self($key);
+    }
 
     public function sum(string $sourceKey, string $destKey = null): self
     {
