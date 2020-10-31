@@ -2,6 +2,8 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Functions\ObjectFunctions;
+
 class Max
 {
 
@@ -16,8 +18,9 @@ class Max
     {
         $max = null;
         foreach ($collection as $element) {
-            if ($max === null || $max < $element[$this->sourceKey]) {
-                $max = $element[$this->sourceKey];
+            $value = ObjectFunctions::getPropertyValue($element, $this->sourceKey);
+            if ($max === null || $max < $value) {
+                $max = $value;
             }
         }
         return $max;

@@ -2,6 +2,8 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Functions\ObjectFunctions;
+
 class Sum
 {
 
@@ -16,10 +18,10 @@ class Sum
     {
         $sum = null;
         foreach ($collection as $element) {
-            if (!$var = $element[$this->sourceKey]) {
+            if (!$value = ObjectFunctions::getPropertyValue($element, $this->sourceKey)) {
                 continue;
             }
-            $sum += $var;
+            $sum += $value;
         }
         return $sum;
     }

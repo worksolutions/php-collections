@@ -2,6 +2,8 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
+use WS\Utils\Collections\Functions\ObjectFunctions;
+
 class Min
 {
 
@@ -16,8 +18,9 @@ class Min
     {
         $min = null;
         foreach ($collection as $element) {
-            if ($min === null || $min > $element[$this->sourceKey]) {
-                $min = $element[$this->sourceKey];
+            $value = ObjectFunctions::getPropertyValue($element, $this->sourceKey);
+            if ($min === null || $min > $value) {
+                $min = $value;
             }
         }
         return $min;
