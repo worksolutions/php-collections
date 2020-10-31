@@ -7,22 +7,22 @@ class Group
 
     private $aggregators;
 
-    public function sum(string $sourceKey, string $destKey = null)
+    public function sum(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Sum($sourceKey));
     }
 
-    public function min(string $sourceKey, string $destKey = null)
+    public function min(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Min($sourceKey));
     }
 
-    public function max(string $sourceKey, string $destKey = null)
+    public function max(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Max($sourceKey));
     }
 
-    public function avg(string $sourceKey, string $destKey = null)
+    public function avg(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Avg($sourceKey));
     }
