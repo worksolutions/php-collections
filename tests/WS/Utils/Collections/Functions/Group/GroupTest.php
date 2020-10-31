@@ -280,6 +280,8 @@ class GroupTest extends TestCase
                             'thirdKey' => 14,
                             'count' => 1,
                             'replacedLastKey' => 11,
+                            'set' => [78],
+                            'countFn' => 1,
                         ]
                     ],
                 ]
@@ -323,6 +325,8 @@ class GroupTest extends TestCase
                             'thirdKey' => 102,
                             'count' => 2,
                             'replacedLastKey' => 10,
+                            'set' => [78, null],
+                            'countFn' => 2,
                         ]
                     ],
                 ]
@@ -375,11 +379,14 @@ class GroupTest extends TestCase
 
         $result = CollectionFactory::from($values)
             ->stream()
-            ->collect(Group::by($groupKey)
-                ->first('secondKey', 'replacedFirstKey')
-                ->avg('thirdKey')
-                ->addAggregator('count', new Count())
-                ->last('firstKey', 'replacedLastKey')
+            ->collect(
+                Group::by($groupKey)
+                    ->first('secondKey', 'replacedFirstKey')
+                    ->avg('thirdKey')
+                    ->addAggregator('count', new Count())
+                    ->last('firstKey', 'replacedLastKey')
+                    ->count('countFn')
+                    ->addToSet('secondKey', 'set')
             );
 
         $this->assertEquals($result, $expected[2]);
