@@ -10,7 +10,7 @@ class Avg
 
     private $fieldName;
 
-    public function __construct($fieldName)
+    public function __construct(string $fieldName)
     {
         $this->fieldName = $fieldName;
     }
