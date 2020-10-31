@@ -18,6 +18,10 @@ class ObjectFunctions
      */
     public static function getPropertyValue($object, string $fieldName)
     {
+        if (is_array($object)) {
+            return $object[$fieldName] ?? null;
+        }
+
         /** @noinspection PhpUnhandledExceptionInspection */
         if (property_exists($object, $fieldName) && (new ReflectionProperty($object, $fieldName))->isPublic()) {
             return $object->{$fieldName};
