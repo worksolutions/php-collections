@@ -12,6 +12,7 @@ class GroupTest extends TestCase
     {
         return [
             [
+                'groupKey',
                 [
                     [
                         'one' => 1,
@@ -32,6 +33,7 @@ class GroupTest extends TestCase
                 ]
             ],
             [
+                'groupKey',
                 [
                     [
                         'groupKey' => 'test',
@@ -76,6 +78,7 @@ class GroupTest extends TestCase
                 ]
             ],
             [
+                'groupKey',
                 [
                     [
                         'groupKey' => 'test',
@@ -83,14 +86,12 @@ class GroupTest extends TestCase
                         'two' => 2,
                         'other' => 11,
                     ],
-                    'testKey' => 12,
                     [
                         'three' => 3,
                         'groupKey' => 'test1',
                         'four' => 4,
                     ],
                     [],
-                    5,
                     [
                         'five' => 5,
                         'groupKey' => 'test',
@@ -160,17 +161,85 @@ class GroupTest extends TestCase
         ];
     }
 
+    public function objectCases() {
+        return [
+            [
+                'groupProperty',
+                [
+                    $object1 = new class () {
+                        public function getGroupProperty()
+                        {
+                            return 10;
+                        }
+                    },
+                ],
+                [
+                    10 => [
+                        $object1
+                    ],
+                ]
+            ],
+            [
+                'groupProperty',
+                [
+                    $object1 = new class () {
+                        public function getGroupProperty()
+                        {
+                            return 11;
+                        }
+                    },
+                    $object2 = new class () {
+                        public $groupProperty = 11;
+                    },
+                    $object3 = new class () {
+                        public $groupProperty = '77';
+
+                        public function getAnotherProperty()
+                        {
+                            return false;
+                        }
+                    },
+                    $object4 = new class () {
+
+                        public function getGroupProperty()
+                        {
+                            return 77;
+                        }
+                    },
+                    $object5 = new class () {
+                        public $groupProperty = 'testKey';
+                    }
+                ],
+                [
+                    11 => [
+                        $object1,
+                        $object2,
+                    ],
+                    77 => [
+                        $object3,
+                        $object4,
+                    ],
+                    'testKey' => [
+                        $object5
+                    ],
+                ]
+            ],
+        ];
+    }
+
     /**
-     * @dataProvider arrayCases
      * @test
+     * @dataProvider arrayCases
+     * @dataProvider objectCases
+     * @param mixed $groupKey
      * @param array $values
      * @param array $expected
      */
-    public function groupTest(array $values, array $expected)
+    public function group($groupKey, array $values, array $expected)
     {
         $result = CollectionFactory::from($values)
             ->stream()
-            ->collect(Group::by('groupKey'));
+            ->collect(Group::by($groupKey));
 
         $this->assertEquals($expected, $result);
     }
