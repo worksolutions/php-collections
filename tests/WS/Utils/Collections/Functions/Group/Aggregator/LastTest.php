@@ -15,6 +15,11 @@ class LastTest extends TestCase
         return [
             [
                 'one',
+                [],
+                null,
+            ],
+            [
+                'one',
                 [
                     ['one' => 'asdf'],
                     [],
