@@ -63,7 +63,22 @@ class Group
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Avg($sourceKey));
     }
 
-    private function addAggregator(string $destKey, callable $aggregator)
+    public function addToSet(string $sourceKey, string $destKey = null): self
+    {
+        return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Avg($sourceKey));
+    }
+
+    public function first(string $sourceKey, string $destKey = null): self
+    {
+        return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\First($sourceKey));
+    }
+
+    public function last(string $sourceKey, string $destKey = null): self
+    {
+        return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Last($sourceKey));
+    }
+
+    public function addAggregator(string $destKey, callable $aggregator): self
     {
         $this->aggregators[] = [$destKey, $aggregator];
         return $this;

@@ -4,32 +4,23 @@ namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
 use PHPUnit\Framework\TestCase;
 
-class MaxTest extends TestCase
+class AddToSetTest extends TestCase
 {
 
     public function cases(): array
     {
         return [
             [
-                'price',
-                [],
-                null,
-            ],
-            [
-                'price',
-                [[], [], []],
-                null,
-            ],
-            [
-                'price',
+                'one',
                 [
-                    ['price' => 0],
+                    ['one' => 'asdf'],
                     [],
-                    ['price' => 23],
                     [],
-                    ['price' => 10],
+                    ['one' => 999],
+                    ['one' => false],
+                    ['one' => true],
                 ],
-                23
+                ['asdf', null, 999, false, true]
             ],
             [
                 'count',
@@ -37,10 +28,8 @@ class MaxTest extends TestCase
                     ['count' => 1],
                     ['count' => 2],
                     ['count' => 3],
-                    ['count' => 4],
-                    ['count' => 5],
                 ],
-                5
+                [1, 2, 3]
             ],
             [
                 'test',
@@ -49,19 +38,16 @@ class MaxTest extends TestCase
                         public $test = 1;
                     },
                     new class () {
-                        public $test = 2;
+                        public $test = 1;
                     },
                     new class () {
-                        public $test = 3;
-                    },
-                    new class () {
-                        public $test = 4;
+                        public $test = 1;
                     },
                     new class () {
                         public $test = 15;
                     },
                 ],
-                15
+                [1, 15]
             ],
             [
                 'sum',
@@ -75,11 +61,17 @@ class MaxTest extends TestCase
                     new class () {
                         public function getSum()
                         {
+                            return 10;
+                        }
+                    },
+                    new class () {
+                        public function getSum()
+                        {
                             return 20;
                         }
                     },
                 ],
-                20
+                [10, 20]
             ],
         ];
     }
@@ -93,7 +85,7 @@ class MaxTest extends TestCase
      */
     public function callSuccess($column, $collection, $expected)
     {
-        $aggregator = new Max($column);
+        $aggregator = new AddToSet($column);
         $this->assertEquals($expected, $aggregator($collection));
     }
 
