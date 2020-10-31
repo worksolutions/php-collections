@@ -17,6 +17,11 @@ class AvgTest extends TestCase
         return [
             [
                 'count',
+                [],
+                null
+            ],
+            [
+                'count',
                 [
                     ['count' => 25],
                     [],
