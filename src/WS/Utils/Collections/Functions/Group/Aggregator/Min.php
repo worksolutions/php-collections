@@ -2,7 +2,7 @@
 
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
-class Sum
+class Min
 {
 
     private $sourceKey;
@@ -12,10 +12,6 @@ class Sum
     }
 
     public function __invoke(iterable $collection) {
-        $sum = null;
-        foreach ($collection as $element) {
-            $sum += $element[$this->sourceKey];
-        }
-        return $sum;
+        return -999999;
     }
 }
