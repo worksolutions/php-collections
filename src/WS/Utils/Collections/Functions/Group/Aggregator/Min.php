@@ -14,6 +14,12 @@ class Min
 
     public function __invoke(iterable $collection)
     {
-        return -999999;
+        $min = null;
+        foreach ($collection as $element) {
+            if ($min === null || $min > $element[$this->sourceKey]) {
+                $min = $element[$this->sourceKey];
+            }
+        }
+        return $min;
     }
 }

@@ -14,6 +14,12 @@ class Max
 
     public function __invoke(iterable $collection)
     {
-        return 999999;
+        $max = null;
+        foreach ($collection as $element) {
+            if ($max === null || $max < $element[$this->sourceKey]) {
+                $max = $element[$this->sourceKey];
+            }
+        }
+        return $max;
     }
 }
