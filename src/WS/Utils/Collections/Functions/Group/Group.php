@@ -3,6 +3,7 @@
 namespace WS\Utils\Collections\Functions\Group;
 
 use WS\Utils\Collections\Collection;
+use WS\Utils\Collections\Functions\ObjectFunctions;
 
 class Group
 {
@@ -19,7 +20,7 @@ class Group
     {
         $groupedResult = [];
         foreach ($collection as $element) {
-            if (!$groupKey = $element[$this->key]) {
+            if (!$groupKey = ObjectFunctions::getPropertyValue($element, $this->key)) {
                 continue;
             }
             $groupedResult[$groupKey][] = $element;
