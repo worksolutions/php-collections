@@ -67,12 +67,14 @@ class MinTest extends TestCase
                 'sum',
                 [
                     new class () {
-                        public function getSum() {
+                        public function getSum()
+                        {
                             return 10;
                         }
                     },
                     new class () {
-                        public function getSum() {
+                        public function getSum()
+                        {
                             return 20;
                         }
                     },

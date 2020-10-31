@@ -59,12 +59,14 @@ class AvgTest extends TestCase
                 'sum',
                 [
                     new class () {
-                        public function getSum() {
+                        public function getSum()
+                        {
                             return 10;
                         }
                     },
                     new class () {
-                        public function getSum() {
+                        public function getSum()
+                        {
                             return 20;
                         }
                     },
@@ -90,7 +92,8 @@ class AvgTest extends TestCase
     /**
      * @test
      */
-    public function raisedException() {
+    public function raisedException()
+    {
         $this->expectException(RuntimeException::class);
         $aggregator = new Avg('test');
         $aggregator([new stdClass(), new stdClass(), new stdClass()]);
