@@ -20,7 +20,7 @@ class Group
         $this->key = $key;
     }
 
-    public function __invoke(Collection $collection)
+    public function __invoke(Collection $collection): array
     {
         $groupedResult = $this->group($collection);
         if (!$this->aggregators) {
