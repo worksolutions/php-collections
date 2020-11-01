@@ -22,27 +22,38 @@ class Group
 
     public function __invoke(Collection $collection)
     {
-        $groupedResult = [];
+        $groupedResult = $this->group($collection);
+        if (!$this->aggregators) {
+            return $groupedResult;
+        }
+        return $this->applyAggregators($groupedResult);
+    }
+
+    private function group(Collection $collection): array
+    {
+        $result = [];
         foreach ($collection as $element) {
             if (!$groupKey = ObjectFunctions::getPropertyValue($element, $this->key)) {
                 continue;
             }
-            if (!isset($groupedResult[$groupKey])) {
-                $groupedResult[$groupKey] = CollectionFactory::empty();
+            if (!isset($result[$groupKey])) {
+                $result[$groupKey] = CollectionFactory::empty();
             }
-            $groupedResult[$groupKey]->add($element);
+            $result[$groupKey]->add($element);
         }
-        if (!$this->aggregators) {
-            return $groupedResult;
-        }
-        $aggregatedResult = [];
+        return $result;
+    }
+
+    private function applyAggregators(array $groupedResult): array
+    {
+        $result = [];
         foreach ($groupedResult as $groupKey => $items) {
             foreach ($this->aggregators as $item) {
                 [$destKey, $aggregator] = $item;
-                $aggregatedResult[$groupKey][$destKey] = $aggregator($items);
+                $result[$groupKey][$destKey] = $aggregator($items);
             }
         }
-        return $aggregatedResult;
+        return $result;
     }
 
     public static function by(string $key): self
