@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author Anton Lytkin <a.lytkin@worksolutions.ru>
+ */
 
 namespace WS\Utils\Collections\Functions\Group;
 
