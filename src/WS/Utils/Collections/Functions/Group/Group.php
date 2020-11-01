@@ -56,51 +56,109 @@ class Group
         return $result;
     }
 
+    /**
+     * Create new instance of Group and use $key as group key
+     * @param string $key
+     * @return static
+     */
     public static function by(string $key): self
     {
         return new self($key);
     }
 
+    /**
+     * Will calculate sum of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function sum(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Sum($sourceKey));
     }
 
+    /**
+     * Will calculate minimum value of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function min(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Min($sourceKey));
     }
 
+    /**
+     * Will calculate maximum value of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function max(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Max($sourceKey));
     }
 
+    /**
+     * Will calculate average value of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function avg(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Avg($sourceKey));
     }
 
+    /**
+     * Will find unique values of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function addToSet(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\AddToSet($sourceKey));
     }
 
+    /**
+     * Will return first value of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function first(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\First($sourceKey));
     }
 
+    /**
+     * Will return last value of items based on $sourceKey and put it to $destKey
+     * @param string $sourceKey
+     * @param string|null $destKey
+     * @return $this
+     */
     public function last(string $sourceKey, string $destKey = null): self
     {
         return $this->addAggregator($destKey ?? $sourceKey, new Aggregator\Last($sourceKey));
     }
 
+    /**
+     * Will calculate count of items in group and put it to $destKey
+     * @param string $destKey
+     * @return $this
+     */
     public function count(string $destKey): self
     {
         return $this->addAggregator($destKey, new Aggregator\Count());
     }
 
+    /**
+     * Add custom $aggregator with interface <Fn($c: Collection)>
+     * @param string $destKey
+     * @param callable $aggregator
+     * @return $this
+     */
     public function addAggregator(string $destKey, callable $aggregator): self
     {
         $this->aggregators[] = [$destKey, $aggregator];
