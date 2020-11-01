@@ -84,7 +84,7 @@ class CountTest extends TestCase
     public function callSuccess($collection, $expected)
     {
         $aggregator = new Count();
-        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
+        self::assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
 }

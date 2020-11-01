@@ -96,7 +96,7 @@ class MaxTest extends TestCase
     public function callSuccess($column, $collection, $expected)
     {
         $aggregator = new Max($column);
-        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
+        self::assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
 }

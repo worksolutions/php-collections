@@ -91,10 +91,10 @@ class AvgTest extends TestCase
      * @param $collection
      * @param $expected
      */
-    public function avg($column, $collection, $expected)
+    public function callSuccess($column, $collection, $expected)
     {
         $aggregator = new Avg($column);
-        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
+        self::assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
     /**

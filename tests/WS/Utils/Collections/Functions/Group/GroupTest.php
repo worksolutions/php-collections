@@ -348,7 +348,7 @@ class GroupTest extends TestCase
             ->stream()
             ->collect(Group::by($groupKey));
 
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     /**
@@ -366,7 +366,7 @@ class GroupTest extends TestCase
                 ->max('thirdKey')
             );
 
-        $this->assertEquals($result, $expected[0]);
+        self::assertEquals($result, $expected[0]);
 
         $result = CollectionFactory::from($values)
             ->stream()
@@ -375,7 +375,7 @@ class GroupTest extends TestCase
                 ->sum('secondKey')
             );
 
-        $this->assertEquals($result, $expected[1]);
+        self::assertEquals($result, $expected[1]);
 
         $result = CollectionFactory::from($values)
             ->stream()
@@ -389,7 +389,7 @@ class GroupTest extends TestCase
                     ->addToSet('secondKey', 'set')
             );
 
-        $this->assertEquals($result, $expected[2]);
+        self::assertEquals($result, $expected[2]);
     }
 
 }

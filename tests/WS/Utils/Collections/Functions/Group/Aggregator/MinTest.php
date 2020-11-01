@@ -96,7 +96,7 @@ class MinTest extends TestCase
     public function callSuccess($column, $collection, $expected)
     {
         $aggregator = new Min($column);
-        $this->assertEquals($expected, $aggregator($this->toCollection($collection)));
+        self::assertEquals($expected, $aggregator($this->toCollection($collection)));
     }
 
 }
