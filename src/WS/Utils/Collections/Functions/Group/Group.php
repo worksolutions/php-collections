@@ -154,7 +154,7 @@ class Group
     }
 
     /**
-     * Add custom $aggregator with interface <Fn($c: Collection)>
+     * Add custom $aggregator with interface Aggregator\Aggregator|<Fn($c: Collection)>
      * @param string $destKey
      * @param callable $aggregator
      * @return $this
