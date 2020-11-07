@@ -7,11 +7,7 @@ namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
 use WS\Utils\Collections\Collection;
 
-class Count implements Aggregator
+interface Aggregator
 {
-
-    public function __invoke(Collection $collection)
-    {
-        return $collection->size();
-    }
+    public function __invoke(Collection $collection);
 }

@@ -6,24 +6,16 @@
 namespace WS\Utils\Collections\Functions\Group\Aggregator;
 
 use WS\Utils\Collections\Collection;
-use WS\Utils\Collections\Functions\ObjectFunctions;
 
-class Avg
+class Avg extends AbstractFieldAggregator implements Aggregator
 {
-
-    private $fieldName;
-
-    public function __construct(string $fieldName)
-    {
-        $this->fieldName = $fieldName;
-    }
 
     public function __invoke(Collection $collection)
     {
         $acc = null;
         $cnt = 0;
         foreach ($collection as $element) {
-            $acc += ObjectFunctions::getPropertyValue($element, $this->fieldName);
+            $acc += $this->getValue($element);
             $cnt++;
         }
         if (!$cnt) {
