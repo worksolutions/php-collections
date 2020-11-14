@@ -15,6 +15,11 @@ class ArrayList extends AbstractCollection implements ListSequence
         return new SerialStream($this);
     }
 
+    public function parallelStream($workersPool = null): Stream
+    {
+        return new ParallelStream($this, $workersPool);
+    }
+
     public function get(int $index)
     {
         return $this->elements[$index];

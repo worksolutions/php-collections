@@ -23,10 +23,12 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5"
+    "phpunit/phpunit": "^7.5",
+    "amphp/parallel-functions": "^1.0"
   },
   "suggest": {
-    "phpbench/phpbench": "Uses only for benchmark purposes"
+    "phpbench/phpbench": "Uses only for benchmark purposes",
+    "amphp/parallel-functions": "Required when you use ParallelStream"
   },
   "autoload": {
     "psr-4": {"WS\\Utils\\Collections\\": "src/WS/Utils/Collections"}

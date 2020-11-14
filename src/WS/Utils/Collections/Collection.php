@@ -73,6 +73,13 @@ interface Collection extends IteratorAggregate
     public function stream(): Stream;
 
     /**
+     * Returns a Stream with this collection as its source
+     * @param \Amp\Parallel\Worker\Pool|int|null $workersPool
+     * @return Stream
+     */
+    public function parallelStream($workersPool = null): Stream;
+
+    /**
      * Returns an indexed array containing all of the elements in this collection
      */
     public function toArray(): array;

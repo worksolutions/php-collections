@@ -104,4 +104,7 @@ abstract class AbstractCollection implements Collection
     }
 
     abstract public function stream(): Stream;
+
+    abstract public function parallelStream($workersPool = null): Stream;
+
 }

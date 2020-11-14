@@ -32,6 +32,11 @@ class ImmutableList implements ListSequence
         return $this->decoratedList->stream();
     }
 
+    public function parallelStream($workersPool = null): Stream
+    {
+        return $this->decoratedList->parallelStream($workersPool);
+    }
+
     public function remove($element): bool
     {
         throw $this->createBlockingException();
