@@ -63,6 +63,11 @@ class CollectionFactory
         return new ArrayList($values);
     }
 
+    public static function fromStrict(array $values): Collection
+    {
+        return new ArrayStrictList($values);
+    }
+
     public static function fromIterable(iterable $iterable): Collection
     {
         $list = ArrayList::of();
