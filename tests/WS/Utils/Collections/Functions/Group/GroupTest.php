@@ -174,7 +174,8 @@ class GroupTest extends TestCase
         ];
     }
 
-    public function objectCases(): array {
+    public function objectCases(): array
+    {
         return [
             [
                 'groupProperty',
