@@ -27,6 +27,7 @@ class ArrayList extends AbstractCollection implements ListSequence
         }
         $res = $this->elements[$index];
         $this->elements[$index] = $element;
+        $this->afterElementAdd($element);
 
         return $res;
     }
@@ -88,5 +89,13 @@ class ArrayList extends AbstractCollection implements ListSequence
             }
         }
         return false;
+    }
+
+    protected function afterElementAdd($element): void
+    {
+    }
+
+    protected function afterElementsSet(): void
+    {
     }
 }
