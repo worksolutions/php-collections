@@ -141,16 +141,15 @@ class ParallelStream implements Stream
     {
         $values = [];
         $map = [];
-        $this->each(
-            static function ($el) use ($extractor, & $map, & $values) {
-                $value = $extractor($el);
-                if (!is_scalar($value)) {
-                    throw new RuntimeException('Only scalar value can be as result of sort extractor');
-                }
-                $values[] = $value;
-                $map[$value . ''][] = $el;
+        foreach ($this->list as $item) {
+            $value = $extractor($item);
+            if (!is_scalar($value)) {
+                throw new RuntimeException('Only scalar value can be as result of sort extractor');
             }
-        );
+            $values[] = $value;
+            $map[$value . ''][] = $item;
+        }
+
         sort($values);
         $newList = $this->emptyList();
         foreach ($values as $value) {
