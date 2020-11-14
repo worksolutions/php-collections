@@ -17,10 +17,10 @@ class BoolExpressionTest extends TestCase
             [
                 [1, 2, 3],
                 BoolExpression::with(function ($element) {
-                    return $element !== 2;
+                    return is_int($element);
                 })
                     ->or(function ($element) {
-                        return $element !== 77;
+                        return $element === 77;
                     })
                     ->and(function ($element) {
                         return in_array($element, [1, 3]);
