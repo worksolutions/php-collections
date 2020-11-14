@@ -43,6 +43,11 @@ class ArrayQueue extends AbstractCollection implements Queue, IndexIterable
         return new SerialStream($this);
     }
 
+    public function parallelStream($workersPool = null): Stream
+    {
+        return new ParallelStream($this, $workersPool);
+    }
+
     public function getIndexIterator(): Iterator
     {
         return IteratorFactory::directSequence($this->size());
