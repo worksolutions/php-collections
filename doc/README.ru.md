@@ -2485,7 +2485,8 @@ $items = [
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect(Group::by('type'))
-; // ->
+;
+/* Result ->
 [
     'groceries' => new \WS\Utils\Collections\ArrayList([
         ['name' => 'potato', 'type' => 'groceries', 'price' => 25],
@@ -2500,7 +2501,7 @@ $result = CollectionFactory::from($items)
         ['name' => 'cinema', 'type' => 'entertainment', 'price' => 20],
     ]),
 ];
-
+*/
 ```
 
 #### addToSet
@@ -2528,13 +2529,14 @@ $aggregation = Group::by('type')->addToSet('name', 'list');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['list' => ['potato', 'milk']],
     'transport' => ['list' => ['taxi']],
     'entertainment' => ['list' => ['cinema']],
 ];
-
+*/
 ```
 
 #### avg
@@ -2562,13 +2564,14 @@ $aggregation = Group::by('type')->avg('price', 'avg');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['avg' => 40],
     'transport' => ['avg' => 75],
     'entertainment' => ['avg' => 30],
 ];
-
+*/
 ```
 
 #### count
@@ -2596,13 +2599,14 @@ $aggregation = Group::by('type')->count('total');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['total' => 3],
     'transport' => ['total' => 1],
     'entertainment' => ['total' => 2],
 ];
-
+*/
 ```
 
 #### first
@@ -2630,13 +2634,14 @@ $aggregation = Group::by('type')->first('name', 'item');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['item' => 'potato'],
     'transport' => ['item' => 'taxi'],
     'entertainment' => ['item' => 'Knicks game'],
 ];
-
+*/
 ```
 
 #### last
@@ -2664,13 +2669,14 @@ $aggregation = Group::by('type')->last('name', 'item');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['item' => 'milk'],
     'transport' => ['item' => 'airplane'],
     'entertainment' => ['item' => 'cinema'],
 ];
-
+*/
 ```
 
 #### max
@@ -2697,13 +2703,14 @@ $aggregation = Group::by('type')->max('price', 'max');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['max' => 50],
     'transport' => ['max' => 100],
     'entertainment' => ['max' => 300],
 ];
-
+*/
 ```
 
 #### min
@@ -2731,13 +2738,14 @@ $aggregation = Group::by('type')->min('price', 'min');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['min' => 30],
     'transport' => ['min' => 50],
     'entertainment' => ['min' => 30],
 ];
-
+*/
 ```
 
 #### sum
@@ -2765,13 +2773,14 @@ $aggregation = Group::by('type')->sum('price', 'spent');
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+; 
+/* Result ->
 [
     'groceries' => ['spent' => 80],
     'transport' => ['spent' => 150],
     'entertainment' => ['spent' => 330],
 ];
-
+*/
 ```
 
 #### addAggregator
@@ -2806,13 +2815,14 @@ $aggregation = Group::by('type')->addAggregator('names', function (Collection $c
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['names' => 'potato, milk'],
     'transport' => ['names' => 'taxi, airplane'],
     'entertainment' => ['names' => 'Knicks game, cinema'],
 ];
-
+*/
 ```
 
 Все агрегаторы можно комбинировать между собой для получения желаемого результата.
@@ -2835,11 +2845,12 @@ $aggregation = Group::by('type')->avg('price', 'avg')->min('price', 'min')->max(
 $result = CollectionFactory::from($items)
     ->stream()
     ->collect($aggregation)
-; // ->
+;
+/* Result ->
 [
     'groceries' => ['avg' => 40, 'min' => 30, 'max' => 50],
     'transport' => ['avg' => 75, 'min' => 50, 'max' => 100],
     'entertainment' => ['avg' => 165, 'min' => 30, 'max' => 300],
 ];
-
+*/
 ```
