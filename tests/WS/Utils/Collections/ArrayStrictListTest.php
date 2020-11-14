@@ -36,8 +36,7 @@ class ArrayStrictListTest extends TestCase
                 },
             ],
             [
-                $object = new class () {
-                },
+                $object = new class () {},
                 clone $object,
                 clone $object,
             ],
@@ -57,18 +56,15 @@ class ArrayStrictListTest extends TestCase
                 function () {
                     return '1';
                 },
-                new class () {
-                },
+                new class () {},
                 function () {
                     return 3;
                 },
             ],
             [
-                $object = new class () {
-                },
+                $object = new class () {},
                 clone $object,
-                new class () {
-                },
+                new class () {},
             ],
         ];
     }
@@ -93,5 +89,26 @@ class ArrayStrictListTest extends TestCase
     {
         self::expectException(InvalidArgumentException::class);
         $this->createInstance(...$sequence);
+    }
+
+    /**
+     * @test
+     */
+    public function addingElementsToStrictArray()
+    {
+        self::expectException(InvalidArgumentException::class);
+
+        $this
+            ->createInstance(1, 2, 3)
+            ->add('4');
+
+        $this
+            ->createInstance('one', 'two', 'three')
+            ->addAll(['4', 5, '6']);
+
+        $object = new class () {};
+        $this
+            ->createInstance($object, clone $object, clone $object)
+            ->set(new class () {}, 2);
     }
 }
