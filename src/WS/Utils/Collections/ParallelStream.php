@@ -9,8 +9,10 @@ use Amp\Parallel\Worker\DefaultPool;
 use Amp\Parallel\Worker\Pool;
 use RuntimeException;
 
+use function Amp\ParallelFunctions\parallel;
 use function Amp\ParallelFunctions\parallelFilter;
 use function Amp\ParallelFunctions\parallelMap;
+use function Amp\Promise\all;
 use function Amp\Promise\wait;
 
 class ParallelStream implements Stream
@@ -47,9 +49,12 @@ class ParallelStream implements Stream
     public function each(callable $consumer): Stream
     {
         $i = 0;
+        $promises = [];
         foreach ($this->list as $item) {
-            $consumer($item, $i++);
+            $promises[] = parallel($consumer, $this->workersPool)($item, $i++);
         }
+        wait(all($promises));
+
         return $this;
     }
 
