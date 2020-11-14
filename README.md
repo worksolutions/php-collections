@@ -1526,6 +1526,7 @@ The functions used in the library are divided into the following types:
 - [*Converters*](#Converters)
 - [*Reorganizers*](#reorganizers)
 - [*Consumers*](#Consumers)
+- [*Aggregation*](#Aggregation)
 
 Each function type must have a corresponding interface for use in specific stream methods. 
 
