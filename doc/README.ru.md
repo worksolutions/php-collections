@@ -1295,7 +1295,7 @@ use WS\Utils\Collections\CollectionFactory;
 
 CollectionFactory::numbers(10)
     ->stream()
-    ->allMatch(static function (int $el): bool {
+    ->anyMatch(static function (int $el): bool {
         return $el > 0;
     }) // true, [1, 2, 3, 4, 5, 6, 7, 8, 9] are grate than 0
 ;
