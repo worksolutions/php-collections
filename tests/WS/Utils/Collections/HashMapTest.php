@@ -11,7 +11,7 @@ class HashMapTest extends TestCase
 {
     use MapInterfaceTestTrait;
 
-    private function createInstance(): Map
+    protected function createInstance(): Map
     {
         return new HashMap();
     }

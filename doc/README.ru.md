@@ -593,6 +593,8 @@ $queue->peek(); // RuntimeException
 - [*containsKey* – Признак наличия пары по ключу](#containskey---признак-наличия-пары-по-ключу)
 - [*containsValue* – Признак наличия пары по значению](#containsvalue---признак-наличия-пары-по-значению)
 - [*size* – Количество пар в карте](#size---количество-пар-в-карте)
+- [*stream* – Получение потока обхода коллекции пар ключ/значение (Stream)](#stream---получение-потока-обхода-коллекции-пар-ключ-значение-stream)
+- [Обход объекта map при помощи цикла _foreach_](#обход-объекта-map-при-помощи-цикла-_foreach_)
 
 #### _put_ - Добавление пары *ключ/значение*
 [[↑ Карта (Map)]](#карта-map)
@@ -758,6 +760,56 @@ $map->size(); // 2
 
 $emptyMap = new HashMap();
 $map->size(); // 0
+
+```
+
+#### _stream_ - Получение потока обхода коллекции пар ключ/значение (Stream)
+[[↑ Карта (Map)]](#карта-map)
+```
+stream(): Stream;
+```
+
+Метод возвращает объект, который реализует интерфейс обхода (Stream). Элементами коллекции потока являются объекты пар ключ/значение `KeyPair`. [Подробнее...](#Поток обхода коллекции)
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+use \WS\Utils\Collections\MapEntry;
+
+$map = new HashMap();
+
+$map->put('one', 1);
+$map->put('two', 2);
+$map->put('tree', 3);
+
+$map->stream()->each(static function (MapEntry $mapEntry) {
+    var_export($mapEntry->getKey()); // 'one', 'two', 'three'
+    var_export($mapEntry->getKey()); // 1    , 2    , 3
+});
+
+```
+
+#### Обход объекта map при помощи цикла _foreach_
+[[↑ Карта (Map)]](#карта-map)
+
+Объект типа Map можно итерировать в цикле *foreach*. В этом случае ключи и значения будут оригинальные. Таким образом ключом может быть любой тип кроме массива.
+
+```php
+
+use \WS\Utils\Collections\HashMap;
+
+$map = new HashMap();
+
+$map->put(new SplObjectStorage(), 1);
+$map->put(null, 2);
+$map->put(false, 3);
+$map->put(true, 4);
+$map->put(0, 5);
+
+foreach($map as $key => $value) {
+    var_export($key);   // object of SplObjectStorage class| null| false| true| 0 
+    var_export($value); // 1                               | 2   | 3    | 4   | 5
+}
 
 ```
 
