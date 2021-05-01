@@ -63,7 +63,7 @@ class DummyStreamDecorator implements Stream
         return $this->decoratedStream->findAny();
     }
 
-    public function findFirst()
+    public function findFirst(callable $filter = null)
     {
         return $this->decoratedStream->findFirst();
     }

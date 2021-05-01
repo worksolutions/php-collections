@@ -205,11 +205,20 @@ class SerialStream implements Stream
     /**
      * @inheritDoc
      */
-    public function findFirst()
+    public function findFirst(callable $filter = null)
     {
+        if (!$filter) {
+            /** @noinspection LoopWhichDoesNotLoopInspection */
+            foreach ($this->list as $item) {
+                return $item;
+            }
+            return null;
+        }
         /** @noinspection LoopWhichDoesNotLoopInspection */
         foreach ($this->list as $item) {
-            return $item;
+            if ($filter($item)) {
+                return $item;
+            }
         }
         return null;
     }

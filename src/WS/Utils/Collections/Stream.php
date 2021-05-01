@@ -71,9 +71,10 @@ interface Stream
 
     /**
      * Returns first collection element or null if absent
+     * @param callable|null $filter
      * @return mixed
      */
-    public function findFirst();
+    public function findFirst(callable $filter = null);
 
     /**
      * Returns last collection element or null if absent
