@@ -47,4 +47,12 @@ class ArrayQueue extends AbstractCollection implements Queue, IndexIterable
     {
         return IteratorFactory::directSequence($this->size());
     }
+
+    protected function afterElementAdd($element): void
+    {
+    }
+
+    protected function afterElementsSet(): void
+    {
+    }
 }

@@ -74,6 +74,17 @@ class CollectionFactoryTest extends TestCase
     /**
      * @test
      */
+    public function creatingFromStrictArray(): void
+    {
+        $collection = CollectionFactory::fromStrict([4, 5, 6]);
+
+        $this->assertEquals(3, $collection->size());
+        $this->assertThat($collection, CollectionIsEqual::to([4, 5, 6]));
+    }
+
+    /**
+     * @test
+     */
     public function fromIteratorCollectionGenerating(): void
     {
         $collection = CollectionFactory::fromIterable(new ArrayIterator([1, 2, 3]));

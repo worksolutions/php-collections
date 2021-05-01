@@ -69,4 +69,12 @@ class ArrayStack extends AbstractCollection implements Stack, IndexIterable
     {
         return IteratorFactory::reverseSequence($this->size());
     }
+
+    protected function afterElementAdd($element): void
+    {
+    }
+
+    protected function afterElementsSet(): void
+    {
+    }
 }

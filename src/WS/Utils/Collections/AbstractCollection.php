@@ -30,6 +30,7 @@ abstract class AbstractCollection implements Collection
         }
         $this->pointer++;
         $this->elements[] = $element;
+        $this->afterElementAdd($element);
         return true;
     }
 
@@ -37,6 +38,7 @@ abstract class AbstractCollection implements Collection
     {
         foreach ($elements as $element) {
             $this->elements[] = $element;
+            $this->afterElementAdd($element);
         }
         $newPointer = count($this->elements) - 1;
         if ($newPointer > PHP_INT_MAX) {
@@ -96,12 +98,17 @@ abstract class AbstractCollection implements Collection
     {
         $this->elements = array_values($elements);
         $this->pointer = count($elements) - 1;
+        $this->afterElementsSet();
     }
 
     protected function getElements(): array
     {
         return $this->elements;
     }
+
+    abstract protected function afterElementAdd($element): void;
+
+    abstract protected function afterElementsSet(): void;
 
     abstract public function stream(): Stream;
 }
