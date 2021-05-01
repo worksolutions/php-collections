@@ -1521,6 +1521,7 @@ $equal10Predicate(10); // true
 - [*Converters* - Преобразователи элементов](#converters-преобразователи-элементов)
 - [*Reorganizers* - Преобразователи потоков](#reorganizers-преобразователи-потоков)
 - [*Consumers* - Потребители](#consumers-потребители)
+- [*Группировка и агрегация*](#Группировка-и-агрегация)
 
 Каждый тип функции должен иметь соответствующий интерфейс для использования в определенных методах потоков. 
 
@@ -2444,4 +2445,412 @@ CollectionFactory::numbers(5)
     ->each(Consumers::dump()) // dumps each element of collection
 ;
 
+```
+
+### Группировка и агрегация
+[[↑ Набор функций обхода и преобразования]](#набор-функций-обхода-и-преобразования)
+
+- [*by*](#by)
+- [*addToSet*](#addToSet)
+- [*agv*](#avg)
+- [*count*](#count)
+- [*first*](#first)
+- [*last*](#last)
+- [*max*](#max)
+- [*min*](#min)
+- [*sum*](#sum)
+- [*addAggregator*](#addAggregator)
+
+#### by
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+$group = Group::by($fieldName): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 25],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 70],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 20],
+];
+
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect(Group::by('type'))
+;
+/* Result ->
+[
+    'groceries' => new \WS\Utils\Collections\ArrayList([
+        ['name' => 'potato', 'type' => 'groceries', 'price' => 25],
+        ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ]),
+    'transport' => new \WS\Utils\Collections\ArrayList([
+       ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+       ['name' => 'taxi', 'type' => 'transport', 'price' => 70],
+   ]),
+    'entertainment' => new \WS\Utils\Collections\ArrayList([
+        ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+        ['name' => 'cinema', 'type' => 'entertainment', 'price' => 20],
+    ]),
+];
+*/
+```
+
+#### addToSet
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::addToSet($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 25],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 70],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 20],
+];
+
+$aggregation = Group::by('type')->addToSet('name', 'list');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['list' => ['potato', 'milk']],
+    'transport' => ['list' => ['taxi']],
+    'entertainment' => ['list' => ['cinema']],
+];
+*/
+```
+
+#### avg
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::avg($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 50],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->avg('price', 'avg');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['avg' => 40],
+    'transport' => ['avg' => 75],
+    'entertainment' => ['avg' => 30],
+];
+*/
+```
+
+#### count
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::count($destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'tea', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->count('total');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['total' => 3],
+    'transport' => ['total' => 1],
+    'entertainment' => ['total' => 2],
+];
+*/
+```
+
+#### first
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::first($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->first('name', 'item');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['item' => 'potato'],
+    'transport' => ['item' => 'taxi'],
+    'entertainment' => ['item' => 'Knicks game'],
+];
+*/
+```
+
+#### last
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::last($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->last('name', 'item');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['item' => 'milk'],
+    'transport' => ['item' => 'airplane'],
+    'entertainment' => ['item' => 'cinema'],
+];
+*/
+```
+
+#### max
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+```
+Group::max($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->max('price', 'max');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['max' => 50],
+    'transport' => ['max' => 100],
+    'entertainment' => ['max' => 300],
+];
+*/
+```
+
+#### min
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::min($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->min('price', 'min');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['min' => 30],
+    'transport' => ['min' => 50],
+    'entertainment' => ['min' => 30],
+];
+*/
+```
+
+#### sum
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::sum($sourceKey, $destKey): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->sum('price', 'spent');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+; 
+/* Result ->
+[
+    'groceries' => ['spent' => 80],
+    'transport' => ['spent' => 150],
+    'entertainment' => ['spent' => 330],
+];
+*/
+```
+
+#### addAggregator
+[[↑ Группировка и агрегация]](#Группировка-и-агрегация)
+
+```
+Group::addAggregator($destKey, $callbackFn): Group;
+```
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+use \WS\Utils\Collections\Collection;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->addAggregator('names', function (Collection $collection) { 
+    $result = [];
+    foreach ($collection as $item) {
+        $result[] = $item['name'];
+    }
+    return implode(', ', $result);
+});
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['names' => 'potato, milk'],
+    'transport' => ['names' => 'taxi, airplane'],
+    'entertainment' => ['names' => 'Knicks game, cinema'],
+];
+*/
+```
+
+Все агрегаторы можно комбинировать между собой для получения желаемого результата.
+
+```php
+
+use \WS\Utils\Collections\CollectionFactory;
+use \WS\Utils\Collections\Functions\Group\Group;
+
+$items = [
+    ['name' => 'potato', 'type' => 'groceries', 'price' => 30],
+    ['name' => 'milk', 'type' => 'groceries', 'price' => 50],
+    ['name' => 'taxi', 'type' => 'transport', 'price' => 100],
+    ['name' => 'airplane', 'type' => 'transport', 'price' => 50],
+    ['name' => 'Knicks game', 'type' => 'entertainment', 'price' => 300],
+    ['name' => 'cinema', 'type' => 'entertainment', 'price' => 30],
+];
+
+$aggregation = Group::by('type')->avg('price', 'avg')->min('price', 'min')->max('price', 'max');
+$result = CollectionFactory::from($items)
+    ->stream()
+    ->collect($aggregation)
+;
+/* Result ->
+[
+    'groceries' => ['avg' => 40, 'min' => 30, 'max' => 50],
+    'transport' => ['avg' => 75, 'min' => 50, 'max' => 100],
+    'entertainment' => ['avg' => 165, 'min' => 30, 'max' => 300],
+];
+*/
 ```
