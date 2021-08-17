@@ -5,6 +5,7 @@
 
 namespace WS\Utils\Collections;
 
+use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Predicates;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
@@ -232,5 +233,27 @@ class PredicatesFunctionsTest extends TestCase
             ->getCollection()
         ;
         $this->assertThat($filtered, CollectionIsEqual::to([1, 2]));
+    }
+
+    /**
+     * @test
+     */
+    public function firstValueStreaming(): void
+    {
+        // Arrange
+        $FIRST_VALUE = 5;
+        $stream = self::toCollection($FIRST_VALUE, 6, 7)->stream();
+
+        $runningCount = 0;
+        // Act
+        $stream
+            ->filter(Predicates::first())
+            ->each(static function ($value) use ($FIRST_VALUE, & $runningCount) {
+                $runningCount++;
+                self::assertEquals($FIRST_VALUE, $value);
+            });
+
+        // Assert
+        self::assertEquals(1, $runningCount);
     }
 }

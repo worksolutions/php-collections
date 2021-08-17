@@ -288,4 +288,20 @@ class Predicates
             return ObjectFunctions::getPropertyValue($ob, $property) <= $value;
         };
     }
+
+    /**
+     * Returns <Fn($el: mixed): bool> passed only one time with first element
+     * @return Closure
+     */
+    public static function first(): Closure
+    {
+        $runOut = false;
+        return static function () use (& $runOut) {
+            if ($runOut) {
+                return false;
+            }
+            $runOut = true;
+            return true;
+        };
+    }
 }
