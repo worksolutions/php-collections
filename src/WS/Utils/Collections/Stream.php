@@ -161,4 +161,10 @@ interface Stream
      * @return Stream
      */
     public function always(): Stream;
+
+    /**
+     * Returns array as collection represent
+     * @return array
+     */
+    public function toArray(): array;
 }
