@@ -41,6 +41,9 @@
     ],
     "test-with-coverage": [
       "phpunit --coverage-clover coverage.xml"
+    ],
+    "bench": [
+      "phpbench run --report=default"
     ]
   }
 }
