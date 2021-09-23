@@ -832,12 +832,14 @@ CollectionFactory::numbers(10)
 ```
 
 #### Collection creation factory methods
-- [*from* – Generating a collection from an array of elements](#from---generating-a-collection-from-an-array-of-elements)
-- [*fromIterable* – Generating a collection using any iterable](#fromiterable---generating-a-collection-using-any-iterable)
-- [*numbers* – Generating a collection of a sequence of integers](#numbers---generating-a-collection-of-a-sequence-of-integers)
-- [*generate* – Generating a collection using a generator](#generate---generating-a-collection-using-a-generator)
+- [*CollectionFactory::from* – Generating a collection from an array of elements](#CollectionFactory--from---generating-a-collection-from-an-array-of-elements)
+- [*CollectionFactory::fromIterable* – Generating a collection using any iterable](#CollectionFactory--fromiterable---generating-a-collection-using-any-iterable)
+- [*CollectionFactory::numbers* – Generating a collection of a sequence of integers](#CollectionFactory--numbers---generating-a-collection-of-a-sequence-of-integers)
+- [*CollectionFactory::generate* – Generating a collection using a generator](#CollectionFactory--generate---generating-a-collection-using-a-generator)
+- [*MapFactory::fromIterable* – Map generation from any iterated value](#MapFactory--fromIterable---генерирование-карты-при-помощи-любого-итерируемого-значения)
+- [*MapFactory::assoc* – Map generation from associative array](#MapFactory--assoc---Map-generation-from-associative-array)
 
-#### from - Generating a collection from an array of elements
+#### _CollectionFactory::from_ - Generating a collection from an array of elements
 [[↑ Collection factory]](#collection-factory)
 ```
 from($values: array): Collection
@@ -856,7 +858,7 @@ CollectionFactory::from([1 ,2, 3])
 
 ```
 
-#### fromIterable - Generating a collection using any iterable
+#### _CollectionFactory::fromIterable_ - Generating a collection using any iterable
 [[↑ Collection factory]](#collection-factory)
 ```
 fromIterable($iterable: iterable): Collection
@@ -876,7 +878,7 @@ CollectionFactory::fromIterable(new DirectoryIterator(__DIR__))
     ->each(Consumers::dump()); // Dumps strings with filenames
 ```
 
-#### numbers - Generating a collection of a sequence of integers
+#### __CollectionFactory::numbers_ - Generating a collection of a sequence of integers
 [[↑ Collection factory]](#collection-factory)
 ```
 numbers($from: int, $to: ?int): Collection
@@ -895,7 +897,7 @@ CollectionFactory::numbers(10, 15)
     ->each(Consumers::dump()); // Dumps  [10, 11, 12, 13, 14, 15]
 ```
 
-#### generate - Generating a collection using a generator
+#### _CollectionFactory::generate_ - Generating a collection using a generator
 [[↑ Collection factory]](#collection-factory) 
 ```
 generate($times: int, $generator: ?callable): Collection
@@ -915,6 +917,42 @@ CollectionFactory::generate(3, static function () {
     })
     ->stream()
     ->each(Consumers::dump()); // Dumps for example [9, 7, 2]
+```
+
+#### _MapFactory::fromIterable_ - Map generating from any iterated value
+[[↑ Collection factory]](#collection-factory)
+```
+MapFactory::fromIterable($iterable: iterable): Map
+```
+
+Method created map object from any iterated object.
+
+```php
+
+use WS\Utils\Collections\MapFactory;
+
+MapFactory::fromIterable(['a' => 1, 'b' => 2])
+    ->keys() // ['a', 'b']
+;
+
+```
+
+#### _MapFactory::assoc_ - Map generating from associative array
+[[↑ Collection factory]](#collection-factory)
+```
+MapFactory::assoc(array $assocArray): Map
+```
+
+Method creates map object from associative array.
+
+```php
+
+use WS\Utils\Collections\MapFactory;
+
+MapFactory::assoc(['a' => 1, 'b' => 2])
+    ->keys() // ['a', 'b']
+;
+
 ```
 
 ## Collection streams
