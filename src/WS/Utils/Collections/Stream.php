@@ -167,4 +167,10 @@ interface Stream
      * @return array
      */
     public function toArray(): array;
+
+    /**
+     * Creates a set structure
+     * @return Set
+     */
+    public function getSet(): Set;
 }

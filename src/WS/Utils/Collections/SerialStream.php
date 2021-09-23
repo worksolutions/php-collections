@@ -347,4 +347,12 @@ class SerialStream implements Stream
             ->toArray()
         ;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSet(): Set
+    {
+        return new HashSet($this->toArray());
+    }
 }
