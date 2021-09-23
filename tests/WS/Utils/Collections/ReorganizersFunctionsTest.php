@@ -67,4 +67,22 @@ class ReorganizersFunctionsTest extends TestCase
 
         self::assertThat($uniqCollection, CollectionIsEqual::to([$o1, $o2, $o3]));
     }
+
+    /**
+     * @test
+     */
+    public function filterDistinctCastedValues(): void
+    {
+        $caster = static function (int $number) {
+            return $number % 2;
+        };
+
+        $result = CollectionFactory::numbers(0, 10)
+            ->stream()
+            ->filter(Predicates::lockDuplicated($caster))
+            ->toArray()
+        ;
+
+        $this->assertCount(2, $result);
+    }
 }
