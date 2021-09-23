@@ -29,4 +29,17 @@ class ObjectsFunctionsTest extends TestCase
         $this->expectException(RuntimeException::class);
         ObjectFunctions::getPropertyValue($o, 'undefinedProperty');
     }
+
+    /**
+     * @test
+     */
+    public function gettingArrayFieldValue()
+    {
+        $array = ['a' => 1, 'b' => 2];
+
+        $this->assertEquals(1, ObjectFunctions::getPropertyValue($array, 'a'));
+        $this->assertEquals(2, ObjectFunctions::getPropertyValue($array, 'b'));
+
+        $this->assertNull(ObjectFunctions::getPropertyValue($array, 'c'));
+    }
 }
