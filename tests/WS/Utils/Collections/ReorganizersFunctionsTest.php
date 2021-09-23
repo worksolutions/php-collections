@@ -51,6 +51,36 @@ class ReorganizersFunctionsTest extends TestCase
     /**
      * @test
      */
+    public function singleDepthCollapsing(): void
+    {
+        $collection = self::toCollection([1, 2], [3, 4], [5, 6, [7, 8]]);
+
+        $collapsedCollection = $collection
+            ->stream()
+            ->reorganize(Reorganizers::collapse(1))
+            ->getCollection()
+        ;
+        $this->assertThat($collapsedCollection, CollectionIsEqual::to([1, 2, 3, 4, 5, 6, [7, 8]]));
+    }
+
+    /**
+     * @test
+     */
+    public function numericDepthCollapsing(): void
+    {
+        $collection = self::toCollection([1, 2], [3, 4], [5, 6, [7, 8, [9, 10]]]);
+
+        $collapsedCollection = $collection
+            ->stream()
+            ->reorganize(Reorganizers::collapse(3))
+            ->getCollection()
+        ;
+        $this->assertThat($collapsedCollection, CollectionIsEqual::to([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+    }
+
+    /**
+     * @test
+     */
     public function filterDistinctElements(): void
     {
         $o1 = new TestInteger(1);
