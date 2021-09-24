@@ -627,4 +627,18 @@ class SerialStreamTest extends TestCase
 
         $this->assertNotSame($dest, $source);
     }
+
+    /**
+     * @test
+     */
+    public function gettingSetStructure(): void
+    {
+        $source = CollectionFactory::generate(3);
+        $this->assertThat($source, $this->isInstanceOf(ListSequence::class));
+        $set = $source
+            ->stream()
+            ->getSet()
+        ;
+        $this->assertThat($set, $this->isInstanceOf(Set::class));
+    }
 }
