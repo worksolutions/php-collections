@@ -336,4 +336,23 @@ class SerialStream implements Stream
     {
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return $this
+            ->getCollection()
+            ->toArray()
+        ;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSet(): Set
+    {
+        return new HashSet($this->toArray());
+    }
 }

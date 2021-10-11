@@ -112,16 +112,25 @@ class Reorganizers
 
     /**
      * Returns Closure <Fn($c: Collection): Collection> that collapses a collection of arrays into a single, flat collection
+     * @param int $depth Depth of  collapses. The 0 value is without
      * @return Closure
      */
-    public static function collapse(): Closure
+    public static function collapse(int $depth = 0): Closure
     {
-        return static function (Collection $collection): Collection {
-            $flatIterable = static function (iterable $collection) use (& $flatIterable): array  {
+        if ($depth === 0) {
+            $depth = null;
+        }
+        return static function (Collection $collection) use ($depth): Collection {
+            $flatIterable = static function (iterable $collection, $depth) use (& $flatIterable): array  {
+                $goToDepth = $depth > 0 || $depth === null;
+                if ($depth !== null) {
+                    $depth--;
+                }
+
                 $res = [];
                 foreach ($collection as $item) {
-                    if (is_iterable($item)) {
-                        $toPush = $flatIterable($item);
+                    if (is_iterable($item) && $goToDepth) {
+                        $toPush = $flatIterable($item, $depth);
                         array_unshift($toPush, $res);
                         array_push(...$toPush);
                         $res = array_shift($toPush);
@@ -132,7 +141,7 @@ class Reorganizers
                 return $res;
             };
 
-            return self::collectionConstructor($flatIterable($collection));
+            return self::collectionConstructor($flatIterable($collection, $depth));
         };
     }
 }

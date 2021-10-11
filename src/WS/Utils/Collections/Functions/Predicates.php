@@ -91,10 +91,11 @@ class Predicates
     /**
      * Returns <Fn($el: mixed): bool> passed unique element at once
      */
-    public static function lockDuplicated(): Closure
+    public static function lockDuplicated(?callable $caster = null): Closure
     {
         $set = new HashSet();
-        return static function ($el) use ($set): bool {
+        return static function ($el) use ($set, $caster): bool {
+            $el = isset($caster) ? $caster($el) : $el;
             $res = !$set->contains($el);
             $set->add($el);
             return $res;

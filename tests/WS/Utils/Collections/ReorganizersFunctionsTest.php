@@ -51,6 +51,36 @@ class ReorganizersFunctionsTest extends TestCase
     /**
      * @test
      */
+    public function singleDepthCollapsing(): void
+    {
+        $collection = self::toCollection([1, 2], [3, 4], [5, 6, [7, 8]]);
+
+        $collapsedCollection = $collection
+            ->stream()
+            ->reorganize(Reorganizers::collapse(1))
+            ->getCollection()
+        ;
+        $this->assertThat($collapsedCollection, CollectionIsEqual::to([1, 2, 3, 4, 5, 6, [7, 8]]));
+    }
+
+    /**
+     * @test
+     */
+    public function numericDepthCollapsing(): void
+    {
+        $collection = self::toCollection([1, 2], [3, 4], [5, 6, [7, 8, [9, 10]]]);
+
+        $collapsedCollection = $collection
+            ->stream()
+            ->reorganize(Reorganizers::collapse(3))
+            ->getCollection()
+        ;
+        $this->assertThat($collapsedCollection, CollectionIsEqual::to([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+    }
+
+    /**
+     * @test
+     */
     public function filterDistinctElements(): void
     {
         $o1 = new TestInteger(1);
@@ -66,5 +96,23 @@ class ReorganizersFunctionsTest extends TestCase
         ;
 
         self::assertThat($uniqCollection, CollectionIsEqual::to([$o1, $o2, $o3]));
+    }
+
+    /**
+     * @test
+     */
+    public function filterDistinctCastedValues(): void
+    {
+        $caster = static function (int $number) {
+            return $number % 2;
+        };
+
+        $result = CollectionFactory::numbers(0, 10)
+            ->stream()
+            ->filter(Predicates::lockDuplicated($caster))
+            ->toArray()
+        ;
+
+        $this->assertCount(2, $result);
     }
 }
