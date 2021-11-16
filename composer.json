@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": "8.0",
     "ext-json": "*"
   },
   "require-dev": {
