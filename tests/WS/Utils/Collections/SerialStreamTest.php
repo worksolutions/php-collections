@@ -8,6 +8,7 @@ namespace WS\Utils\Collections;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;
+use WS\Utils\Collections\Utils\ExampleObject;
 use WS\Utils\Collections\Utils\InvokeCounter;
 use WS\Utils\Collections\Utils\TestInteger;
 
@@ -500,6 +501,23 @@ class SerialStreamTest extends TestCase
             })
             ->getCollection()
         ;
+    }
+
+    /**
+     * @test
+     */
+    public function sortingWithSingleValue(): void
+    {
+        $obj = new ExampleObject();
+        $obj->property = 1.12;
+        $sortedFirstElement = $this->createCollection([$obj])
+            ->stream()
+            ->sortBy(static function (ExampleObject $object) {
+                return $object->property;
+            })
+            ->findFirst()
+        ;
+        self::assertNotNull($sortedFirstElement);
     }
 
     /**
