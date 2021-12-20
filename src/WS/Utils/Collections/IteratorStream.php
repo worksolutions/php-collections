@@ -54,7 +54,7 @@ class IteratorStream implements Stream
                 if ($consumerRes === false) {
                     break;
                 }
-                if ($i +1 >= $iterationsCount) {
+                if ($i + 1 >= $iterationsCount) {
                     break;
                 }
             }
@@ -72,7 +72,7 @@ class IteratorStream implements Stream
         $iterator->rewind();
         $i = 0;
         while ($iterator->valid()) {
-            if (!$this->isExcluded($i)){
+            if (!$this->isExcluded($i)) {
                 $item = $iterator->current();
                 !$predicate($item) && $this->exclude($i);
             }
