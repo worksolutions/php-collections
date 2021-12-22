@@ -3,7 +3,7 @@
   "description": "Collections library for php language",
   "minimum-stability": "dev",
   "license": "MIT",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "authors": [
     {
       "name": "Maxim Sokolovsky",

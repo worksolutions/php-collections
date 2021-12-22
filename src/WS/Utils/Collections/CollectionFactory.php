@@ -76,19 +76,20 @@ class CollectionFactory
      */
     public static function fromIterable(iterable $iterable): Collection
     {
-        if ($iterable instanceof IteratorAggregate) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $iterable = $iterable->getIterator();
-        }
-        if (self::isStatePatternIterator($iterable)) {
-            if (!$iterable instanceof Iterator) {
-                throw new UnsupportedException('Only Iterator interface can be applied to IteratorCollection');
-            }
-            return new IteratorCollection($iterable);
-        }
         $list = ArrayList::of();
+        $count = 0;
+        $lastItem = null;
+
         foreach ($iterable as $item) {
+            if ($count <= 1) {
+                $isObject = is_object($item);
+                if ($item === $lastItem && $isObject) {
+                    return self::createIterableCollection($iterable);
+                }
+                $lastItem = $item;
+            }
             $list->add($item);
+            $count++;
         }
 
         return $list;
@@ -99,26 +100,15 @@ class CollectionFactory
         return ArrayList::of();
     }
 
-    private static function isStatePatternIterator(iterable $iterable): bool
+    private static function createIterableCollection(iterable $iterable): IteratorCollection
     {
-        if (!is_object($iterable)) {
-            return false;
+        if ($iterable instanceof IteratorAggregate) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $iterable = $iterable->getIterator();
         }
-        if (!method_exists($iterable, 'rewind')) {
-            return false;
+        if (!$iterable instanceof Iterator) {
+            throw new UnsupportedException('Only Iterator interface can be applied to IteratorCollection');
         }
-        $i = 2;
-        $lastItem = null;
-        foreach ($iterable as $item) {
-            if ($i === 0) {
-                break;
-            }
-            if (is_object($item) && $item === $lastItem) {
-                return true;
-            }
-            $lastItem = $item;
-            $i--;
-        }
-        return false;
+        return new IteratorCollection($iterable);
     }
 }
