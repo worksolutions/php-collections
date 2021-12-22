@@ -76,11 +76,11 @@ class CollectionFactory
      */
     public static function fromIterable(iterable $iterable): Collection
     {
+        if ($iterable instanceof IteratorAggregate) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $iterable = $iterable->getIterator();
+        }
         if (self::isStatePatternIterator($iterable)) {
-            if ($iterable instanceof IteratorAggregate) {
-                /** @noinspection PhpUnhandledExceptionInspection */
-                $iterable = $iterable->getIterator();
-            }
             if (!$iterable instanceof Iterator) {
                 throw new UnsupportedException('Only Iterator interface can be applied to IteratorCollection');
             }
@@ -104,13 +104,16 @@ class CollectionFactory
         if (!is_object($iterable)) {
             return false;
         }
+        if (!method_exists($iterable, 'rewind')) {
+            return false;
+        }
         $i = 2;
         $lastItem = null;
         foreach ($iterable as $item) {
             if ($i === 0) {
                 break;
             }
-            if (is_object($item) && $item === $lastItem && method_exists($item, 'rewind')) {
+            if (is_object($item) && $item === $lastItem) {
                 return true;
             }
             $lastItem = $item;
