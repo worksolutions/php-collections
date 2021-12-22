@@ -101,13 +101,16 @@ class CollectionFactory
 
     private static function isStatePatternIterator(iterable $iterable): bool
     {
+        if (!is_object($iterable)) {
+            return false;
+        }
         $i = 2;
         $lastItem = null;
         foreach ($iterable as $item) {
             if ($i === 0) {
                 break;
             }
-            if (is_object($item) && $item === $lastItem) {
+            if (is_object($item) && $item === $lastItem && method_exists($item, 'rewind')) {
                 return true;
             }
             $lastItem = $item;
