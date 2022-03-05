@@ -5,8 +5,8 @@
 
 namespace WS\Utils\Collections;
 
-use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
 use WS\Utils\Collections\Functions\Predicates;
 use WS\Utils\Collections\UnitConstraints\CollectionIsEqual;

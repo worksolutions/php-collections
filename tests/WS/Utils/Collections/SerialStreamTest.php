@@ -15,7 +15,6 @@ use WS\Utils\Collections\Utils\TestInteger;
 class SerialStreamTest extends TestCase
 {
 
-    /** @noinspection PhpUnusedParameterInspection */
     private static function fCountAggregator(): callable
     {
         return static function (int $_, ?int $accumulate) {
@@ -325,7 +324,6 @@ class SerialStreamTest extends TestCase
      * @param $comparator
      * @param $_
      * @param $expected
-     * @noinspection PhpUnusedParameterInspection
      */
     public function maxPickChecking($input, $comparator, $_, $expected): void
     {
@@ -344,7 +342,6 @@ class SerialStreamTest extends TestCase
      * @param $_1
      * @param $_2
      * @param $expected
-     * @noinspection PhpUnusedParameterInspection
      */
     public function sortChecking($input, $comparator, $_1, $_2, $expected): void
     {
@@ -366,7 +363,6 @@ class SerialStreamTest extends TestCase
      * @param $_1
      * @param $_2
      * @param $expected
-     * @noinspection PhpUnusedParameterInspection
      */
     public function sortDescChecking($input, $comparator, $_1, $_2, $expected): void
     {
@@ -432,7 +428,6 @@ class SerialStreamTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
     /**
      * @dataProvider firstLastElementCases
      * @test
@@ -565,7 +560,7 @@ class SerialStreamTest extends TestCase
      */
     public function suspendedWalkCheck(): void
     {
-        CollectionFactory::numbers(10)
+        $collection = CollectionFactory::numbers(10)
             ->stream()
             ->walk(function ($i) {
                 if ($i === 2) {
@@ -575,9 +570,12 @@ class SerialStreamTest extends TestCase
                     $this->fail('El this index > 2 should not be here');
                 }
                 return null;
-            });
+            })
+            ->getCollection()
+        ;
 
         $this->assertTrue(true);
+        $this->assertEquals(10, $collection->size());
     }
 
     /**

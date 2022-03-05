@@ -35,6 +35,23 @@ class ReorganizersFunctionsTest extends TestCase
 
     /**
      * @test
+     * @return void
+     */
+    public function chunkingWhitTail(): void
+    {
+        $collection = self::toCollection(1, 2, 3, 4, 5);
+        $chunkedCollection = $collection
+            ->stream()
+            ->reorganize(Reorganizers::chunk(2))
+            ->getCollection()
+        ;
+        $this->assertEquals(3, $chunkedCollection->size());
+        $this->assertThat($chunkedCollection->stream()->findFirst(), CollectionIsEqual::to([1, 2]));
+        $this->assertThat($chunkedCollection->stream()->findLast(), CollectionIsEqual::to([5]));
+    }
+
+    /**
+     * @test
      */
     public function collapsing(): void
     {

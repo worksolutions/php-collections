@@ -5,7 +5,10 @@
 
 namespace WS\Utils\Collections;
 
+use Iterator;
+use IteratorAggregate;
 use RuntimeException;
+use WS\Utils\Collections\Exception\UnsupportedException;
 
 class CollectionFactory
 {
@@ -37,7 +40,7 @@ class CollectionFactory
     /**
      * Generate collection of int numbers between $from and $to. If $to arg is absent $from - is count of numbers
      * @param int $from
-     * @param int $to
+     * @param int|null $to
      * @return Collection
      */
     public static function numbers(int $from, ?int $to = null): Collection
@@ -68,11 +71,25 @@ class CollectionFactory
         return new ArrayStrictList($values);
     }
 
+    /**
+     * @throws UnsupportedException
+     */
     public static function fromIterable(iterable $iterable): Collection
     {
         $list = ArrayList::of();
+        $count = 0;
+        $lastItem = null;
+
         foreach ($iterable as $item) {
+            if ($count <= 1) {
+                $isObject = is_object($item);
+                if ($item === $lastItem && $isObject) {
+                    return self::createIterableCollection($iterable);
+                }
+                $lastItem = $item;
+            }
             $list->add($item);
+            $count++;
         }
 
         return $list;
@@ -81,5 +98,17 @@ class CollectionFactory
     public static function empty(): Collection
     {
         return ArrayList::of();
+    }
+
+    private static function createIterableCollection(iterable $iterable): IteratorCollection
+    {
+        if ($iterable instanceof IteratorAggregate) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $iterable = $iterable->getIterator();
+        }
+        if (!$iterable instanceof Iterator) {
+            throw new UnsupportedException('Only Iterator interface can be applied to IteratorCollection');
+        }
+        return new IteratorCollection($iterable);
     }
 }

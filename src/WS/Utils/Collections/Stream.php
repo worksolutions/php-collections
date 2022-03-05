@@ -8,14 +8,14 @@ namespace WS\Utils\Collections;
 interface Stream
 {
     /**
-     * Call function for each element in collection
+     * Calls function for each element in collection
      * @param callable $consumer Function with f(mixed $element, int $index): void interface
      * @return Stream
      */
     public function each(callable $consumer): Stream;
 
     /**
-     * Call function for $limit element in collection. If limit is null all elements will. If consumer will return false walk stop
+     * Call function for $limit element in collection. If limit is null all elements will. If consumer return false walk stop
      * @param callable $consumer Function with f(mixed $element, int $index): ?false|mixed interface.
      * @param int|null $limit
      * @return Stream
@@ -57,7 +57,7 @@ interface Stream
     public function map(callable $converter): Stream;
 
     /**
-     * Call collector function for collection. It is terminate function
+     * Call collector function for collection. It is terminated function
      * @param callable $collector Function f(Collection $c): mixed
      * @return mixed
      */
@@ -130,7 +130,7 @@ interface Stream
 
     /**
      * Reduce collection to single value with accumulator
-     * @param  callable  $accumulator
+     * @param  callable  $accumulator <f(mixed $el, mixed $accumulate): mixed>
      * @param  mixed|null  $initialValue
      * @return mixed
      */
