@@ -90,23 +90,14 @@ class Reorganizers
     public static function chunk(int $size): Closure
     {
         return static function (Collection $collection) use ($size): Collection {
-            $chunkCollection = self::collectionConstructor();
-            $currentChunk = self::collectionConstructor();
-            $pointer = $size;
-            $collection
-                ->stream()
-                ->each(static function ($el) use ($size, $chunkCollection, & $currentChunk, & $pointer) {
-                    $pointer--;
-                    $currentChunk->add($el);
+            $array = $collection->toArray();
+            $chunkedArray = array_chunk($array, $size);
+            $result = self::collectionConstructor();
+            foreach ($chunkedArray as $items) {
+                $result->add(self::collectionConstructor($items));
+            };
 
-                    if ($pointer === 0) {
-                        $chunkCollection->add($currentChunk);
-                        $currentChunk = self::collectionConstructor();
-                        $pointer = $size;
-                    }
-                })
-            ;
-            return $chunkCollection;
+            return $result;
         };
     }
 
