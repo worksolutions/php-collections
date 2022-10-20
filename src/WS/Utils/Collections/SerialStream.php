@@ -137,8 +137,10 @@ class SerialStream implements Stream
         sort($values);
         $newList = $this->emptyList();
         foreach ($values as $value) {
-            $els = $map[$value.''] ?? [];
+            $key = $value.'';
+            $els = $map[$key] ?? [];
             $newList->addAll($els);
+            unset($map[$key]);
         }
         $this->list = $newList;
 

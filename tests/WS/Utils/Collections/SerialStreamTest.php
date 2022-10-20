@@ -485,6 +485,7 @@ class SerialStreamTest extends TestCase
 
         $this->assertEquals($min, $actualMin->getValue());
         $this->assertEquals($max, $actualMax->getValue());
+        $this->assertEquals(count($input), $sortedCollection->size());
     }
 
     /**
