@@ -111,4 +111,7 @@ abstract class AbstractCollection implements Collection
     abstract protected function afterElementsSet(): void;
 
     abstract public function stream(): Stream;
+
+    abstract public function parallelStream($workersPool = null): Stream;
+
 }

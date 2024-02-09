@@ -60,6 +60,11 @@ class ArrayStack extends AbstractCollection implements Stack, IndexIterable
         return new SerialStream($this);
     }
 
+    public function parallelStream($workersPool = null): Stream
+    {
+        return new ParallelStream($this, $workersPool);
+    }
+
     public function toArray(): array
     {
         return array_reverse($this->elements);

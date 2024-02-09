@@ -35,6 +35,11 @@ class HashSet implements Set
         return new SerialStream($this);
     }
 
+    public function parallelStream($workersPool = null): Stream
+    {
+        return new ParallelStream($this, $workersPool);
+    }
+
     public function merge(Collection $collection): bool
     {
         foreach ($collection as $item) {
